@@ -1,16 +1,17 @@
 document.getElementById("login").addEventListener("click", () => {
-  window.location.href = "/auth/start";
+  // Redirect to backend to trigger SAML login
+  window.location.href = "https://localhost:8081/api/auth/login?returnUrl=https://localhost:8081/api/auth/me";
 });
 
 window.addEventListener("DOMContentLoaded", async () => {
   try {
-    const res = await fetch("/auth/status", {
+    const res = await fetch("https://localhost:8081/api/auth/success", {
       credentials: "include"
     });
 
     if (res.ok) {
       const data = await res.json();
-      document.getElementById("status").textContent = `Logged in as ${data.username}`;
+      document.getElementById("status").textContent = `Logged in as ${data.user}`;
     } else {
       document.getElementById("status").textContent = "Not logged in";
     }
