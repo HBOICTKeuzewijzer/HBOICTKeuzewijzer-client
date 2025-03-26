@@ -10,7 +10,6 @@ A study path advisor for HBO ICT part-time students at Windesheim.
 - **Code Quality:**
   - ESLint
   - Prettier
-  - Husky (Git Hooks)
 
 ## 📁 Project Structure
 
