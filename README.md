@@ -1,22 +1,34 @@
-# HBOICTKeuzewijzer-client
+# HBO-ICT Keuzewijzer
 
-## Folder Structure
+A study path advisor for HBO ICT part-time students at Windesheim.
+
+## 🚀 Tech Stack
+
+- **Frontend:** Vanilla JavaScript
+- **Build Tool:** Vite
+- **Testing:** Vitest
+- **Code Quality:**
+  - ESLint
+  - Prettier
+  - Husky (Git Hooks)
+
+## 📁 Project Structure
+
 HBOICTKeuzewijzer-client/
-├── public/               # Static assets
-│   └── favicon.ico
-├── src/                  # Source files
-│   ├── components/       # Web Components
-│   │   ├── MyHeader.js
-│   │   └── MyFooter.js
-│   ├── pages/            # HTML templates for each "page"
-│   │   ├── home.html
-│   │   ├── about.html
-│   │   └── not-found.html
-│   ├── styles/           # Global styles
-│   │   └── main.css
-│   ├── router.js         # Simple router
-│   └── main.js           # Entry point
-├── index.html            # Base HTML file
-├── vite.config.js        # Vite config file
-├── package.json          # Project config
-└── README.md
+├── src/                    # Source files
+│   ├── components/         # Reusable components
+│   ├── js/                 # JavaScript files
+│   ├── pages/              # Page components
+│   ├── styles/             # CSS styles
+│   └── index.html          # Entry point
+├── .eslintrc.js            # ESLint configuration
+├── .prettierrc             # Prettier configuration
+├── vite.config.js          # Vite configuration
+└── vitest.config.js        # Vitest configuration
+
+
+## 🛠️ Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/HBOICTKeuzewijzer/HBOICTKeuzewijzer-client.git
