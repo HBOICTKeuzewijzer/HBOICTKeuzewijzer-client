@@ -1,5 +1,7 @@
+import { Modal } from "@/components"
+
 export default function HomePage() {
     return `
-        <div>Home</div>
+        <x-modal>We maken gebruik van een custom webcomponent</x-modal>
     `
 }

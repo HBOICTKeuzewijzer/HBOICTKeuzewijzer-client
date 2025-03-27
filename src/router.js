@@ -6,8 +6,8 @@ class Router {
         // Caching the DOM container for future use.
         this.#DOMContainer = document.getElementById('_app')
 
-        document.addEventListener('DOMContentLoaded', this.#handleRoute) // Handle initial page load
-        window.addEventListener('popstate', this.#handleRoute) // Handle back/forward navigation
+        document.addEventListener('DOMContentLoaded', this.#handleRoute.bind(this)) // Handle initial page load
+        window.addEventListener('popstate', this.#handleRoute.bind(this)) // Handle back/forward navigation
     }
 
     /**
@@ -43,7 +43,8 @@ class Router {
      */
     async #loadPage() {
         try {
-            const { default: page } = this.currentRoute 
+            console.log('loading')
+            const { default: page } = this.currentRoute
                 ? await import(`./pages/${this.currentRoute}/page.js`)
                 : await import('./pages/page.js')
 
@@ -82,10 +83,7 @@ class Router {
         // If the Content is an HTMLElement we append it instead.
         if (content instanceof HTMLElement) this.#DOMContainer.appendChild(content)
         else if (typeof content === 'string') this.#DOMContainer.innerHTML = content // If the content is of type 'String' we set the innerHTML.
-
     }
 }
 
-const router = new Router()
-
-export { router }
+export const router = new Router()
