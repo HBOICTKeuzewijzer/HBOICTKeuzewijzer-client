@@ -1,5 +1,5 @@
 export class BaseElement extends HTMLElement {
-    fragment;
+    fragment
 
     constructor(template) {
         super()
@@ -9,10 +9,10 @@ export class BaseElement extends HTMLElement {
         const tmpl = document.createElement('template')
         tmpl.innerHTML = template
 
-        var docFragment = document.importNode(tmpl.content, true);
+        var docFragment = document.importNode(tmpl.content, true)
         docFragment.firstChild.id = this.getAttribute('id')
 
-        this.fragment = docFragment;
+        this.fragment = docFragment
     }
 
     connectedCallback() {

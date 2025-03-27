@@ -5,7 +5,5 @@ class Modal extends BaseElement {
     constructor() {
         super(template)
     }
-
-    
 }
 customElements.define('x-modal', Modal)
