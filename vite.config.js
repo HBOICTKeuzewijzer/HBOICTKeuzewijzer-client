@@ -5,18 +5,20 @@ export default defineConfig({
     root: 'src',
     server: {
         port: 3000,
+        historyApiFallback: true,
+
     },
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, './src'),
+            '@': path.resolve(__dirname, 'src'),
         },
     },
     build: {
-        outDir: '../dist',
+        outDir: 'dist',
         sourcemap: true,
         rollupOptions: {
             input: {
-                main: './src/index.html',
+                main: 'src/index.html',
             },
         },
     },

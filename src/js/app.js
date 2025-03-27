@@ -1,6 +1,6 @@
 import { router } from '@/router.js'
 
-document.addEventListener('DOMContentLoaded', () => router.navigate(router.currentPage))
+document.addEventListener('DOMContentLoaded', () => router.navigate(window.location.pathname))
 document.addEventListener('click', event => {
     const anchor = event.target.closest('a')
     if (anchor && anchor.href.startsWith(window.location.origin)) {

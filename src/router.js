@@ -6,8 +6,8 @@ class Router {
         // Caching the DOM container for future use.
         this.#DOMContainer = document.getElementById('_app')
 
-        document.addEventListener('DOMContentLoaded', this.#handleRoute) // Handle routing for initial page load.
-        window.addEventListener('popstate', this.#handleRoute) // Listen for route changes (using popstate for back/forward navigation)
+        document.addEventListener('DOMContentLoaded', this.#handleRoute) // Handle initial page load
+        window.addEventListener('popstate', this.#handleRoute) // Handle back/forward navigation
     }
 
     /**
@@ -42,12 +42,13 @@ class Router {
      * @returns {Promise<HTMLElement|string>}
      */
     async #loadPage() {
-        let pagePath = this.currentRoute ? `${this.currentRoute}/page` : 'page'
-        console.log(pagePath)
         try {
-            const { default: page } = await import(`./pages/${pagePath}.js`)
+            const { default: page } = this.currentRoute 
+                ? await import(`./pages/${this.currentRoute}/page.js`)
+                : await import('./pages/page.js')
+
             return page
-        } catch {
+        } catch (error) {
             const { default: page } = await import('./pages/404.js')
             return page
         }
@@ -63,8 +64,8 @@ class Router {
                 this.#loadPage(),
                 import('./pages/layout.js').then(mod => mod.default).catch(() => null),
             ])
-            console.log(page)
-            // If a layout is available, wrap the page with it.
+
+            // Render the page inside the layout, if layout exists, otherwise render page directly
             const content = layout ? layout(page(this.searchParams)) : page(this.searchParams)
 
             this.#render(content)
@@ -77,11 +78,13 @@ class Router {
      * @returns {void}
      */
     #render(content) {
-        // If the content is of type 'String' we set the innerHTML.
-        this.#DOMContainer.innerHTML = typeof content === 'string' ? content : ''
+        // Clear the container before appending new content
+        this.#DOMContainer.innerHTML = ''
 
         // If the Content is an HTMLElement we append it instead.
         if (content instanceof HTMLElement) this.#DOMContainer.appendChild(content)
+        else if (typeof content === 'string') this.#DOMContainer.innerHTML = content // If the content is of type 'String' we set the innerHTML.
+
     }
 }
 
