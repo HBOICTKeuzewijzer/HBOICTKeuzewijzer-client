@@ -48,7 +48,7 @@ class Router {
                 : await import('./pages/page.js')
 
             return page
-        } catch (error) {
+        } catch {
             const { default: page } = await import('./pages/404.js')
             return page
         }
@@ -59,17 +59,15 @@ class Router {
      * @returns {Promise<void>}
      */
     async #handleRoute() {
-        try {
-            const [page, layout] = await Promise.all([
-                this.#loadPage(),
-                import('./pages/layout.js').then(mod => mod.default).catch(() => null),
-            ])
+        const [page, layout] = await Promise.all([
+            this.#loadPage(),
+            import('./pages/layout.js').then(mod => mod.default).catch(() => null),
+        ])
 
-            // Render the page inside the layout, if layout exists, otherwise render page directly
-            const content = layout ? layout(page(this.searchParams)) : page(this.searchParams)
+        // Render the page inside the layout, if layout exists, otherwise render page directly
+        const content = layout ? layout(page(this.searchParams)) : page(this.searchParams)
 
-            this.#render(content)
-        } catch (error) {}
+        this.#render(content)
     }
 
     /**
