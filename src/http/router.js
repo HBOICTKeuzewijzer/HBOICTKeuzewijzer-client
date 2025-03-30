@@ -1,19 +1,21 @@
 import { MiddlewarePipeline } from '@/http/middlewarePipeline'
+import { routes } from '@/routes'
 
 class Router {
     /** @type {HTMLElement} */
     #DOMContainer
-
-    /** @type {MiddlewarePipeline} */
-    #middlewarePipeline
+    /** @type {Array} The list of application routes. */
+    #routes
 
     constructor() {
+        this.#routes = routes
+
         // Caching the DOM container for future use.
         this.#DOMContainer = document.getElementById('_app')
-        this.#middlewarePipeline = new MiddlewarePipeline()
 
-        document.addEventListener('DOMContentLoaded', this.#handleRoute.bind(this)) // Handle initial page load
-        window.addEventListener('popstate', this.#handleRoute.bind(this)) // Handle back/forward navigation
+        // Listen for initial page load and history navigation.
+        document.addEventListener('DOMContentLoaded', this.#handleRoute.bind(this))
+        window.addEventListener('popstate', this.#handleRoute.bind(this))
     }
 
     /**
@@ -21,16 +23,7 @@ class Router {
      * @returns {string}
      */
     get currentRoute() {
-        const path = window.location.pathname.replace(/^[\\/]+|[\\/]+$/g, '')
-        return path === '/' ? '' : path
-    }
-
-    /**
-     * Get the current URL search parameters.
-     * @returns {URLSearchParams}
-     */
-    get searchParams() {
-        return new URLSearchParams(window.location.search)
+        return window.location.pathname
     }
 
     /**
@@ -44,54 +37,57 @@ class Router {
     }
 
     /**
-     * Load the page content based on the current route.
-     * @returns {Promise<HTMLElement|string>}
-     */
-    async #loadPage() {
-        try {
-            const { default: page } = this.currentRoute
-                ? await import(`@pages/${this.currentRoute}/page.js`)
-                : await import('@pages/page.js')
-
-            return page
-        } catch {
-            const { default: page } = await import('@pages/404.js')
-            return page
-        }
-    }
-
-    /**
      * Handle the route change and render the appropriate page.
      * @returns {Promise<void>}
      */
     async #handleRoute() {
-        const middlewareResult = await this.#middlewarePipeline.execute()
-        if (!middlewareResult) return
+        // Find a matching route based on the current path.
+        const matchedRoute = this.#routes.find(route => route.match(this.currentRoute))
+        if (!matchedRoute) return this.#render(() => import('@pages/404.js'))
 
-        const [page, layout] = await Promise.all([
-            this.#loadPage(),
-            import('@pages/layout.js').then(mod => mod.default).catch(() => null),
-        ])
+        const currentRoute = this.currentRoute
+        const params = []
+        const context = { currentRoute, params }
 
-        // Render the page inside the layout, if layout exists, otherwise render page directly
-        const content = layout ? layout(page(this.searchParams)) : page(this.searchParams)
+        // Execute middleware before rendering the page.
+        const middlewarePassed = await MiddlewarePipeline.run(matchedRoute.middlewares, context)
+        if (!middlewarePassed) return
 
-        this.#render(content)
+        // Render the matched route component.
+        this.#render(matchedRoute.component, params)
     }
 
     /**
      * Render the content in the DOM container.
-     * @param {HTMLElement|string} content - The content to render.
-     * @returns {void}
+     * @param {Function} componentLoader - A function that dynamically imports the page component.
+     * @param {Object} params - Parameters extracted from the route.
+     * @returns {Promise<void>}
      */
-    #render(content) {
-        // Clear the container before appending new content
-        this.#DOMContainer.innerHTML = ''
+    async #render(componentLoader, params) {
+        // Load the page component dynamically.
+        const PageComponent = await componentLoader()
+        const content = PageComponent.default(params)
 
-        // If the Content is an HTMLElement we append it instead.
-        if (content instanceof HTMLElement) this.#DOMContainer.appendChild(content)
-        else if (typeof content === 'string') this.#DOMContainer.innerHTML = content // If the content is of type 'String' we set the innerHTML.
+        // Load the layout and wrap the content inside it.
+        const layout = (await import('@pages/layout.js')).default(content)
+
+        // Clear the container and append the new layout.
+        this.#DOMContainer.innerHTML = ''
+        this.#DOMContainer.appendChild(layout instanceof HTMLElement ? layout : this.#createElementFromHTML(layout))
+    }
+
+    /**
+     * Create an HTML element from a string.
+     * @param {string} htmlString - The HTML string to convert.
+     * @returns {HTMLElement} The created HTML element.
+     */
+    #createElementFromHTML(htmlString) {
+        return new DOMParser().parseFromString(htmlString, 'text/html').body.firstChild
     }
 }
 
+/**
+ * Singleton instance of the Router.
+ * @type {Router}
+ */
 export const router = new Router()

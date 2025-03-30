@@ -1,9 +1,28 @@
 import { Middleware } from '@/http/middleware'
 
+/**
+ * Class representing a middleware pipeline for processing requests.
+ */
 export class MiddlewarePipeline {
-    constructor() {}
+    /**
+     * Executes an array of middleware functions sequentially.
+     * If any middleware function returns a falsy value or throws an error, the pipeline stops.
+     *
+     * @param {Middleware[]} middlewares - An array of middleware functions.
+     * @param {Object} context - The context passed to each middleware.
+     * @returns {Promise<boolean>} - Resolves to `true` if all middlewares pass, otherwise `false`.
+     */
+    static async run(middlewares, context) {
+        try {
+            for (const middleware of middlewares) {
+                if (!(middleware instanceof Middleware)) continue
 
-    async execute() {
-        return true
+                const result = await middleware.handle(context)
+                if (!result) return false // Stop the pipeline if a middleware fails and returns falsy
+            }
+            return true
+        } catch {
+            return false
+        }
     }
 }
