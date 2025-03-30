@@ -1,0 +1,32 @@
+:root {
+    /* Global application styling properties */
+
+    /* Colors */
+    --orange: '#F5A61A';
+    --gold: '#FFCB05';
+    --yellow: '#FFF578';
+    --red: '#EE3135';
+    --dark-pink: '#F16682';
+    --light-pink: '#F287B7';
+    --dark-green: '#45B97C';
+    --apple-green: '#B1D249';
+    --light-green: '#D5E05B';
+    --sky-blue: '#4594D3';
+    --blue: '#1EBCC5';
+    --light-blue: '#84D0D9';
+    --black: '#231F20';
+    --gray-1: '#58595B';
+    --gray-2: '#808184';
+    --gray-3: '#A6A8AB';
+    --gray-4: '#D0D2D3';
+    --gray-5: '#F6F7F8';
+
+    /*  */
+    --rounded-none: '0';
+    --rounded-xs: '4';
+    --rounded-sm: '8';
+    --rounded-md: '12';
+    --rounded-lg: '16';
+
+    --shadow: box;
+}

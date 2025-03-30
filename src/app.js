@@ -1,5 +1,5 @@
 // Import the router instance from the router module
-import { router } from '@/router.js'
+import { router } from '@/http/router'
 
 /**
  * Handle client-side navigation:

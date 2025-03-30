@@ -1,10 +1,16 @@
+import { MiddlewarePipeline } from '@/http/middlewarePipeline'
+
 class Router {
     /** @type {HTMLElement} */
     #DOMContainer
 
+    /** @type {MiddlewarePipeline} */
+    #middlewarePipeline
+
     constructor() {
         // Caching the DOM container for future use.
         this.#DOMContainer = document.getElementById('_app')
+        this.#middlewarePipeline = new MiddlewarePipeline()
 
         document.addEventListener('DOMContentLoaded', this.#handleRoute.bind(this)) // Handle initial page load
         window.addEventListener('popstate', this.#handleRoute.bind(this)) // Handle back/forward navigation
@@ -43,14 +49,13 @@ class Router {
      */
     async #loadPage() {
         try {
-            console.log('loading')
             const { default: page } = this.currentRoute
-                ? await import(`./pages/${this.currentRoute}/page.js`)
-                : await import('./pages/page.js')
+                ? await import(`@pages/${this.currentRoute}/page.js`)
+                : await import('@pages/page.js')
 
             return page
         } catch {
-            const { default: page } = await import('./pages/404.js')
+            const { default: page } = await import('@pages/404.js')
             return page
         }
     }
@@ -60,9 +65,12 @@ class Router {
      * @returns {Promise<void>}
      */
     async #handleRoute() {
+        const middlewareResult = await this.#middlewarePipeline.execute()
+        if (!middlewareResult) return
+
         const [page, layout] = await Promise.all([
             this.#loadPage(),
-            import('./pages/layout.js').then(mod => mod.default).catch(() => null),
+            import('@pages/layout.js').then(mod => mod.default).catch(() => null),
         ])
 
         // Render the page inside the layout, if layout exists, otherwise render page directly

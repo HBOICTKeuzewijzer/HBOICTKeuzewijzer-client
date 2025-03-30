@@ -1,4 +1,4 @@
-import { Modal } from '@/components'
+import { Modal } from '@components'
 
 export default function HomePage() {
     return `
