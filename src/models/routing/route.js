@@ -8,8 +8,6 @@ export class Route {
     #component
     /** @type {Array<Function>} Middleware functions to be applied to this route. */
     #middlewares
-    /** @type {Array<string>} Keys of dynamic parameters in the route path. */
-    #paramKeys
 
     /**
      * Create a new Route instance.
@@ -21,7 +19,6 @@ export class Route {
         this.#path = path
         this.#component = component
         this.#middlewares = middlewares
-        this.#paramKeys = this.#extractParams(path)
     }
 
     /**
@@ -49,34 +46,25 @@ export class Route {
     }
 
     /**
-     * Extract dynamic parameters from a route path (e.g., `/users/:id`).
-     * @param {string} path - The route path.
-     * @returns {Array<string>} An array of dynamic parameter keys.
-     */
-    #extractParams(path) {
-        return (path.match(/:[^/]+/g) || []).map(param => param.substring(1))
-    }
-
-    /**
      * Check if a given URL matches this route and extract parameters.
      * @param {string} url - The URL to match against this route.
      * @returns {Object|null} An object containing extracted parameters if matched, otherwise `null`.
      */
     match(url) {
-        const pathSegments = this.path.split('/')
-        const urlSegments = url.split('/')
+        const [pathPart, queryString = ''] = url.replace(/^\/|\/$/g, '').split('?');
+        const pathSegments = this.path.replace(/^\/|\/$/g, '').split('/');
+        const urlSegments = pathPart.split('/');
+    
+        if (pathSegments.length !== urlSegments.length) return null;
+    
+        const params = pathSegments.reduce((params, segment, i) => {
+            return segment.startsWith(':') 
+                ? { ...params, [segment.slice(1)]: urlSegments[i] } 
+                : (segment === urlSegments[i] ? params : null);
+        }, {});
+    
+        const query = Object.fromEntries(new URLSearchParams(queryString));
 
-        if (pathSegments.length !== urlSegments.length) return null
-
-        const params = {}
-        for (let i = 0; i < pathSegments.length; i++) {
-            if (pathSegments[i].startsWith(':')) {
-                params[pathSegments[i].substring(1)] = urlSegments[i]
-            } else if (pathSegments[i] !== urlSegments[i]) {
-                return null
-            }
-        }
-
-        return params
+        return { params, query };
     }
 }
