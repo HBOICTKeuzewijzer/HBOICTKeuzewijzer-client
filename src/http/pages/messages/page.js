@@ -1,5 +1,5 @@
 export default function MessagesPage() {
-    return /*html*/`
+    return /*html*/ `
         <div></div>
     `
 }

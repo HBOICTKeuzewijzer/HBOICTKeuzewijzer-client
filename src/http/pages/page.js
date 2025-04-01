@@ -1,5 +1,7 @@
-export default function HomePage() {
-    return /*html*/`
+export default function HomePage(params) {
+    console.log(params)
+
+    return /*html*/ `
         <x-sheet id="modulesSelector" open>
             <span style="display: flex; flex-direction: column; gap: 4px;">
                 <h5 style="margin: 0; font-size: 20px;">Modules</h1>

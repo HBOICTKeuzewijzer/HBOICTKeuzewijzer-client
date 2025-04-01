@@ -51,7 +51,7 @@ class Router {
 
         // Execute middleware before rendering the page.
         const middlewarePassed = await MiddlewarePipeline.run(matchedRoute.middlewares, context)
-        if (!middlewarePassed) return
+        if (!middlewarePassed) return this.#render(() => import('@pages/404.js'))
 
         // Render the matched route component.
         this.#render(matchedRoute.component, params)

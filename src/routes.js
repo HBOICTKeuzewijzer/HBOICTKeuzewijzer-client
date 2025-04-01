@@ -10,5 +10,5 @@ export const routes = [
     new Route('/view/:uuid', () => import('@pages/page.js')),
     new Route('/messages', () => import('@pages/messages/page.js')),
 
-    ...new RouteGroup([AuthMiddleware]).add('/admin').routes,
+    ...new RouteGroup([AuthMiddleware]).add('/admin', () => import('@pages/page.js')).routes,
 ]

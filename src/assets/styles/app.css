@@ -89,15 +89,14 @@ header > div > a > i.ph.ph-chat {
 }
 
 @media (min-width: 640px) {
+    header {
+        padding: 12px 48px 12px 48px;
+    }
 }
 
 @media (min-width: 768px) {
     .container {
         padding: 32px 48px;
-    }
-
-    header {
-        padding: 12px 48px 12px 48px;
     }
 
     .icon-button:has(i.ph.ph-list) {
