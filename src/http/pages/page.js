@@ -1,5 +1,4 @@
 export default function HomePage(params) {
-
     return /*html*/ `
         <x-sheet id="modulesSelector" open>
             <span style="display: flex; flex-direction: column; gap: 4px;">
