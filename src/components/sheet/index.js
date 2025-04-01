@@ -1,26 +1,25 @@
 import template from './template.html?raw'
 import styling from './style.css?raw'
 
+const sheetTemplate = document.createElement('template');
+sheetTemplate.innerHTML = `
+    <style>${styling}</style>
+    ${template}
+`;
+
 export class Sheet extends HTMLElement {
-    constructor() {
-        super()
-        this.attachShadow({ mode: 'open' })
-
-        this.open = true;
-
-        const tmpl = document.createElement('template')
-        tmpl.innerHTML = template
-
-        var docFragment = document.importNode(tmpl.content, true)
-        this.fragment = docFragment
-
-        const style = document.createElement("style");
-        style.textContent = styling
-        this.fragment.appendChild(style)
-    }
-
     static get observedAttributes() {
         return ['open', 'type']
+    }
+
+    constructor() {
+        super()
+
+        this.attachShadow({ mode: 'open' })
+        this.shadowRoot.appendChild(sheetTemplate.content.cloneNode(true));
+
+        // Reference the internal element (assuming there's a main wrapper)
+        this.container = this.shadowRoot.querySelector('[data-sheet]') || this.shadowRoot.firstElementChild;
     }
 
     /**
@@ -34,32 +33,14 @@ export class Sheet extends HTMLElement {
      * @param {boolean} value
      * @returns {this}
     */
-    set open(value) {
+    set toggle(value) {
         value
-            ? this.setAttribute('open', value)
+            ? this.setAttribute('open', '')
             : this.removeAttribute('open')
     }
 
-    /**
-     * Opens the drawer by setting the `open` state.
-     * @returns {void}
-     */
-    show() { this.open = true }
-
-    /**
-     * Closes the drawer by setting the `open` state.
-     * @returns {void}
-     */
-    hide() { this.open = false }
-
     connectedCallback() {
-        if (!this.shadowRoot.hasChildNodes()) {
-            this.shadowRoot.appendChild(this.fragment)
-
-            this.shadowRoot.host.style = `width: ${this.fragment.clientWidth}px;`
-        }
-
-        this.setAttribute('open', this.open)
+        this.#updateState();
     }
 
     disconnectedCallback() {
@@ -67,19 +48,14 @@ export class Sheet extends HTMLElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log(`Attribute ${name} has changed from ${oldValue} to ${newValue}.`)
-        this.shadowRoot.firstChild.setAttribute(name, newValue)
+        if (oldValue !== newValue) {
+            this.#updateState();
+            this.dispatchEvent(new CustomEvent(`${name}-changed`, { detail: { oldValue, newValue } }));
+        }
+    }
 
-        console.log(this.shadowRoot.firstChild.offsetWidth)
-
-        if (name == 'open') {
-            var style = this.shadowRoot.firstChild.currentStyle || window.getComputedStyle(this.shadowRoot.firstChild),
-            width = this.shadowRoot.firstChild.offsetWidth, // or use style.width
-            margin = parseFloat(style.marginLeft) + parseFloat(style.marginRight),
-            padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight),
-            border = parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
-
-            this.shadowRoot.host.style = `display: flex; width: ${width + padding + margin + border}px`
-        } 
+    #updateState() {
+        const isOpen = this.open;
+        if (this.container) this.container.toggleAttribute('open', isOpen);
     }
 }

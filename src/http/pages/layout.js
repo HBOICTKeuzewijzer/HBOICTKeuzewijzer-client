@@ -1,7 +1,7 @@
 export default function Layout(children) {
     const imageURL = new URL('@public/assets/images/windesheim-logo.png', import.meta.url).href
 
-    return `
+    return /*html*/`
         <div>
             <header>
                 <img src="${imageURL}"/>

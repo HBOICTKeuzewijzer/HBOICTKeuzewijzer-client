@@ -24,6 +24,7 @@ main {
 }
 
 .container {
+    display: flex;
     padding: 32px;
     flex: 1;
     height: calc(100% - 76px);
