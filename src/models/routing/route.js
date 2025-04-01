@@ -51,25 +51,25 @@ export class Route {
      * @returns {Object|null} An object containing extracted parameters if matched, otherwise `null`.
      */
     match(url) {
-        const [pathPart, queryString = ''] = url.replace(/^\/|\/$/g, '').split('?');
-        const pathSegments = this.path.replace(/^\/|\/$/g, '').split('/');
-        const urlSegments = pathPart.split('/');
+        const [pathPart, queryString = ''] = url.replace(/^\/|\/$/g, '').split('?')
+        const pathSegments = this.path.replace(/^\/|\/$/g, '').split('/')
+        const urlSegments = pathPart.split('/')
 
         // Ensure segment lengths match before proceeding
-        if (pathSegments.length !== urlSegments.length) return null;
+        if (pathSegments.length !== urlSegments.length) return null
 
-        let params = {};
+        let params = {}
 
         for (let i = 0; i < pathSegments.length; i++) {
             if (pathSegments[i].startsWith(':')) {
-                params[pathSegments[i].slice(1)] = urlSegments[i];
+                params[pathSegments[i].slice(1)] = urlSegments[i]
             } else if (pathSegments[i] !== urlSegments[i]) {
-                return null; // Mismatch found
+                return null // Mismatch found
             }
         }
 
-        const query = Object.fromEntries(new URLSearchParams(queryString));
+        const query = Object.fromEntries(new URLSearchParams(queryString))
 
-        return { params, query };
+        return { params, query }
     }
 }

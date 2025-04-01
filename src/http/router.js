@@ -46,7 +46,7 @@ class Router {
         if (!matchedRoute) return this.#render(() => import('@pages/404.js'))
 
         const currentRoute = this.currentRoute
-        const params = matchedRoute.match(this.currentRoute+window.location.search)
+        const params = matchedRoute.match(this.currentRoute + window.location.search)
         const context = { currentRoute, params }
 
         // Execute middleware before rendering the page.

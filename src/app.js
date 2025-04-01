@@ -1,6 +1,9 @@
 // Import the router instance from the router module
 import { router } from '@/http/router'
 
+import { Sheet } from '@components/sheet'
+customElements.define('x-sheet', Sheet)
+
 /**
  * Handle client-side navigation:
  * - Intercepts click events on `<a>` tags.
