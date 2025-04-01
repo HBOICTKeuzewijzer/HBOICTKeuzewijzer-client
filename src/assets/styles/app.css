@@ -1,1 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import './variables.css';
+
+:root {
+    font-family: "Inter", sans-serif !important;
+}
+
+body {
+    width: 100dvw;
+    height: 100dvh;
+    margin: 0;
+    background-color: rgb(var(--color-gray-5));
+}
+
+#_app, #_app > div  {
+    width: 100%;
+    height: 100%;
+}
+
+.container {
+    padding: 32px;
+}
+
+header {
+    height: 50px;
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    border-bottom: 2px solid rgb(var(--color-gold));
+}
+
+#header-profile {
+    display: flex;
+    gap: 10px;
+}
+
+header > img {
+    height: 53px;
+}
+
+header > div > button > i.ph.ph-list {
+    font-size: 20px;
+}
+
+header > div > a > i.ph.ph-chat {
+    font-size: 20px;
+}
+
+.icon-button {
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--color-black);
+}
+
+.icon-button:has(i.ph.ph-chat) {
+    display: none;
+}
+
+#profile {
+    width: 40px;
+    height: 40px;
+    background-color: rgb(var(--color-light-blue));
+    border: 2px solid rgba(var(--color-blue), 0.1);
+    border-collapse: separate; 
+    border-radius: var(--rounded-sm) !important;
+
+    font-size: 13px;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    display: none;
+}
+
+@media (min-width: 640px) {
+}
+
+@media (min-width: 768px) {
+    .container {
+        padding: 32px 48px;
+    }
+
+    header {
+        padding: 12px 48px 12px 48px;
+    }
+
+    .icon-button:has(i.ph.ph-list) {
+        display: none;
+    }
+
+    .icon-button:has(i.ph.ph-chat) {
+        display: flex;
+    }
+
+    #profile {
+        display: block;
+    }
+}
+
+@media (min-width: 1024px) {
+    
+}
+
+@media (min-width: 1280px) {
+    
+}

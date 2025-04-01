@@ -54,15 +54,20 @@ export class Route {
         const [pathPart, queryString = ''] = url.replace(/^\/|\/$/g, '').split('?');
         const pathSegments = this.path.replace(/^\/|\/$/g, '').split('/');
         const urlSegments = pathPart.split('/');
-    
+
+        // Ensure segment lengths match before proceeding
         if (pathSegments.length !== urlSegments.length) return null;
-    
-        const params = pathSegments.reduce((params, segment, i) => {
-            return segment.startsWith(':') 
-                ? { ...params, [segment.slice(1)]: urlSegments[i] } 
-                : (segment === urlSegments[i] ? params : null);
-        }, {});
-    
+
+        let params = {};
+
+        for (let i = 0; i < pathSegments.length; i++) {
+            if (pathSegments[i].startsWith(':')) {
+                params[pathSegments[i].slice(1)] = urlSegments[i];
+            } else if (pathSegments[i] !== urlSegments[i]) {
+                return null; // Mismatch found
+            }
+        }
+
         const query = Object.fromEntries(new URLSearchParams(queryString));
 
         return { params, query };

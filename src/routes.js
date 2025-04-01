@@ -8,6 +8,7 @@ import { AuthMiddleware } from '@/http/middleware'
 export const routes = [
     new Route('/', () => import('@pages/page.js')),
     new Route('/view/:uuid', () => import('@pages/page.js')),
+    new Route('/messages', () => import('@pages/messages/page.js')),
 
     ...new RouteGroup([AuthMiddleware]).add('/admin').routes,
 ]

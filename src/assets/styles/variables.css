@@ -2,31 +2,32 @@
     /* Global application styling properties */
 
     /* Colors */
-    --orange: '#F5A61A';
-    --gold: '#FFCB05';
-    --yellow: '#FFF578';
-    --red: '#EE3135';
-    --dark-pink: '#F16682';
-    --light-pink: '#F287B7';
-    --dark-green: '#45B97C';
-    --apple-green: '#B1D249';
-    --light-green: '#D5E05B';
-    --sky-blue: '#4594D3';
-    --blue: '#1EBCC5';
-    --light-blue: '#84D0D9';
-    --black: '#231F20';
-    --gray-1: '#58595B';
-    --gray-2: '#808184';
-    --gray-3: '#A6A8AB';
-    --gray-4: '#D0D2D3';
-    --gray-5: '#F6F7F8';
+    --color-orange: 255, 166, 26; /* #F5A61A */
+    --color-gold: 255, 203, 5; /* #FFCB05 */
+    --color-yellow: 255, 245, 120; /* #FFF578 */
+    --color-red: 238, 49, 53; /* #EE3135 */
+    --color-dark-pink: 241, 102, 130; /* #F16682 */
+    --color-light-pink: 242, 135, 183; /* #F287B7 */
+    --color-dark-green: 69, 185, 124; /* #45B97C */
+    --color-apple-green: 177, 210, 73; /* #B1D249 */
+    --color-light-green: 213, 224, 91; /* #D5E05B */
+    --color-sky-blue: 69, 148, 211; /* #4594D3 */
+    --color-blue: 30, 188, 197; /* #1EBCC5 */
+    --color-light-blue: 132, 208, 217; /* #84D0D9 */
+    --color-black: 35, 31, 32; /* #231F20 */
+    --color-gray-1: 88, 89, 91; /* #58595B */
+    --color-gray-2: 128, 129, 132; /* #808184 */
+    --color-gray-3: 166, 168, 171; /* #A6A8AB */
+    --color-gray-4: 208, 210, 211; /* #D0D2D3 */
+    --color-gray-5: 246, 247, 248; /* #F6F7F8 */
 
-    /*  */
-    --rounded-none: '0';
-    --rounded-xs: '4';
-    --rounded-sm: '8';
-    --rounded-md: '12';
-    --rounded-lg: '16';
+    /* Border radius */
+    --rounded-none: 0px;
+    --rounded-xs: 4px;
+    --rounded-sm: 8px;
+    --rounded-md: 12px;
+    --rounded-lg: 16px;
 
-    --shadow: box;
+    /* Box shadow */
+    --shadow: box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
