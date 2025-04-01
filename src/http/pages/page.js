@@ -1,5 +1,4 @@
 export default function HomePage(params) {
-    console.log(params)
 
     return /*html*/ `
         <x-sheet id="modulesSelector" open>
