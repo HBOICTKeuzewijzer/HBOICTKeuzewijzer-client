@@ -7,8 +7,12 @@ import { AuthMiddleware } from '@/http/middleware'
  */
 export const routes = [
     new Route('/', () => import('@pages/page.js')),
-    new Route('/view/:uuid', () => import('@pages/page.js')),
-    new Route('/messages', () => import('@pages/messages/page.js')),
+    new Route('/planner', () => import('@pages/planner/page.js')),
+    new Route('/planner/:uuid', () => import('@pages/planner/page.js')),
 
-    ...new RouteGroup([AuthMiddleware]).add('/admin', () => import('@pages/page.js')).routes,
+    ...new RouteGroup([AuthMiddleware])
+        .add('/messages', () => import('@pages/messages/page.js'))
+        .add('/admin/modules', () => import('@pages/modules/page.js'))
+        .add('/admin/modules/:uuid', () => import('@pages/modules/page.js'))
+        .routes,
 ]
