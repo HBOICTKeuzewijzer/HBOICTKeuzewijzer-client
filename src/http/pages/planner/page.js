@@ -9,51 +9,47 @@ export default function PlannerPage(params) {
             <p style="margin: 0; font-size: 12px;">
                 Dit zijn alle beschikbare modules waaruit je kunt kiezen. Als je een externe module wilt volgen, kun je deze toevoegen via de 'Anders' optie onder 'Overig'.
             </p>
-            <custom-accordion style="--accordion-active-bg-color: #fff578; --accordion-bg-color: #f1f1f1; --circle-color: #ffcb05;">
+            <custom-accordion style="--accordion-active-bg-color: #FFF4CE; --accordion-bg-color: #f1f1f1; --circle-color: #ffcb05;">
                 <span slot="title">Software Engineering</span>
                 <div class="module-item" slot="content">
-                    <h6>Webdevelopment</h6>
+                    <p>Webdevelopment</p>
                 </div>
                 <div class="module-item" slot="content">
-                    <h6>Software Engineering</h6>
+                    <p>Software Engineering</p>
                 </div>      
             </custom-accordion>
             <custom-accordion style="--accordion-active-bg-color: #84D0D9; --accordion-bg-color: #f1f1f1; --circle-color: #4594d3;">
                 <span slot="title">Infrastructure Design & Security</span>
                 <div class="module-item" slot="content">
-                    <h6>IDS</h6>
+                    <p>IDS</p>
                 </div>
                 <div class="module-item" slot="content">
-                    <h6>IDS2</h6>
+                    <p>IDS2</p>
                 </div>
             </custom-accordion>
             <custom-accordion style="--accordion-active-bg-color: #d5e05b; --accordion-bg-color: #f1f1f1; --circle-color: #45b97c;">
                 <span slot="title">Business IT & Management</span>
                 <div class="module-item" slot="content">
-                    <h6>BIM</h6>
+                    <p>Datascience</p>
                 </div>
                 <div class="module-item" slot="content">
-                    <h6>BIM2</h6>
+                    <p>Management of IT</p>
                 </div>
             </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: #f287b7; --accordion-bg-color: #f1f1f1; --circle-color: #f16682;">
+            <custom-accordion style="--accordion-active-bg-color: #FEDFE4; --accordion-bg-color: #f1f1f1; --circle-color: #f16682;">
                 <span slot="title">Overig</span>
                 <div class="module-item" slot="content">
-                    <h6>Tussen jaar</h6>
+                    <p>Tussen jaar</p>
                 </div>
                 <div class="module-item" slot="content">
-                    <h6>Minor</h6>
+                    <p>Minor</p>
                 </div>
                 <div class="module-item" slot="content">
-                    <h6>Reparatie</h6>
-                </div>
-                <div class="module-item" slot="content">
-                    <h6>Eigen Keuze</h6>
+                    <p>Eigen Keuze</p>
                 </div>
             </custom-accordion>
         </span>
     </x-sheet>
-    <div class="container">
-    </div>
+    <div class="container"></div>
   `;
 }
