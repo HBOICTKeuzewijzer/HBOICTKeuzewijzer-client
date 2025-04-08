@@ -1,0 +1,78 @@
+:host {
+    --accordion-bg-color: #eee;
+    --accordion-hover-bg-color: #ccc;
+    --accordion-active-bg-color: #bbb;
+    --circle-color: #bbb;
+    --circle-size: 12px;
+    --circle-margin-left: 12px;
+    --accordion-border-radius: 8px;
+    }
+
+  .accordion {
+    background-color: var(--accordion-bg-color);
+    color: #444;
+    cursor: pointer;
+    padding: 16px 16px 16px 32px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 8px;
+    position: relative;
+    border-radius: var(--accordion-border-radius);
+  }
+
+  .active {
+    background-color: var(--accordion-active-bg-color);
+    border: 2px solid var(--circle-color);
+  }
+
+  .accordion:hover {
+    background-color: var(--accordion-hover-bg-color);
+  }
+
+  .panel {
+    padding: 0 18px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+  }
+
+  .accordion::before {
+    content: '';
+    width: var(--circle-size);
+    height: var(--circle-size);
+    border-radius: 50%;
+    background-color: var(--circle-color);
+    position: absolute;
+    left: var(--circle-margin-left);
+    top: 50%;
+    transform: translateY(-50%);
+   }
+
+  .accordion:after {
+    content: '\002B'; /* Plus teken (+) */
+    font-size: 13px;
+    font-weight: 700;
+    color: #777;
+    float: right;
+    margin-left: 5px;
+  }
+
+  .active:after {
+    content: '\2212'; /* Min teken (-) */
+  }
+
+  ::slotted(.module-item) {
+    background-color: var(--accordion-active-bg-color);
+    border: 2px solid var(--circle-color);
+    border-radius: var(--accordion-border-radius);
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
