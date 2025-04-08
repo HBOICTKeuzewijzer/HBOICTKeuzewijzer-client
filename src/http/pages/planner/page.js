@@ -1,4 +1,4 @@
-import '../../../components/accordion/accordion.js';
+import '@components/accordion';
 
 export default function PlannerPage(params) {
   return /*html*/ `
@@ -9,7 +9,7 @@ export default function PlannerPage(params) {
             <p style="margin: 0; font-size: 12px;">
                 Dit zijn alle beschikbare modules waaruit je kunt kiezen. Als je een externe module wilt volgen, kun je deze toevoegen via de 'Anders' optie onder 'Overig'.
             </p>
-            <custom-accordion style="--accordion-active-bg-color: #FFF4CE; --accordion-bg-color: #f1f1f1; --circle-color: #ffcb05;">
+            <custom-accordion style="--accordion-active-bg-color: #FFF4CE; --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-gold));">
                 <span slot="title">Software Engineering</span>
                 <div class="module-item" slot="content">
                     <p>Webdevelopment</p>
@@ -18,16 +18,16 @@ export default function PlannerPage(params) {
                     <p>Software Engineering</p>
                 </div>      
             </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: #84D0D9; --accordion-bg-color: #f1f1f1; --circle-color: #1EBCC5;">
+            <custom-accordion style="--accordion-active-bg-color: rgb(var(--color-light-blue)); --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-blue));">
                 <span slot="title">Infrastructure Design & Security</span>
                 <div class="module-item" slot="content">
-                    <p>IDS</p>
+                    <p>Applied IT Security</p>
                 </div>
                 <div class="module-item" slot="content">
-                    <p>IDS2</p>
+                    <p>Cloud Computing</p>
                 </div>
             </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: #B1D249; --accordion-bg-color: #f1f1f1; --circle-color: #45B97C;">
+            <custom-accordion style="--accordion-active-bg-color: rgb(var(--color-apple-green)); --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-dark-green));">
                 <span slot="title">Business IT & Management</span>
                 <div class="module-item" slot="content">
                     <p>Datascience</p>
@@ -36,7 +36,7 @@ export default function PlannerPage(params) {
                     <p>Management of IT</p>
                 </div>
             </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: #FEDFE4; --accordion-bg-color: #f1f1f1; --circle-color: #f16682;">
+            <custom-accordion style="--accordion-active-bg-color: #FEDFE4; --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-dark-pink));">
                 <span slot="title">Overig</span>
                 <div class="module-item" slot="content">
                     <p>Tussen jaar</p>
