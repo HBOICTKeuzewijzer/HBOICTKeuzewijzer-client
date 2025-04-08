@@ -1,7 +1,9 @@
 import '@components/accordion';
+import '../../../components/studyCard/studyCard.js';
+
 
 export default function PlannerPage(params) {
-  return /*html*/ `
+    return /*html*/ `
     <x-sheet id="modulesSelector" open>
         <span style="display: flex; flex-direction: column; gap: 4px;">
             <h5 style="margin: 0; font-size: 18px;">Modules</h5>
@@ -16,7 +18,7 @@ export default function PlannerPage(params) {
                 </div>
                 <div class="module-item" slot="content">
                     <p>Software Engineering</p>
-                </div>      
+                </div>
             </custom-accordion>
             <custom-accordion style="--accordion-active-bg-color: rgb(var(--color-light-blue)); --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-blue));">
                 <span slot="title">Infrastructure Design & Security</span>
@@ -50,6 +52,47 @@ export default function PlannerPage(params) {
             </custom-accordion>
         </span>
     </x-sheet>
-    <div class="container"></div>
+    <div class="study-cards-container" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; justify-content: center; padding: 20px;">
+        <!-- Year 1: Locked -->
+        <study-card>
+            <span slot="year-header">Jaar 1</span>
+            <span slot="semester-1-title">Semester 1</span>
+            <span slot="semester-1-content">Basisconcepten ICT 1</span>
+            <span slot="semester-2-title">Semester 2</span>
+            <span slot="semester-2-content">Basisconcepten ICT 2</span>
+        </study-card>
+        <!-- Year 2: Open -->
+        <study-card>
+            <span slot="year-header">Year 2</span>
+            <span slot="semester-1-title">Semester 1</span>
+            <span slot="semester-1-content">Keuze 1</span>
+            <span slot="semester-2-title">Semester 2</span>
+            <span slot="semester-2-content">Keuze 2</span>
+        </study-card>
+        <!-- Year 3: Open -->
+        <study-card>
+            <span slot="year-header">Year 3</span>
+            <span slot="semester-1-title">Semester 1</span>
+            <span slot="semester-1-content">Keuze 1</span>
+            <span slot="semester-2-title">Semester 2</span>
+            <span slot="semester-2-content">Keuze 2</span>
+        </study-card>
+        <!-- Year 4: Open -->
+        <study-card>
+            <span slot="year-header">Year 4</span>
+            <span slot="semester-1-title">Semester 1</span>
+            <span slot="semester-1-content">Keuze 1</span>
+            <span slot="semester-2-title">Semester 2</span>
+            <span slot="semester-2-content">Keuze 2</span>
+        </study-card>
+        <study-card>
+        <span slot="year-header">Year 5</span>"
+        span slot="semester-1-title">Semester 1</span>
+        span slot="semester-1-content">Keuze 1</span>
+        span slot="semester-2-title">Semester 2</span>
+        span slot ="semester-2-content">Keuze 2</span>
+        </study-card>
+    </div>
+
   `;
 }
