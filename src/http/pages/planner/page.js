@@ -18,7 +18,7 @@ export default function PlannerPage(params) {
                     <p>Software Engineering</p>
                 </div>      
             </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: #84D0D9; --accordion-bg-color: #f1f1f1; --circle-color: #4594d3;">
+            <custom-accordion style="--accordion-active-bg-color: #84D0D9; --accordion-bg-color: #f1f1f1; --circle-color: #1EBCC5;">
                 <span slot="title">Infrastructure Design & Security</span>
                 <div class="module-item" slot="content">
                     <p>IDS</p>
@@ -27,7 +27,7 @@ export default function PlannerPage(params) {
                     <p>IDS2</p>
                 </div>
             </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: #d5e05b; --accordion-bg-color: #f1f1f1; --circle-color: #45b97c;">
+            <custom-accordion style="--accordion-active-bg-color: #B1D249; --accordion-bg-color: #f1f1f1; --circle-color: #45B97C;">
                 <span slot="title">Business IT & Management</span>
                 <div class="module-item" slot="content">
                     <p>Datascience</p>

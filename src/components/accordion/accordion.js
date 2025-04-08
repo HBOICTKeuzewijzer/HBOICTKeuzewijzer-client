@@ -5,6 +5,13 @@ class Accordion extends HTMLElement {
     super();
     const shadow = this.attachShadow({ mode: 'open' });
 
+    if (!document.head.querySelector('link[href="https://fonts.googleapis.com/icon?family=Material+Icons"]')) {
+        const link = document.createElement('link');
+        link.setAttribute('rel', 'stylesheet');
+        link.setAttribute('href', 'https://fonts.googleapis.com/icon?family=Material+Icons');
+        document.head.appendChild(link);
+      }
+
     shadow.innerHTML = /*html*/`
       <style>${styles}</style>
       <div class="accordion-container">
