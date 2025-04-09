@@ -1,4 +1,4 @@
-import { Route } from './route'
+import { Route } from '@models'
 
 /**
  * Represents a group of routes that share common middleware and an optional prefix.

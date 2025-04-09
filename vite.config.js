@@ -6,15 +6,16 @@ export default defineConfig({
     server: {
         port: 3000,
         historyApiFallback: true,
+        cachedChecks: false,
     },
     resolve: {
         alias: {
             '@': path.resolve(__dirname, 'src'),
-            '@public': path.resolve(__dirname, 'public'),
-            '@pages': path.resolve(__dirname, 'src/http/pages'),
-            '@components': path.resolve(__dirname, 'src/components'),
             '@assets': path.resolve(__dirname, 'src/assets'),
-            '@styles': path.resolve(__dirname, 'src/assets/styles'),
+            '@components': path.resolve(__dirname, 'src/components'),
+            '@http': path.resolve(__dirname, 'src/http'),
+            '@pages': path.resolve(__dirname, 'src/http/pages'),
+            '@models': path.resolve(__dirname, 'src/models'),
             '@utils': path.resolve(__dirname, 'src/utils'),
         },
     },

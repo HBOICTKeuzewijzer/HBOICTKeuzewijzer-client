@@ -1,0 +1,44 @@
+:host {
+    position: relative;
+    display: inline-block;
+}
+
+::slotted([slot=trigger]) {
+
+}
+
+.content {
+    display: none;
+    position: absolute;
+    padding: 4px;
+    background-color: blue;
+}
+
+:host([side="top"]) .content {
+    bottom: 100%; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    margin-bottom: 6px;
+}
+:host([side=right]) .content {
+    top: 50%; 
+    left: 100%; 
+    transform: translateY(-50%); 
+    margin-left: 6px;
+}
+:host([side=bottom]) .content {
+    top: 100%; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    margin-top: 6px;
+}
+:host([side=left]) .content {
+    top: 50%; 
+    right: 100%; 
+    transform: translateY(-50%); 
+    margin-right: 6px;
+}
+
+:host([open]) .content {
+    display: flex;
+}

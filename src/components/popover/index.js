@@ -4,8 +4,8 @@ import styling from './style.css?raw'
 /**
  * Creates a template for the Sheet component, including styles and HTML structure.
  */
-const _template = document.createElement('template')
-_template.innerHTML = `
+const sheetTemplate = document.createElement('template')
+sheetTemplate.innerHTML = `
     <style>${styling}</style>
     ${template}
 `
@@ -16,7 +16,7 @@ _template.innerHTML = `
  * A custom element that represents a sheet (such as a modal or a side drawer),
  * which can be toggled open or closed via the `open` attribute.
  */
-export class Sheet extends HTMLElement {
+export class Popover extends HTMLElement {
     /**
      * Specifies the observed attributes for the component.
      * @returns {string[]} List of attributes to observe.
@@ -29,7 +29,7 @@ export class Sheet extends HTMLElement {
         super()
 
         this.attachShadow({ mode: 'open' })
-        this.shadowRoot.appendChild(_template.content.cloneNode(true))
+        this.shadowRoot.appendChild(sheetTemplate.content.cloneNode(true))
 
         /**
          * Reference to the internal sheet container element.

@@ -1,8 +1,13 @@
 // Import the router instance from the router module
-import { router } from '@/http/router'
+import { router } from '@http/router'
 
-import { Sheet } from '@components/sheet'
+// Component definitions
+import { Drawer, Popper, Popover, Sheet, Tooltip } from '@components'
+customElements.define('x-drawer', Drawer)
+customElements.define('x-popper', Popper)
+customElements.define('x-popover', Popover)
 customElements.define('x-sheet', Sheet)
+customElements.define('x-tooltip', Tooltip)
 
 /**
  * Handle client-side navigation:
