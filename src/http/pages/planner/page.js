@@ -85,13 +85,15 @@ export default function PlannerPage(params) {
             <span slot="semester-2-title">Semester 2</span>
             <span slot="semester-2-content">Keuze 2</span>
         </study-card>
-        <study-card>
-        <span slot="year-header">Year 5</span>"
-        span slot="semester-1-title">Semester 1</span>
-        span slot="semester-1-content">Keuze 1</span>
-        span slot="semester-2-title">Semester 2</span>
-        span slot ="semester-2-content">Keuze 2</span>
+                <study-card>
+            <span slot="year-header">Year 5</span>
+            <span slot="semester-1-title">Semester 1</span>
+            <span slot="semester-1-content">Keuze 1</span>
+            <span slot="semester-2-title">Semester 2</span>
+            <span slot="semester-2-content">Keuze 2</span>
         </study-card>
+
+
     </div>
 
   `;
