@@ -20,7 +20,7 @@ export default function PlannerPage(params) {
                     <p>Software Engineering</p>
                 </div>
             </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: rgb(var(--color-light-blue)); --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-blue));">
+            <custom-accordion style="--accordion-active-bg-color: rgb(var(--color-light-blue)); --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-sky-blue));">
                 <span slot="title">Infrastructure Design & Security</span>
                 <div class="module-item" slot="content">
                     <p>Applied IT Security</p>
