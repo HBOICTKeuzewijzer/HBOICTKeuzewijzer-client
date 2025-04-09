@@ -46,6 +46,12 @@ class Accordion extends HTMLElement {
     const isExpanded = button.classList.toggle('active');
     button.setAttribute('aria-expanded', isExpanded);
 
+    if (isExpanded) {
+      button.classList.add('open');
+    } else {
+      button.classList.remove('open');
+    }
+
     if (!this.panel) return;
 
     if (this.panel.style.maxHeight) {
