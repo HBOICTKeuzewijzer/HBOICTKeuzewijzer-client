@@ -1,8 +1,86 @@
 import '@components/accordion';
 import '../../../components/studyCard/studyCard.js';
+import '@components/studycard/studyCard.css?inline';
 
+function addAccordionEventListeners() {
+    const accordionItems = document.querySelectorAll('.module-item');
+
+    // Delegate the event handling to the parent custom-accordion
+    accordionItems.forEach(item => {
+        item.addEventListener('click', (event) => {
+            const selectedContent = event.target.textContent.trim();
+            const selectedSemester = document.querySelector('.selected-semester');
+
+            if (selectedSemester) {
+                selectedSemester.textContent = selectedContent;
+                selectedSemester.classList.remove('selected-semester');
+
+                // Get the accordion highlight color
+                const accordionColor = window.getComputedStyle(item.parentElement)
+                    .getPropertyValue('--accordion-active-bg-color').trim();
+
+                // Get the accordion border color from the computed style
+                const accordionBorderColor = window.getComputedStyle(item)
+                    .getPropertyValue('border-color').trim();
+
+                // Access shadow DOM
+                if (selectedSemester.tagName.toLowerCase() === 'study-semester' && selectedSemester.shadowRoot) {
+                    const shadowDiv = selectedSemester.shadowRoot.querySelector('.semester');
+                    if (shadowDiv) {
+                        // Remove old style classes
+                        shadowDiv.classList.remove('keuze-dotted', 'locked');
+
+                        shadowDiv.classList.add('updated-semester');
+
+                        // Set colors dynamically
+                        shadowDiv.style.backgroundColor = accordionColor;
+                        shadowDiv.style.borderColor = accordionBorderColor;
+                    }
+                }
+            }
+        });
+    });
+}
+
+// Function to handle semester item selection
+function addSemesterEventListeners() {
+    const semesterContents = document.querySelectorAll('[id^="semester-"]');
+    semesterContents.forEach(content => {
+        content.addEventListener('click', (event) => {
+            semesterContents.forEach(c => c.classList.remove('selected-semester'));
+            event.target.classList.add('selected-semester');
+        });
+    });
+}
+
+function observeDOMChanges() {
+    const observer = new MutationObserver(() => {
+        addAccordionEventListeners();
+        addSemesterEventListeners();
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+}
+
+function addStudyCard(year, semester1Title, semester1Content, semester2Title, semester2Content) {
+    return `
+        <study-card>
+            <span slot="year-header">${year}</span>
+            <span slot="semester-1-title">${semester1Title}</span>
+            <study-semester id="semester-1-content-${year}" slot="semester-1-content">${semester1Content}</study-semester>
+            <span slot="semester-2-title">${semester2Title}</span>
+            <study-semester id="semester-2-content-${year}" slot="semester-2-content">${semester2Content}</study-semester>
+        </study-card>
+    `;
+}
 
 export default function PlannerPage(params) {
+    setTimeout(() => {
+        addAccordionEventListeners();
+        addSemesterEventListeners();
+        observeDOMChanges();
+    }, 0);
+
     return /*html*/ `
     <x-sheet id="modulesSelector" open>
         <span style="display: flex; flex-direction: column; gap: 4px;">
@@ -52,49 +130,12 @@ export default function PlannerPage(params) {
             </custom-accordion>
         </span>
     </x-sheet>
+
     <div class="study-cards-container" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; justify-content: center; padding: 20px;">
-        <!-- Year 1: Locked -->
-        <study-card>
-            <span slot="year-header">Jaar 1</span>
-            <span slot="semester-1-title">Semester 1</span>
-            <span slot="semester-1-content">Basisconcepten ICT 1</span>
-            <span slot="semester-2-title">Semester 2</span>
-            <span slot="semester-2-content">Basisconcepten ICT 2</span>
-        </study-card>
-        <!-- Year 2: Open -->
-        <study-card>
-            <span slot="year-header">Year 2</span>
-            <span slot="semester-1-title">Semester 1</span>
-            <span slot="semester-1-content">Keuze 1</span>
-            <span slot="semester-2-title">Semester 2</span>
-            <span slot="semester-2-content">Keuze 2</span>
-        </study-card>
-        <!-- Year 3: Open -->
-        <study-card>
-            <span slot="year-header">Year 3</span>
-            <span slot="semester-1-title">Semester 1</span>
-            <span slot="semester-1-content">Keuze 1</span>
-            <span slot="semester-2-title">Semester 2</span>
-            <span slot="semester-2-content">Keuze 2</span>
-        </study-card>
-        <!-- Year 4: Open -->
-        <study-card>
-            <span slot="year-header">Year 4</span>
-            <span slot="semester-1-title">Semester 1</span>
-            <span slot="semester-1-content">Keuze 1</span>
-            <span slot="semester-2-title">Semester 2</span>
-            <span slot="semester-2-content">Keuze 2</span>
-        </study-card>
-                <study-card>
-            <span slot="year-header">Year 5</span>
-            <span slot="semester-1-title">Semester 1</span>
-            <span slot="semester-1-content">Keuze 1</span>
-            <span slot="semester-2-title">Semester 2</span>
-            <span slot="semester-2-content">Keuze 2</span>
-        </study-card>
-
-
+        ${addStudyCard('Jaar 1', 'Semester 1', 'Basisconcepten ICT 1', 'Semester 2', 'Basisconcepten ICT 2')}
+        ${addStudyCard('Jaar 2', 'Semester 1', 'Keuze 1', 'Semester 2', 'Keuze 2')}
+        ${addStudyCard('Jaar 3', 'Semester 1', 'Keuze 1', 'Semester 2', 'Keuze 2')}
+        ${addStudyCard('Jaar 4', 'Semester 1', 'Keuze 1', 'Semester 2', 'Keuze 2')}
     </div>
-
-  `;
+    `;
 }

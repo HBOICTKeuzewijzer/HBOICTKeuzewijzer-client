@@ -15,14 +15,10 @@ class StudyCard extends HTMLElement {
         </year-header>
         
         <h4 class="semester-title"><slot name="semester-1-title">Semester 1</slot></h4>
-        <study-semester>
-          <slot name="semester-1-content">Content for Semester 1</slot>
-        </study-semester>
-        
+        <slot name="semester-1-content"></slot>
+
         <h4 class="semester-title"><slot name="semester-2-title">Semester 2</slot></h4>
-        <study-semester>
-          <slot name="semester-2-content">Content for Semester 2</slot>
-        </study-semester>
+        <slot name="semester-2-content"></slot>
       </div>
     `;
     }

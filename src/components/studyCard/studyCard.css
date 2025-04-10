@@ -44,14 +44,19 @@
     }
 
         .semester.locked::before {
-            content: '[LOCKED]'; /* Text representation for locked state */
+            content: '';
             position: absolute;
-            left: 8px;
             top: 8px;
-            font-size: 12px;
-            color: #888;
-            font-weight: bold;
+            left: 8px;
+            width: 16px;
+            height: 16px;
+            background-image: url('https://unpkg.com/phosphor-icons@1.4.2/assets/regular/lock-simple.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            filter: grayscale(100%) opacity(0.6);
         }
+
 
     .semester.keuze-dotted {
         border: 2px dashed #ffa500;
@@ -64,4 +69,9 @@
         color: #666;
         margin: 0;
         text-align: center;
+    }
+    .semester.updated-semester {
+        
+        font-style: normal;
+        transition: background-color 0.3s ease, border 0.3s ease;
     }
