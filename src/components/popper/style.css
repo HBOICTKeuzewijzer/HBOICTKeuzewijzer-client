@@ -10,33 +10,69 @@
 .content {
     display: none;
     position: absolute;
-    padding: 4px;
-    background-color: blue;
+    padding: .25rem;
+    background-color: #fff;
+    animation-duration: 0.15s;
+    animation-name: enter;
+    background-color: rgb(255, 255, 255);
+    box-shadow: rgb(255, 255, 255) 0px 0px 0px 0px, rgba(var(--color-gray-2), 0.2) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.1) 0px 8px 10px -6px;
+    border-radius: var(--rounded-sm);
+    z-index: 50;
 }
+
+:host([data-tooltip]) .content {
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+
 
 :host([side="top"]) .content {
     bottom: 100%; 
-    left: 50%; 
-    transform: translateX(-50%); 
     margin-bottom: 6px;
 }
 :host([side=right]) .content {
-    top: 50%; 
     left: 100%; 
-    transform: translateY(-50%); 
     margin-left: 6px;
 }
 :host([side=bottom]) .content {
     top: 100%; 
-    left: 50%; 
-    transform: translateX(-50%); 
     margin-top: 6px;
 }
 :host([side=left]) .content {
-    top: 50%; 
     right: 100%; 
-    transform: translateY(-50%); 
     margin-right: 6px;
+}
+
+:host([side=bottom][align=left]) .content,
+:host([side=top][align=left]) .content {
+    left: 0; 
+}
+:host([side=bottom][align=right]) .content,
+:host([side=top][align=right]) .content {
+    right: 0; 
+}
+:host([side=bottom][align=middle]) .content,
+:host([side=top][align=middle]) .content {
+    left: 50%; 
+    transform: translateX(-50%);
+}
+
+:host([side=left][align=top]) .content,
+:host([side=right][align=top]) .content {
+    top: 0; 
+}
+:host([side=left][align=middle]) .content,
+:host([side=right][align=middle]) .content {
+    top: 50%; 
+    transform: translateY(-50%);
+}
+:host([side=left][align=bottom]) .content,
+:host([side=right][align=bottom]) .content {
+    bottom: 0; 
+    
 }
 
 :host([open]) .content {

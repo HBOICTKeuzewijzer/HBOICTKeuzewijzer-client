@@ -16,7 +16,7 @@ export class Popper extends HTMLElement {
      * @returns {string[]} List of attributes to observe.
      */
      static get observedAttributes() {
-        return ['open', 'side']
+        return ['open', 'side', 'align']
     }
 
     constructor() {

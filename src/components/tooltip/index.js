@@ -11,9 +11,7 @@ export class Tooltip extends Popper {
         super()
 
         this.triggerElement = this.querySelector('[slot="trigger"]')
-
-        console.log(this.triggerElement)
-        console.log(this.contentElement)
+        this.setAttribute('data-tooltip', '')
     }
 
     /**
@@ -21,10 +19,8 @@ export class Tooltip extends Popper {
      */
     connectedCallback() {
         requestAnimationFrame(() => {
-            [this.triggerElement, this.contentElement].forEach(element => {
-                element?.addEventListener('mouseover', () => this.open = true)
-                element?.addEventListener('mouseout', () => this.open = false)
-            })
+            this.triggerElement?.addEventListener('mouseover', () => this.open = true)
+            this.triggerElement?.addEventListener('mouseout', () => this.open = false)
         })
     }
 
@@ -32,6 +28,10 @@ export class Tooltip extends Popper {
      * Lifecycle method triggered when the component is removed from the DOM.
      */
     disconnectedCallback() {
+        requestAnimationFrame(() => {
+            this.triggerElement?.removeEventListener('mouseover')
+            this.triggerElement?.removeEventListener('mouseout')
+        })
     }
 
     /**

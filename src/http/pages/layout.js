@@ -6,13 +6,19 @@ export default function Layout(children) {
             <header>
                 <img src="${imageURL}"/>
                 <div id="header-profile">
-                    <x-tooltip side="bottom">
-                        <a href="/messages" class="icon-button" slot="trigger">
+                    <x-tooltip side="left" align="top">
+                        <a slot="trigger" href="/messages" class="icon-button">
                             <i class="ph ph-chat"></i>
                         </a>
                         Content
                     </x-tooltip>
 
+                    <x-popover side="bottom" align="right">
+                        <button slot="trigger" id="profile">
+                        JK
+                        </button>
+                        asdasdasdasd
+                    </x-popover>
 
                     <button class="icon-button">
                         <i class="ph ph-list"></i>
