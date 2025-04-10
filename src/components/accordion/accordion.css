@@ -82,6 +82,7 @@
   min-width: 0;
   padding-left: 1rem;
   white-space: normal;
+  padding-left: 16px !important;
 }
 
 ::slotted(.module-item) {
@@ -96,6 +97,7 @@
   line-height: 1.4;
   color: #444;
   position: relative;
+  margin-top: 8px !important;
 }
 
 ::slotted(.module-item)::after {
