@@ -55,7 +55,7 @@ header {
     border-bottom: 2px solid rgb(var(--color-gold));
 }
 
-header > img {
+header img {
     height: 53px;
 }
 

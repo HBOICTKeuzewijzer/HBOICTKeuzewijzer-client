@@ -5,7 +5,9 @@ export default function Layout(children) {
     return /*html*/ `
         <div>
             <header>
-                <img src="${imageURL}"/>
+                <a href="/planner" style="height: 100%;">
+                    <img src="${imageURL}"/>
+                </a>
                 <div class="headerActions">
                     ${
                         hasSession
@@ -28,7 +30,7 @@ export default function Layout(children) {
                             `
                             : /*html*/`
                                 <x-tooltip location="left" placement="middle" class="hidden md-block">
-                                    <a slot="trigger" href="/login" data-icon>
+                                    <a slot="trigger" href="https://api.hboictkeuzewijzer.nl/api/auth/login" data-icon>
                                         <i class="ph ph-sign-in"></i>
                                     </a>
                                     <p class="color-black text-sm">
