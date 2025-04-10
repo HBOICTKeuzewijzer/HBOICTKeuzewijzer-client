@@ -22,4 +22,6 @@ export class Popover extends Popper {
         super.disconnectedCallback()
         this.triggerElement?.removeEventListener('click')
     }
+
+    /* TODO: Justin Make it so it we press ESC or press outside of the popover is closes */
 }

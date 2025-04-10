@@ -90,4 +90,6 @@ export class Sheet extends HTMLElement {
         const isOpen = this.open
         if (this.container) this.container.toggleAttribute('open', isOpen)
     }
+
+    /* TODO: Justin Improve this code and add ARIA */
 }
