@@ -41,6 +41,8 @@
     .semester.locked {
         background-color: #ffd500;
         border: 2px solid #d8b400;
+        padding: 24px; 
+        margin-top: 16px; 
     }
 
         .semester.locked::before {
@@ -57,11 +59,12 @@
             filter: grayscale(100%) opacity(0.6);
         }
 
-
     .semester.keuze-dotted {
         border: 2px dashed #ffa500;
         background-color: #fff8e1;
         font-style: italic;
+        padding: 24px; 
+        margin-top: 16px; 
     }
 
     .semester p {
@@ -70,8 +73,10 @@
         margin: 0;
         text-align: center;
     }
+
     .semester.updated-semester {
-        
         font-style: normal;
         transition: background-color 0.3s ease, border 0.3s ease;
+        padding: 24px;
+        margin-top: 16px; 
     }
