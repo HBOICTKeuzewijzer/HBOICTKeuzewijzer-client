@@ -6,7 +6,7 @@ import { RequireAuthCookie, RequireStartYearCookie } from '@http/middleware'
  * @type {Route[]}
  */
 export const routes = [
-    new Route('/', () => import('@pages/page.js')),
+    new Route('/', () => import('@pages/planner/page.js')),
 
     ...new RouteGroup([RequireStartYearCookie], '/planner')
         .add('/', () => import('@pages/planner/page.js'))
