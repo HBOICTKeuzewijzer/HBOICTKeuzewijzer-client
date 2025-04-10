@@ -19,10 +19,6 @@ function addAccordionEventListeners() {
                 const accordionColor = window.getComputedStyle(item.parentElement)
                     .getPropertyValue('--accordion-active-bg-color').trim();
 
-                // Get the accordion border color from the computed style
-                const accordionBorderColor = window.getComputedStyle(item)
-                    .getPropertyValue('border-color').trim();
-
                 // Access shadow DOM
                 if (selectedSemester.tagName.toLowerCase() === 'study-semester' && selectedSemester.shadowRoot) {
                     const shadowDiv = selectedSemester.shadowRoot.querySelector('.semester');
@@ -34,7 +30,7 @@ function addAccordionEventListeners() {
 
                         // Set colors dynamically
                         shadowDiv.style.backgroundColor = accordionColor;
-                        shadowDiv.style.borderColor = accordionBorderColor;
+                        shadowDiv.style.borderColor = accordionColor;
                     }
                 }
             }
