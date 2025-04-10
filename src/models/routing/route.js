@@ -13,12 +13,15 @@ export class Route {
      * Create a new Route instance.
      * @param {string} path - The route path (supports dynamic parameters with `:` prefix).
      * @param {Function} component - A function that dynamically imports the page component.
-     * @param {Array<Function>} [middlewares=[]] - Middleware functions to be applied to this route.
+     * @param {Array<Function> || Function} [middlewares = []] - Middleware functions to be applied to this route.
      */
     constructor(path, component, middlewares = []) {
+        if (!path) throw new Error('[Route] Cannot define a route without a path')
+        if (!component) throw new Error('[Route] Cannot define a route without a component')
+
         this.#path = path
         this.#component = component
-        this.#middlewares = middlewares
+        this.#middlewares = middlewares instanceof Array ? middlewares : [middlewares]
     }
 
     /**

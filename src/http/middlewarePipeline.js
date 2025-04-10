@@ -1,4 +1,4 @@
-import { Middleware } from '@/http/middleware'
+import { Middleware } from '@http/middleware'
 
 /**
  * Class representing a middleware pipeline for processing requests.
