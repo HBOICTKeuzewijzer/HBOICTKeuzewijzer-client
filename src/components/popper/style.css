@@ -1,6 +1,8 @@
 :host {
     position: relative;
     display: inline-block;
+    width: fit-content;
+    height: fit-content;
 }
 
 .content {
@@ -23,51 +25,51 @@
     padding: 0.5rem 0.75rem;
 }
 
-/* Positioning based on side */
-:host([side="top"]) .content {
+/* Positioning based on location */
+:host([location="top"]) .content {
     bottom: 100%;
     margin-bottom: 6px;
 }
-:host([side="right"]) .content {
+:host([location="right"]) .content {
     left: 100%;
     margin-left: 6px;
 }
-:host([side="bottom"]) .content {
+:host([location="bottom"]) .content {
     top: 100%;
     margin-top: 6px;
 }
-:host([side="left"]) .content {
+:host([location="left"]) .content {
     right: 100%;
     margin-right: 6px;
 }
 
 /* Horizontal alignment (top & bottom) */
-:host([side="top"][align="left"]),
-:host([side="bottom"][align="left"]) .content {
+:host([location="top"][placement="left"]) .content,
+:host([location="bottom"][placement="left"]) .content {
     left: 0;
 }
-:host([side="top"][align="right"]),
-:host([side="bottom"][align="right"]) .content {
+:host([location="top"][placement="right"]) .content,
+:host([location="bottom"][placement="right"]) .content {
     right: 0;
 }
-:host([side="top"][align="middle"]),
-:host([side="bottom"][align="middle"]) .content {
+:host([location="top"][placement="middle"]) .content,
+:host([location="bottom"][placement="middle"]) .content {
     left: 50%;
     transform: translateX(-50%);
 }
 
 /* Vertical alignment (left & right) */
-:host([side="left"][align="top"]),
-:host([side="right"][align="top"]) .content {
+:host([location="left"][placement="top"]) .content,
+:host([location="right"][placement="top"]) .content {
     top: 0;
 }
-:host([side="left"][align="middle"]),
-:host([side="right"][align="middle"]) .content {
+:host([location="left"][placement="middle"]) .content,
+:host([location="right"][placement="middle"]) .content {
     top: 50%;
     transform: translateY(-50%);
 }
-:host([side="left"][align="bottom"]),
-:host([side="right"][align="bottom"]) .content {
+:host([location="left"][placement="bottom"]) .content,
+:host([location="right"][placement="bottom"]) .content {
     bottom: 0;
 }
 

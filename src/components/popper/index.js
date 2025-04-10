@@ -16,7 +16,7 @@ export class Popper extends HTMLElement {
      * @returns {string[]} List of attributes to observe.
      */
      static get observedAttributes() {
-        return ['open', 'side', 'align']
+        return ['open', 'location', 'placement']
     }
 
     constructor() {
@@ -27,8 +27,8 @@ export class Popper extends HTMLElement {
 
         this.triggerElement = null
         this.contentElement = null
-        this.side = 'bottom'
-        this.align = 'right'
+        this.location = 'bottom'
+        this.placement = 'right'
     }
 
     /**
@@ -36,7 +36,7 @@ export class Popper extends HTMLElement {
      * @returns {boolean}
      */
     get open() {
-        return this.getAttribute('open')
+        return this.hasAttribute('open')
     }
 
     /**
@@ -49,37 +49,37 @@ export class Popper extends HTMLElement {
     }
 
     /**
-     * Returns the content `side` alignment.
+     * Returns the content `location` alignment.
      * @returns {string}
      */
-    get side() {
-        return this.getAttribute('open')
+    get location() {
+        return this.getAttribute('location')
     }
 
     /**
-     * Sets the content `side` alignment.
+     * Sets the content `location` alignment.
      * @param {string}
      * @returns {this}
      */
-    set side(placement) {
-        this.setAttribute('side', placement)
+    set location(location) {
+        this.setAttribute('location', location)
     }
 
     /**
-     * Returns the content `align` alignment.
+     * Returns the content `placement` alignment.
      * @returns {string}
      */
-    get align() {
-        return this.getAttribute('align')
+    get placement() {
+        return this.getAttribute('placement')
     }
 
     /**
-     * Sets the content `align` alignment.
+     * Sets the content `placement` alignment.
      * @param {string}
      * @returns {this}
      */
-    set align(placement) {
-        this.setAttribute('align', placement)
+    set placement(placement) {
+        this.setAttribute('placement', placement)
     }
 
     /**
@@ -104,8 +104,11 @@ export class Popper extends HTMLElement {
             )
         }
 
-        this.setAttribute('side', this.side)
-        this.setAttribute('align', this.align)
+        if (!this.hasAttribute('location'))
+            this.setAttribute('location', this.location)
+
+        if (!this.hasAttribute('placement'))
+            this.setAttribute('placement', this.placement)
     }
 
     /**
@@ -122,17 +125,18 @@ export class Popper extends HTMLElement {
      * @param {string | null} newValue - The new value of the attribute.
      */
     attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'open')
-            this._updateAriaProperties();
+        if (newValue == oldValue) return
+
+        if (name === 'open') {
+            this._updateAriaProperties()
+        }
     }
 
     _updateAriaProperties() {
-        if (this.triggerElement) {
+        if (this.triggerElement)
             this.triggerElement.setAttribute('aria-expanded', this.open.toString())
-        }
 
-        if (this.contentElement) {
+        if (this.contentElement)
             this.contentElement.setAttribute('aria-hidden', (!this.open).toString())
-        }
     }
 }

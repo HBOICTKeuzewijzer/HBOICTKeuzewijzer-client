@@ -12,10 +12,7 @@ export class Popover extends Popper {
      */
     connectedCallback() {
         super.connectedCallback()
-
-        requestAnimationFrame(() => {
-            this.triggerElement?.addEventListener('click', () => this.open = !this.open)
-        })
+        this.triggerElement?.addEventListener('click', () => this.open = !this.open)
     }
 
     /**
@@ -23,9 +20,6 @@ export class Popover extends Popper {
      */
     disconnectedCallback() {
         super.disconnectedCallback()
-
-        requestAnimationFrame(() => {
-            this.triggerElement?.removeEventListener('click')
-        })
+        this.triggerElement?.removeEventListener('click')
     }
 }
