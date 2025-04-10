@@ -7,16 +7,12 @@ import { Popper } from "@components"
  * which can be toggled open or closed via the `open` attribute.
  */
 export class Popover extends Popper {
-    constructor() {
-        super()
-
-        this.triggerElement = this.querySelector('[slot="trigger"]')
-    }
-
     /**
      * Lifecycle method triggered when the component is added to the DOM.
      */
     connectedCallback() {
+        super.connectedCallback()
+
         requestAnimationFrame(() => {
             this.triggerElement?.addEventListener('click', () => this.open = !this.open)
         })
@@ -26,6 +22,8 @@ export class Popover extends Popper {
      * Lifecycle method triggered when the component is removed from the DOM.
      */
     disconnectedCallback() {
+        super.disconnectedCallback()
+
         requestAnimationFrame(() => {
             this.triggerElement?.removeEventListener('click')
         })

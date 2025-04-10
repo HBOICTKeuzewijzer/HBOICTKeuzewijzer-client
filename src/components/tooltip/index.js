@@ -10,7 +10,6 @@ export class Tooltip extends Popper {
     constructor() {
         super()
 
-        this.triggerElement = this.querySelector('[slot="trigger"]')
         this.setAttribute('data-tooltip', '')
     }
 
@@ -18,6 +17,8 @@ export class Tooltip extends Popper {
      * Lifecycle method triggered when the component is added to the DOM.
      */
     connectedCallback() {
+        this.connectedCallback()
+
         requestAnimationFrame(() => {
             this.triggerElement?.addEventListener('mouseover', () => this.open = true)
             this.triggerElement?.addEventListener('mouseout', () => this.open = false)
@@ -28,6 +29,8 @@ export class Tooltip extends Popper {
      * Lifecycle method triggered when the component is removed from the DOM.
      */
     disconnectedCallback() {
+        this.disconnectedCallback()
+
         requestAnimationFrame(() => {
             this.triggerElement?.removeEventListener('mouseover')
             this.triggerElement?.removeEventListener('mouseout')
@@ -41,5 +44,6 @@ export class Tooltip extends Popper {
      * @param {string | null} newValue - The new value of the attribute.
      */
     attributeChangedCallback(name, oldValue, newValue) {
+        super.attributeChangedCallback(name, oldValue, newValue)
     }
 }

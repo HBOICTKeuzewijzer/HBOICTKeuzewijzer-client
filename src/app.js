@@ -2,8 +2,7 @@
 import { router } from '@http/router'
 
 // Component definitions
-import { Drawer, Popper, Popover, Sheet, Tooltip } from '@components'
-customElements.define('x-drawer', Drawer)
+import { Popper, Popover, Sheet, Tooltip } from '@components'
 customElements.define('x-popper', Popper)
 customElements.define('x-popover', Popover)
 customElements.define('x-sheet', Sheet)

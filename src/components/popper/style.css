@@ -3,76 +3,72 @@
     display: inline-block;
 }
 
-::slotted([slot=trigger]) {
-
-}
-
 .content {
     display: none;
     position: absolute;
-    padding: .25rem;
+    padding: 0.25rem;
     background-color: #fff;
-    animation-duration: 0.15s;
-    animation-name: enter;
-    background-color: rgb(255, 255, 255);
-    box-shadow: rgb(255, 255, 255) 0px 0px 0px 0px, rgba(var(--color-gray-2), 0.2) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.1) 0px 8px 10px -6px;
+    animation: enter 0.15s;
+    box-shadow:
+        rgb(255, 255, 255) 0 0 0 0,
+        rgba(var(--color-gray-2), 0.2) 0 0 0 1px,
+        rgba(0, 0, 0, 0.1) 0 20px 25px -5px,
+        rgba(0, 0, 0, 0.1) 0 8px 10px -6px;
     border-radius: var(--rounded-sm);
     z-index: 50;
 }
 
+/* Tooltip-specific padding */
 :host([data-tooltip]) .content {
-    padding-top: .5rem;
-    padding-bottom: .5rem;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+    padding: 0.5rem 0.75rem;
 }
 
-
-
+/* Positioning based on side */
 :host([side="top"]) .content {
-    bottom: 100%; 
+    bottom: 100%;
     margin-bottom: 6px;
 }
-:host([side=right]) .content {
-    left: 100%; 
+:host([side="right"]) .content {
+    left: 100%;
     margin-left: 6px;
 }
-:host([side=bottom]) .content {
-    top: 100%; 
+:host([side="bottom"]) .content {
+    top: 100%;
     margin-top: 6px;
 }
-:host([side=left]) .content {
-    right: 100%; 
+:host([side="left"]) .content {
+    right: 100%;
     margin-right: 6px;
 }
 
-:host([side=bottom][align=left]) .content,
-:host([side=top][align=left]) .content {
-    left: 0; 
+/* Horizontal alignment (top & bottom) */
+:host([side="top"][align="left"]),
+:host([side="bottom"][align="left"]) .content {
+    left: 0;
 }
-:host([side=bottom][align=right]) .content,
-:host([side=top][align=right]) .content {
-    right: 0; 
+:host([side="top"][align="right"]),
+:host([side="bottom"][align="right"]) .content {
+    right: 0;
 }
-:host([side=bottom][align=middle]) .content,
-:host([side=top][align=middle]) .content {
-    left: 50%; 
+:host([side="top"][align="middle"]),
+:host([side="bottom"][align="middle"]) .content {
+    left: 50%;
     transform: translateX(-50%);
 }
 
-:host([side=left][align=top]) .content,
-:host([side=right][align=top]) .content {
-    top: 0; 
+/* Vertical alignment (left & right) */
+:host([side="left"][align="top"]),
+:host([side="right"][align="top"]) .content {
+    top: 0;
 }
-:host([side=left][align=middle]) .content,
-:host([side=right][align=middle]) .content {
-    top: 50%; 
+:host([side="left"][align="middle"]),
+:host([side="right"][align="middle"]) .content {
+    top: 50%;
     transform: translateY(-50%);
 }
-:host([side=left][align=bottom]) .content,
-:host([side=right][align=bottom]) .content {
-    bottom: 0; 
-    
+:host([side="left"][align="bottom"]),
+:host([side="right"][align="bottom"]) .content {
+    bottom: 0;
 }
 
 :host([open]) .content {
