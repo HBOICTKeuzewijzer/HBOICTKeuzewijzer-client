@@ -1,4 +1,4 @@
-import { router } from '../http/router'
+import { router } from '@http/router'
 
 /**
  * Makes an HTTP request to the specified path using the provided options.

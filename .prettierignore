@@ -1,6 +1,10 @@
 # Ignore artifacts:
+.vscode
+.idx
+
 node_modules/
 dist/
 build/
 coverage
+public/
 README.md
