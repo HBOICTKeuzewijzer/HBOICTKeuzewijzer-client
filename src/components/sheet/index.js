@@ -16,4 +16,6 @@ export class Sheet extends Dialog {
         _styleElement.textContent = styling
         this.shadowRoot.appendChild(_styleElement)
     }
+
+    //TODO: add side attribute to specify if the sheet is left or right of the screen.
 }

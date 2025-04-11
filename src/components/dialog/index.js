@@ -140,4 +140,6 @@ export class Dialog extends HTMLElement {
         this.triggerElement?.setAttribute('aria-disabled', this.hasAttribute('disabled').toString())
         this.contentElement?.setAttribute('aria-hidden', (!this.open).toString())
     }
+
+    // TODO: Add animations to the dialog
 }
