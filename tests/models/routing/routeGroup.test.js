@@ -12,14 +12,14 @@ import { RouteGroup } from '@models'
  * - Handle edge cases such as missing parameters or invalid input.
  *
  * The following test cases are included:
- * 
+ *
  * Route Definition & Grouping:
  * - [Should] Apply common middleware to all routes in the group,
  * - [Should] Apply the prefix to the route path,
  * - [Should] Allow adding multiple routes with different middlewares,
  * - [Should] Return itself for chaining,
  * - [Should] Correctly handle routes with no prefix,
- * 
+ *
  * Edge Cases & Validation:
  * - [Should not] Accept invalid paths,
  * - [Should not] Add route if component is missing,
@@ -46,8 +46,7 @@ describe('[Models] RouteGroup', () => {
     })
 
     it('[Should] Apply the prefix to the route path', () => {
-        const group = new RouteGroup([], '/admin')
-            .add('/dashboard', dummyComponent)
+        const group = new RouteGroup([], '/admin').add('/dashboard', dummyComponent)
 
         expect(group.routes[0].path).toBe('/admin/dashboard')
     })
@@ -70,8 +69,7 @@ describe('[Models] RouteGroup', () => {
     })
 
     it('[Should] Correctly handle routes with no prefix', () => {
-        const group = new RouteGroup()
-            .add('/contact', dummyComponent)
+        const group = new RouteGroup().add('/contact', dummyComponent)
 
         expect(group.routes[0].path).toBe('/contact')
     })

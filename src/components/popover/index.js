@@ -1,10 +1,9 @@
-import { Popper } from "@components"
+import { Popper } from '@components'
 
 /**
- * Sheet Web Component
+ * Popover Web Component
  *
- * A custom element that represents a sheet (such as a modal or a side drawer),
- * which can be toggled open or closed via the `open` attribute.
+ * A component that displays content in a floating panel, triggered by a click on a trigger element.
  */
 export class Popover extends Popper {
     /**
@@ -12,7 +11,16 @@ export class Popover extends Popper {
      */
     connectedCallback() {
         super.connectedCallback()
-        this.triggerElement?.addEventListener('click', () => this.open = !this.open)
+
+        this.triggerElement?.addEventListener('click', () => (this.open = !this.open))
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') this.open = false
+        })
+        document.addEventListener('click', event => {
+            if (!this.contains(event.target) && !this.triggerElement?.contains(event.target)) {
+                this.open = false
+            }
+        })
     }
 
     /**
@@ -20,8 +28,9 @@ export class Popover extends Popper {
      */
     disconnectedCallback() {
         super.disconnectedCallback()
-        this.triggerElement?.removeEventListener('click')
-    }
 
-    /* TODO: Justin Make it so it we press ESC or press outside of the popover is closes */
+        this.triggerElement?.removeEventListener('click')
+        document.removeEventListener('keydown')
+        document.removeEventListener('click')
+    }
 }

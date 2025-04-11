@@ -1,18 +1,18 @@
 export default function Layout(children) {
     const imageURL = new URL('@assets/images/windesheim-logo.png', import.meta.url).href
-    const hasSession = false
+    const hasSession = true
 
     return /*html*/ `
         <div>
             <header>
-                <a href="/planner" style="height: 100%;">
+                <a href="/planner">
                     <img src="${imageURL}"/>
                 </a>
                 <div class="headerActions">
                     ${
                         hasSession
-                            ? /*html*/`
-                                <x-tooltip location="bottom" placement="top" class="hidden md-block">
+                            ? /*html*/ `
+                                <x-tooltip location="bottom" placement="top" class="hidden md:block">
                                     <a slot="trigger" href="/messages" data-icon>
                                         <i class="ph ph-chat"></i>
                                     </a>
@@ -21,15 +21,15 @@ export default function Layout(children) {
                                     </p>
                                 </x-tooltip>
 
-                                <x-popover location="bottom" placement="right" class="hidden md-block">
+                                <x-popover location="bottom" placement="right" class="hidden md:block">
                                     <button slot="trigger" id="profile">JK</button>
                                     <div>
                                         <!-- popover content -->
                                     </div>
                                 </x-popover>
                             `
-                            : /*html*/`
-                                <x-tooltip location="left" placement="middle" class="hidden md-block">
+                            : /*html*/ `
+                                <x-tooltip location="left" placement="middle" class="hidden md:block">
                                     <a slot="trigger" href="https://api.hboictkeuzewijzer.nl/api/auth/login" data-icon>
                                         <i class="ph ph-sign-in"></i>
                                     </a>
@@ -40,7 +40,7 @@ export default function Layout(children) {
                             `
                     }
 
-                    <button data-icon class="block md-hidden">
+                    <button data-icon class="block md:hidden">
                         <i class="ph ph-list"></i>
                     </button>
                 </div>

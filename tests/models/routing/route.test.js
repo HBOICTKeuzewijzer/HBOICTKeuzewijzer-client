@@ -55,7 +55,7 @@ describe('[Models] Route', () => {
         expect(route.middlewares).toHaveLength(1)
         expect(route.middlewares).toContain(dummyMiddleware)
     })
- 
+
     it('[Should] Match dynamic param and parse it', () => {
         const route = new Route('/modules/:id', dummyComponent)
 
@@ -69,7 +69,7 @@ describe('[Models] Route', () => {
         const route = new Route('/users', dummyComponent)
 
         expect(route.match('/users?sort=asc&limit=10')).toStrictEqual({
-            params: { },
+            params: {},
             query: { sort: 'asc', limit: '10' },
         })
     })

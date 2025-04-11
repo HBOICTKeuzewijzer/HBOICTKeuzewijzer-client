@@ -10,12 +10,19 @@ _template.innerHTML = `
     ${template}
 `
 
+/**
+ * Popper Web Component
+ *
+ * A custom element that displays content in a "popup" that is positioned
+ * relative to a "trigger" element.  The visibility of the popup is controlled
+ * by the `open` attribute.
+ */
 export class Popper extends HTMLElement {
-     /**
+    /**
      * Specifies the observed attributes for the component.
      * @returns {string[]} List of attributes to observe.
      */
-     static get observedAttributes() {
+    static get observedAttributes() {
         return ['open', 'location', 'placement']
     }
 
@@ -89,34 +96,28 @@ export class Popper extends HTMLElement {
         this.triggerElement = this.querySelector('[slot="trigger"]')
         this.contentElement = this.shadowRoot.querySelector('[data-content]')
 
-        if (!this.contentElement.id) 
-            this.contentElement.id = `popper-content-` + Math.random().toString(36).slice(2, 9)
+        if (!this.contentElement.id) this.contentElement.id = `popper-content-` + Math.random().toString(36).slice(2, 9)
 
         if (this.triggerElement) {
             this.triggerElement.setAttribute('aria-controls', this.contentElement.id)
             this.triggerElement.setAttribute('aria-describedby', this.contentElement.id)
             this.triggerElement.setAttribute('aria-haspopup', 'true')
             this.triggerElement.setAttribute('aria-expanded', this.open.toString())
-            this.triggerElement.setAttribute('tabindex', 
-                this.triggerElement.tabIndex < 0 
-                    ? '0' 
-                    : this.triggerElement.tabIndex
+            this.triggerElement.setAttribute(
+                'tabindex',
+                this.triggerElement.tabIndex < 0 ? '0' : this.triggerElement.tabIndex,
             )
         }
 
-        if (!this.hasAttribute('location'))
-            this.setAttribute('location', this.location)
+        if (!this.hasAttribute('location')) this.setAttribute('location', this.location)
 
-        if (!this.hasAttribute('placement'))
-            this.setAttribute('placement', this.placement)
+        if (!this.hasAttribute('placement')) this.setAttribute('placement', this.placement)
     }
 
     /**
      * Lifecycle method triggered when the component is removed from the DOM.
      */
-    disconnectedCallback() {
-
-    }
+    disconnectedCallback() {}
 
     /**
      * Called when an observed attribute is changed.
@@ -133,10 +134,8 @@ export class Popper extends HTMLElement {
     }
 
     _updateAriaProperties() {
-        if (this.triggerElement)
-            this.triggerElement.setAttribute('aria-expanded', this.open.toString())
+        if (this.triggerElement) this.triggerElement.setAttribute('aria-expanded', this.open.toString())
 
-        if (this.contentElement)
-            this.contentElement.setAttribute('aria-hidden', (!this.open).toString())
+        if (this.contentElement) this.contentElement.setAttribute('aria-hidden', (!this.open).toString())
     }
 }

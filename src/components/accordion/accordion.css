@@ -8,9 +8,9 @@
     --accordion-border-radius: 8px;
     --info-icon-size: 16px;
     --info-icon-color: #444;
-    }
+}
 
-  .accordion {
+.accordion {
     background-color: var(--accordion-bg-color);
     color: #444;
     cursor: pointer;
@@ -25,18 +25,18 @@
     margin-top: 8px;
     position: relative;
     border-radius: var(--accordion-border-radius);
-  }
+}
 
-  .active {
+.active {
     background-color: var(--accordion-active-bg-color);
     border: 2px solid var(--circle-color);
-  }
+}
 
-  .accordion:hover {
+.accordion:hover {
     background-color: var(--accordion-hover-bg-color);
-  }
+}
 
-  .panel {
+.panel {
     padding: 0 0 0 18px;
     background-color: white;
     max-height: 0;
@@ -44,9 +44,9 @@
     transition: max-height 0.2s ease-out;
     border-left: 4px solid var(--accordion-active-bg-color);
     margin: 3px 0 3px 16px;
-  }
+}
 
-  .accordion::before {
+.accordion::before {
     content: '';
     width: var(--circle-size);
     height: var(--circle-size);
@@ -56,9 +56,9 @@
     left: var(--circle-margin-left);
     top: 50%;
     transform: translateY(-50%);
-   }
+}
 
-  .accordion:after {
+.accordion:after {
     content: 'add'; /* Plus teken (+) */
     font-family: 'Material Icons';
     font-size: 13px;
@@ -66,14 +66,14 @@
     color: #777;
     float: right;
     margin-left: 5px;
-  }
+}
 
-  .active:after {
+.active:after {
     content: 'remove'; /* Min teken (-) */
     font-family: 'Material Icons';
-  }
+}
 
-  ::slotted(.module-item) {
+::slotted(.module-item) {
     background-color: var(--accordion-active-bg-color);
     border: 2px solid var(--circle-color);
     border-radius: var(--accordion-border-radius);
@@ -86,16 +86,16 @@
     line-height: 1.4;
     color: #444;
     position: relative;
-  }
+}
 
-  ::slotted(.module-item)::after {
+::slotted(.module-item)::after {
     content: 'info'; /* Info icoon (ℹ) */
     font-family: 'Material Icons';
-    font-size: 18px; 
+    font-size: 18px;
     color: var(--info-icon-color);
     position: absolute;
-    right: 10px; 
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-  }
+}

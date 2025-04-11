@@ -1,7 +1,7 @@
-import '@components/accordion';
+import '@components/accordion'
 
 export default function PlannerPage(params) {
-  return /*html*/ `
+    return /*html*/ `
     <x-sheet id="modulesSelector" open>
         <span style="display: flex; flex-direction: column; gap: 4px;">
             <h5 style="margin: 0; font-size: 18px;">Modules</h5>
@@ -51,5 +51,5 @@ export default function PlannerPage(params) {
         </span>
     </x-sheet>
     <div class="container"></div>
-  `;
+  `
 }
