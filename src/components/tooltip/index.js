@@ -51,7 +51,7 @@ export class Tooltip extends Popper {
     disconnectedCallback() {
         super.disconnectedCallback()
 
-        this.triggerElement?.removeEventListener('mouseover')
-        this.triggerElement?.removeEventListener('mouseout')
+        this.triggerElement?.removeEventListener('mouseover', () => (this.open = true))
+        this.triggerElement?.removeEventListener('mouseout', () => (this.open = false))
     }
 }
