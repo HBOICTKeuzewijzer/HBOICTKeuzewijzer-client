@@ -1,14 +1,14 @@
 import { Popper } from '@components'
 
 /**
- * Popper Web Component
+ * Tooltip Web Component
  *
- * A custom element that represents a sheet (such as a modal or a side drawer),
- * which can be toggled open or closed via the `open` attribute.
+ * A custom element that represents a tooltip, which appears on hover of a trigger element.
  */
 export class Tooltip extends Popper {
     constructor() {
         super()
+
         this.setAttribute('data-tooltip', '')
     }
 
@@ -17,8 +17,9 @@ export class Tooltip extends Popper {
      */
     connectedCallback() {
         super.connectedCallback()
-        this.triggerElement?.addEventListener('mouseover', () => this.open = true)
-        this.triggerElement?.addEventListener('mouseout', () => this.open = false)
+
+        this.triggerElement?.addEventListener('mouseover', () => (this.open = true))
+        this.triggerElement?.addEventListener('mouseout', () => (this.open = false))
     }
 
     /**
@@ -26,6 +27,7 @@ export class Tooltip extends Popper {
      */
     disconnectedCallback() {
         super.disconnectedCallback()
+
         this.triggerElement?.removeEventListener('mouseover')
         this.triggerElement?.removeEventListener('mouseout')
     }
