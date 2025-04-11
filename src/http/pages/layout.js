@@ -12,9 +12,17 @@ export default function Layout(children) {
                     ${
                         hasSession
                             ? /*html*/ `
-                                <x-tooltip location="bottom" placement="top" class="hidden md:block">
+                                <x-tooltip location="bottom" placement="middle" class="hidden md:block">
                                     <a slot="trigger" href="/messages" data-icon>
-                                        <i class="ph ph-chat"></i>
+                                        <span style="position:relative;">
+                                            <span class="relative flex size-3" style="position: absolute; display: flex; width: 8px; height: 8px; right: 0;">
+                                                <span class="animate-ping"
+                                                style="position: absolute; display:inline-flex; height: 100%; width: 100%; opacity: 75%; background-color: rgb(var(--color-light-pink)); border-radius: var(--rounded-full);"></span>
+                                                <span
+                                                style="position: relative; display:inline-flex; height: 8px; width: 8px; background-color: rgb(var(--color-red)); border-radius: var(--rounded-full);"></span>
+                                            </span>
+                                            <i class="ph ph-chat"></i>
+                                        </span>
                                     </a>
                                     <p class="color-black text-sm">
                                         Berichten
@@ -23,9 +31,10 @@ export default function Layout(children) {
 
                                 <x-popover location="bottom" placement="right" class="hidden md:block">
                                     <button slot="trigger" id="profile">JK</button>
-                                    <div>
-                                        <!-- popover content -->
-                                    </div>
+                                    <a popover-action danger href="https://api.hboictkeuzewijzer.nl/api/auth/logout" class="text-sm">
+                                        <i class="ph-duotone ph-sign-out"></i>    
+                                        Uitloggen
+                                    </a>
                                 </x-popover>
                             `
                             : /*html*/ `

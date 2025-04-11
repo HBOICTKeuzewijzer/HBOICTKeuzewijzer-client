@@ -2,7 +2,7 @@ import template from './template.html?raw'
 import styling from './style.css?raw'
 
 /**
- * Creates a template for the Sheet component, including styles and HTML structure.
+ * Creates a template for the Popper component, including styles and HTML structure.
  */
 const _template = document.createElement('template')
 _template.innerHTML = `
@@ -13,9 +13,26 @@ _template.innerHTML = `
 /**
  * Popper Web Component
  *
- * A custom element that displays content in a "popup" that is positioned
- * relative to a "trigger" element.  The visibility of the popup is controlled
- * by the `open` attribute.
+ * A custom HTML element that displays floating content (a "popper") relative to a trigger element.
+ * This component provides positioning control and basic accessibility support.
+ * The visibility of the popper is managed through the `open` attribute.
+ *
+ * Attributes:
+ * - `open`      : Shows/hides the popper content.
+ * - `location`  : Controls vertical alignment (`top`, `bottom`, etc.).
+ * - `placement` : Controls horizontal alignment (`left`, `right`, etc.).
+ *
+ * Slots:
+ * - `trigger`   : The interactive element that toggles the popper.
+ * - default     : The content to display in the popper.
+ *
+ * Example:
+ * ```html
+ * <custom-popper open location="bottom" placement="right">
+ *   <button slot="trigger">Hover me</button>
+ *   <div>Popover content here</div>
+ * </custom-popper>
+ * ```
  */
 export class Popper extends HTMLElement {
     /**
@@ -30,11 +47,15 @@ export class Popper extends HTMLElement {
         super()
 
         this.attachShadow({ mode: 'open' })
-        this.shadowRoot.appendChild(_template.content.cloneNode(true))
+            .appendChild(_template.content.cloneNode(true))
 
+        /** @type {HTMLElement | null} */
         this.triggerElement = null
+        /** @type {HTMLElement | null} */
         this.contentElement = null
+        /** @type {string} */
         this.location = 'bottom'
+        /** @type {string} */
         this.placement = 'right'
     }
 
@@ -96,21 +117,18 @@ export class Popper extends HTMLElement {
         this.triggerElement = this.querySelector('[slot="trigger"]')
         this.contentElement = this.shadowRoot.querySelector('[data-content]')
 
-        if (!this.contentElement.id) this.contentElement.id = `popper-content-` + Math.random().toString(36).slice(2, 9)
+        this.contentElement.id = `popper-${crypto.randomUUID?.() || Math.random().toString(36).slice(2, 9)}`
 
-        if (this.triggerElement) {
-            this.triggerElement.setAttribute('aria-controls', this.contentElement.id)
-            this.triggerElement.setAttribute('aria-describedby', this.contentElement.id)
-            this.triggerElement.setAttribute('aria-haspopup', 'true')
-            this.triggerElement.setAttribute('aria-expanded', this.open.toString())
-            this.triggerElement.setAttribute(
-                'tabindex',
-                this.triggerElement.tabIndex < 0 ? '0' : this.triggerElement.tabIndex,
-            )
-        }
+        this.triggerElement?.setAttribute('aria-controls', this.contentElement.id)
+        this.triggerElement?.setAttribute('aria-describedby', this.contentElement.id)
+        this.triggerElement?.setAttribute('aria-haspopup', 'true')
+        this.triggerElement?.setAttribute('aria-expanded', this.open.toString())
+        this.triggerElement?.setAttribute(
+            'tabindex',
+            this.triggerElement.tabIndex < 0 ? '0' : this.triggerElement.tabIndex,
+        )
 
         if (!this.hasAttribute('location')) this.setAttribute('location', this.location)
-
         if (!this.hasAttribute('placement')) this.setAttribute('placement', this.placement)
     }
 
@@ -126,16 +144,13 @@ export class Popper extends HTMLElement {
      * @param {string | null} newValue - The new value of the attribute.
      */
     attributeChangedCallback(name, oldValue, newValue) {
-        if (newValue == oldValue) return
-
-        if (name === 'open') {
+        if (newValue !== oldValue && (name === 'open' || name === 'disabled')) {
             this._updateAriaProperties()
         }
     }
 
     _updateAriaProperties() {
         if (this.triggerElement) this.triggerElement.setAttribute('aria-expanded', this.open.toString())
-
         if (this.contentElement) this.contentElement.setAttribute('aria-hidden', (!this.open).toString())
     }
 }

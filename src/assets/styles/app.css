@@ -29,7 +29,8 @@ body {
     background-color: rgb(var(--color-gray-5));
 }
 
-i.ph {
+i.ph,
+i.ph-duotone {
     font-size: 20px;
 }
 
@@ -44,7 +45,6 @@ i.ph {
 }
 
 main {
-    position: relative;
     display: flex;
     height: calc(100% - var(--header-height)); /* Calculate the sreen heigt - header */
 }
@@ -120,6 +120,14 @@ header img {
 
 .color-black {
     color: rgb(var(--color-black));
+}
+
+.animate-ping {
+    animation: var(--animate-ping);
+}
+
+.animate-pulse {
+    animation: var(--animate-pulse);
 }
 
 button[data-icon],

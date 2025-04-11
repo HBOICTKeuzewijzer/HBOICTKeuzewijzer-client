@@ -1,10 +1,16 @@
 :host {
     display: flex;
     position: relative;
+    width: auto;
+    height: auto;
 }
 
-.sheetContent {
+[data-dialog] {
     display: none;
+    position:relative;
+    left: 0;
+    top: 0;
+    transform: none;
     margin: 12px;
     flex: 1;
     padding: 1.5rem;
@@ -12,7 +18,7 @@
     border-right: 1px solid rgba(var(--color-gray-3), 0.2);
     border-radius: var(--rounded-lg);
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    z-index: 50;
+    z-index: 25;
     transition-property:
         color,
         background-color,
@@ -36,16 +42,16 @@
     animation: slideOut 300ms forwards;
 }
 
-.sheetContent[type='floating'] {
+:host([type='floating']) [data-dialog] {
     position: fixed;
 }
 
 @media (min-width: 640px) {
-    .sheetContent {
+    [data-dialog] {
         max-width: 16rem;
     }
 
-    .sheetContent[open] {
+    :host([open]) [data-dialog] {
         display: flex;
         animation: slideIn 500ms forwards;
     }
