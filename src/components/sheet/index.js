@@ -4,8 +4,20 @@ import styling from './style.css?raw'
 /**
  * Sheet Web Component
  *
- * A custom element that represents a sheet (such as a modal or a side drawer),
- * which can be toggled open or closed via the `open` attribute.
+ * A sliding panel component that appears from the edge of the screen.
+ * Extends Dialog to provide a side-drawer or modal-like interface.
+ *
+ * Attributes:
+ * - Inherits `open` and `disabled` from Dialog
+ * - `side`: Controls which side the sheet appears from ('left'|'right'|'top'|'bottom')
+ *
+ * Example:
+ * ```html
+ * <x-sheet side="right">
+ *   <h2>Sheet Title</h2>
+ *   <div>Sheet content here</div>
+ * </x-sheet>
+ * ```
  */
 export class Sheet extends Dialog {
     constructor() {
@@ -17,5 +29,27 @@ export class Sheet extends Dialog {
         this.shadowRoot.appendChild(_styleElement)
     }
 
-    //TODO: add side attribute to specify if the sheet is left or right of the screen.
+    /**
+     * Specifies the observed attributes for the component.
+     * @returns {string[]} List of attributes to observe.
+     */
+    static get observedAttributes() {
+        return [...super.observedAttributes, 'side']
+    }
+
+    /**
+     * Returns the current `side` state.
+     * @returns {string}
+     */
+    get side() {
+        return this.getAttribute('side')
+    }
+
+    /**
+     * Sets the current `side` state.
+     * @param {string} value
+     */
+    set side(value) {
+        this.setAttribute('side', value)
+    }
 }

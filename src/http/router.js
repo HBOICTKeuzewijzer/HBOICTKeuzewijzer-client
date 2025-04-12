@@ -37,6 +37,19 @@ class Router {
     }
 
     /**
+     * Redirects to a new URL
+     * @param {string} url - The URL to redirect to
+     */
+    redirect(url) {
+        if (this.#isExternalURL(url)) {
+            window.location.href = url
+            return
+        }
+
+        this.navigate(url)
+    }
+
+    /**
      * Handle the route change and render the appropriate page.
      * @returns {Promise<void>}
      */
@@ -51,7 +64,7 @@ class Router {
 
         // Execute middleware before rendering the page.
         const middlewarePassed = await MiddlewarePipeline.run(matchedRoute.middlewares, context)
-        if (!middlewarePassed) return
+        if (!middlewarePassed) return this.#render(() => import('@pages/404.js'))
 
         // Render the matched route component.
         this.#render(matchedRoute.component, params)
@@ -83,6 +96,20 @@ class Router {
      */
     #createElementFromHTML(htmlString) {
         return new DOMParser().parseFromString(htmlString, 'text/html').body.firstChild
+    }
+
+    /**
+     * Checks if a URL is external
+     * @param {string} url - The URL to check
+     * @returns {boolean}
+     */
+    #isExternalURL(url) {
+        try {
+            new URL(url)
+            return url.startsWith('http') || url.startsWith('//')
+        } catch {
+            return false
+        }
     }
 }
 

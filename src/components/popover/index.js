@@ -4,24 +4,24 @@ import styling from './style.css?raw'
 /**
  * Popover Web Component
  *
- * A custom element that extends the `Popper` component to show or hide floating content
- * based on user interaction (click). It adds interactivity for toggling visibility, and
- * handles closing the popover when clicking outside or pressing the Escape key.
+ * An interactive floating panel that shows on click.
+ * Includes click-outside and escape key handling.
  *
- * Inherits from:
- * - `Popper`: Provides positioning, ARIA handling, and structure.
+ * Features:
+ * - Click trigger to toggle
+ * - Click outside to close
+ * - Escape key to close
+ * - Inherits positioning from Popper
  *
- * Behavior:
- * - Clicking the trigger toggles the popover open/closed.
- * - Clicking outside the popover closes it.
- * - Pressing the Escape key closes it.
- *
- * Example usage:
+ * Example:
  * ```html
- * <custom-popover>
- *   <button slot="trigger">Toggle Popover</button>
- *   <div>Popover content here</div>
- * </custom-popover>
+ * <x-popover position="bottom">
+ *   <button slot="trigger">Open Menu</button>
+ *   <div class="menu">
+ *     <a href="#">Option 1</a>
+ *     <a href="#">Option 2</a>
+ *   </div>
+ * </x-popover>
  * ```
  */
 export class Popover extends Popper {
@@ -40,9 +40,9 @@ export class Popover extends Popper {
     connectedCallback() {
         super.connectedCallback()
 
-        this.triggerElement?.addEventListener('click', this._handleTriggerClick)
-        document.addEventListener('keydown', this._handleEscape)
-        document.addEventListener('click', this._handleOutsideClick)
+        this.triggerElement?.addEventListener('click', this.#handleTriggerClick)
+        document.addEventListener('keydown', this.#handleEscape)
+        document.addEventListener('click', this.#handleOutsideClick)
     }
 
     /**
@@ -51,16 +51,16 @@ export class Popover extends Popper {
     disconnectedCallback() {
         super.disconnectedCallback()
 
-        this.triggerElement?.removeEventListener('click', this._handleTriggerClick)
-        document.removeEventListener('keydown', this._handleEscape)
-        document.removeEventListener('click', this._handleOutsideClick)
+        this.triggerElement?.removeEventListener('click', this.#handleTriggerClick)
+        document.removeEventListener('keydown', this.#handleEscape)
+        document.removeEventListener('click', this.#handleOutsideClick)
     }
 
     /**
      * Toggles the popover open state.
      * @private
      */
-    _handleTriggerClick = () => {
+    #handleTriggerClick = () => {
         this.open = !this.open
     }
 
@@ -68,17 +68,15 @@ export class Popover extends Popper {
      * Closes the popover when the Escape key is pressed.
      * @private
      */
-    _handleEscape = (event) => {
-        if (event.key === 'Escape') {
-            this.open = false
-        }
+    #handleEscape = event => {
+        if (event.key === 'Escape') this.open = false
     }
 
     /**
      * Closes the popover when clicking outside the component.
      * @private
      */
-    _handleOutsideClick = (event) => {
+    #handleOutsideClick = event => {
         if (!this.contains(event.target) && !this.triggerElement?.contains(event.target)) {
             this.open = false
         }

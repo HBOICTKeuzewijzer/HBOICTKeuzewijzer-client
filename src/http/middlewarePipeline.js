@@ -13,6 +13,10 @@ export class MiddlewarePipeline {
      * @returns {Promise<boolean>} - Resolves to `true` if all middlewares pass, otherwise `false`.
      */
     static async run(middlewares, context) {
+        if (!Array.isArray(middlewares)) {
+            throw new Error('[MiddlewarePipeline] Middlewares must be an array')
+        }
+
         try {
             for (const middleware of middlewares) {
                 if (!(middleware instanceof Middleware)) continue
@@ -21,7 +25,8 @@ export class MiddlewarePipeline {
                 if (!result) return false // Stop the pipeline if a middleware fails and returns falsy
             }
             return true
-        } catch {
+        } catch (error) {
+            console.error('[MiddlewarePipeline] Error in middleware:', error)
             return false
         }
     }

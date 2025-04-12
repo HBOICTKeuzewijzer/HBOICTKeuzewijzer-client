@@ -13,50 +13,38 @@ _template.innerHTML = `
 /**
  * Popper Web Component
  *
- * A custom HTML element that displays floating content (a "popper") relative to a trigger element.
- * This component provides positioning control and basic accessibility support.
- * The visibility of the popper is managed through the `open` attribute.
+ * A base component for creating positioned floating elements.
+ * Provides core positioning and ARIA functionality for tooltips and popovers.
  *
  * Attributes:
- * - `open`      : Shows/hides the popper content.
- * - `location`  : Controls vertical alignment (`top`, `bottom`, etc.).
- * - `placement` : Controls horizontal alignment (`left`, `right`, etc.).
+ * - `open`: Controls visibility
+ * - `position`: Positioning ('top'|'right'|'bottom'|'left')
+ * - `placement`: Alignment ['top' || 'bottom']('left'|'right'|'middle') && ['right' || 'left']('top'|'bottom'|'middle')
  *
  * Slots:
- * - `trigger`   : The interactive element that toggles the popper.
- * - default     : The content to display in the popper.
+ * - `trigger`: Element that controls the popper
+ * - default: Content to show in the popper
  *
  * Example:
  * ```html
- * <custom-popper open location="bottom" placement="right">
- *   <button slot="trigger">Hover me</button>
- *   <div>Popover content here</div>
- * </custom-popper>
+ * <x-popper position="bottom" placement="center">
+ *   <button slot="trigger">Trigger</button>
+ *   <div>Popper content</div>
+ * </x-popper>
  * ```
  */
 export class Popper extends HTMLElement {
+    /** @type {HTMLElement | null} */
+    triggerElement
+    /** @type {HTMLElement | null} */
+    contentElement
+
     /**
      * Specifies the observed attributes for the component.
      * @returns {string[]} List of attributes to observe.
      */
     static get observedAttributes() {
-        return ['open', 'location', 'placement']
-    }
-
-    constructor() {
-        super()
-
-        this.attachShadow({ mode: 'open' })
-            .appendChild(_template.content.cloneNode(true))
-
-        /** @type {HTMLElement | null} */
-        this.triggerElement = null
-        /** @type {HTMLElement | null} */
-        this.contentElement = null
-        /** @type {string} */
-        this.location = 'bottom'
-        /** @type {string} */
-        this.placement = 'right'
+        return ['open', 'disabled', 'position', 'placement']
     }
 
     /**
@@ -77,20 +65,20 @@ export class Popper extends HTMLElement {
     }
 
     /**
-     * Returns the content `location` alignment.
+     * Returns the content `position` alignment.
      * @returns {string}
      */
-    get location() {
-        return this.getAttribute('location')
+    get position() {
+        return this.getAttribute('position')
     }
 
     /**
-     * Sets the content `location` alignment.
+     * Sets the content `position` alignment.
      * @param {string}
      * @returns {this}
      */
-    set location(location) {
-        this.setAttribute('location', location)
+    set position(location) {
+        this.setAttribute('position', location)
     }
 
     /**
@@ -106,8 +94,17 @@ export class Popper extends HTMLElement {
      * @param {string}
      * @returns {this}
      */
-    set placement(placement) {
-        this.setAttribute('placement', placement)
+    set placement(location) {
+        this.setAttribute('placement', location)
+    }
+
+    constructor() {
+        super()
+
+        this.attachShadow({ mode: 'open' }).appendChild(_template.content.cloneNode(true))
+
+        if (!this.hasAttribute('position')) this.setAttribute('position', (this.position = 'bottom'))
+        if (!this.hasAttribute('placement')) this.setAttribute('placement', (this.placement = 'middle'))
     }
 
     /**
@@ -117,8 +114,10 @@ export class Popper extends HTMLElement {
         this.triggerElement = this.querySelector('[slot="trigger"]')
         this.contentElement = this.shadowRoot.querySelector('[data-content]')
 
+        //Define an unique ID for the ARIA attributes
         this.contentElement.id = `popper-${crypto.randomUUID?.() || Math.random().toString(36).slice(2, 9)}`
 
+        this.triggerElement?.setAttribute('aria-disabled', this.hasAttribute('disabled'))
         this.triggerElement?.setAttribute('aria-controls', this.contentElement.id)
         this.triggerElement?.setAttribute('aria-describedby', this.contentElement.id)
         this.triggerElement?.setAttribute('aria-haspopup', 'true')
@@ -127,9 +126,6 @@ export class Popper extends HTMLElement {
             'tabindex',
             this.triggerElement.tabIndex < 0 ? '0' : this.triggerElement.tabIndex,
         )
-
-        if (!this.hasAttribute('location')) this.setAttribute('location', this.location)
-        if (!this.hasAttribute('placement')) this.setAttribute('placement', this.placement)
     }
 
     /**
@@ -145,12 +141,11 @@ export class Popper extends HTMLElement {
      */
     attributeChangedCallback(name, oldValue, newValue) {
         if (newValue !== oldValue && (name === 'open' || name === 'disabled')) {
-            this._updateAriaProperties()
-        }
-    }
+            this.triggerElement?.toggleAttribute('disabled', this.hasAttribute('disabled'))
+            this.triggerElement?.setAttribute('aria-disabled', this.hasAttribute('disabled').toString())
 
-    _updateAriaProperties() {
-        if (this.triggerElement) this.triggerElement.setAttribute('aria-expanded', this.open.toString())
-        if (this.contentElement) this.contentElement.setAttribute('aria-hidden', (!this.open).toString())
+            this.triggerElement?.setAttribute('aria-expanded', this.open.toString())
+            this.contentElement?.setAttribute('aria-hidden', (!this.open).toString())
+        }
     }
 }

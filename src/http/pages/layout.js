@@ -1,6 +1,8 @@
+import { Cookie } from '@utils'
+
 export default function Layout(children) {
     const imageURL = new URL('@assets/images/windesheim-logo.png', import.meta.url).href
-    const hasSession = true
+    const hasSession = Cookie.get('x-session') == null ? false : true
 
     return /*html*/ `
         <div>
@@ -12,7 +14,7 @@ export default function Layout(children) {
                     ${
                         hasSession
                             ? /*html*/ `
-                                <x-tooltip location="bottom" placement="middle" class="hidden md:block">
+                                <x-tooltip position="left" placement="middle" class="hidden md:block">
                                     <a slot="trigger" href="/messages" data-icon>
                                         <span style="position:relative;">
                                             <span class="relative flex size-3" style="position: absolute; display: flex; width: 8px; height: 8px; right: 0;">
@@ -29,16 +31,16 @@ export default function Layout(children) {
                                     </p>
                                 </x-tooltip>
 
-                                <x-popover location="bottom" placement="right" class="hidden md:block">
+                                <x-popover position="bottom" placement="right" class="hidden md:block">
                                     <button slot="trigger" id="profile">JK</button>
-                                    <a popover-action danger href="https://api.hboictkeuzewijzer.nl/api/auth/logout" class="text-sm">
-                                        <i class="ph-duotone ph-sign-out"></i>    
+                                    <button popover-action danger href="https://api.hboictkeuzewijzer.nl/api/auth/logout" class="text-sm">
+                                        <i class="ph-duotone ph-sign-out"></i>
                                         Uitloggen
-                                    </a>
+                                    </button>
                                 </x-popover>
                             `
                             : /*html*/ `
-                                <x-tooltip location="left" placement="middle" class="hidden md:block">
+                                <x-tooltip position="left" placement="middle" class="hidden md:block">
                                     <a slot="trigger" href="https://api.hboictkeuzewijzer.nl/api/auth/login" data-icon>
                                         <i class="ph ph-sign-in"></i>
                                     </a>
