@@ -1,0 +1,87 @@
+:host {
+    --transform-y: 100%;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    & [data-drawer] {
+        display: none;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        border-radius: var(--rounded-lg) var(--rounded-lg) 0 0;
+        background-color: #fff;
+        box-shadow:
+            rgb(255, 255, 255) 0 0 0 0,
+            rgba(var(--color-gray-2), 0.2) 0 0 0 1px,
+            rgba(0, 0, 0, 0.1) 0 20px 25px -5px,
+            rgba(0, 0, 0, 0.1) 0 8px 10px -6px;
+        z-index: 35;
+        animation: slideOut 300ms forwards;
+    
+        & [data-handle] {
+            height: .5rem;
+            width: 100px;
+            margin: 0 auto;
+            margin-top: 1rem;
+            border-radius: var(--rounded-full);
+            background-color: rgba(var(--color-gray-1), 0.2);
+        }
+        
+        & [data-content] {
+            width: 100%;
+            max-width: 640px;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+        }
+    }
+
+    & [data-backdrop] {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(var(--color-black), 0.2);
+        z-index: 30;
+    }
+}
+
+:host([open]) [data-drawer] {
+    display: block;
+    animation: slideIn 500ms forwards;
+}
+
+:host([open][backdrop]) [data-backdrop] {
+    display: flex;
+    animation: backdropShow 150ms forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 1;
+        transform: translate3d(0, var(--transform-y), 0) scale3d(1, 1, 1) rotate(0);
+    }
+}
+
+@keyframes slideOut {
+    to {
+        opacity: 1;
+        transform: translate3d(0, var(--transform-y), 0) scale3d(1, 1, 1) rotate(0);
+    }
+}
+
+@keyframes backdropShow {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}

@@ -2,8 +2,9 @@
 import { router } from '@http/router'
 
 // Component definitions
-import { Dialog, Popper, Popover, Sheet, Tooltip } from '@components'
+import { Dialog, Drawer, Popper, Popover, Sheet, Tooltip } from '@components'
 customElements.define('x-dialog', Dialog)
+customElements.define('x-drawer', Drawer)
 customElements.define('x-popper', Popper)
 customElements.define('x-popover', Popover)
 customElements.define('x-sheet', Sheet)

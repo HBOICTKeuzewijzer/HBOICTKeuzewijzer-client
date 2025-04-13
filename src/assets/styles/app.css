@@ -61,10 +61,10 @@ header {
     justify-content: space-between;
     background-color: #fff;
     border-bottom: 2px solid rgb(var(--color-gold));
-}
 
-header img {
-    height: 53px;
+    & img {
+        height: 53px;
+    }
 }
 
 .headerActions {

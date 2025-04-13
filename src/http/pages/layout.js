@@ -14,7 +14,7 @@ export default function Layout(children) {
                     ${
                         hasSession
                             ? /*html*/ `
-                                <x-tooltip position="left" placement="middle" class="hidden md:block">
+                                <x-tooltip position="left" placement="middle">
                                     <a slot="trigger" href="/messages" data-icon>
                                         <span style="position:relative;">
                                             <span class="relative flex size-3" style="position: absolute; display: flex; width: 8px; height: 8px; right: 0;">
@@ -31,9 +31,14 @@ export default function Layout(children) {
                                     </p>
                                 </x-tooltip>
 
-                                <x-popover position="bottom" placement="right" class="hidden md:block">
+                                <x-popover position="bottom" placement="right">
                                     <button slot="trigger" id="profile">JK</button>
-                                    <button popover-action danger href="https://api.hboictkeuzewijzer.nl/api/auth/logout" class="text-sm">
+                                    
+                                    <button popover-action type="button" href="/saved-routes" class="text-sm">
+                                        <i class="ph-duotone ph-bookmarks-simple"></i>
+                                        Opgeslagen Routes
+                                    </button>
+                                    <button popover-action danger type="button" href="https://api.hboictkeuzewijzer.nl/api/auth/logout" class="text-sm">
                                         <i class="ph-duotone ph-sign-out"></i>
                                         Uitloggen
                                     </button>
@@ -50,10 +55,6 @@ export default function Layout(children) {
                                 </x-tooltip>
                             `
                     }
-
-                    <button data-icon class="block md:hidden">
-                        <i class="ph ph-list"></i>
-                    </button>
                 </div>
             </header>
             <main>${children}</main>

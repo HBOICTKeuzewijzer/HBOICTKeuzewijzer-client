@@ -99,6 +99,8 @@ export class Dialog extends HTMLElement {
         this.backdropElement = this.shadowRoot?.querySelector('[data-backdrop]')
         this.closeButton = this.shadowRoot?.querySelector('[data-close]')
 
+        this.triggerElement?.addEventListener('click', () => this.open = true)
+
         if (this.hasAttribute('closable')) {
             this.backdropElement?.addEventListener('click', () => (this.open = false))
             this.closeButton?.addEventListener('click', () => (this.open = false))
@@ -116,6 +118,8 @@ export class Dialog extends HTMLElement {
      * Lifecycle method triggered when the component is removed from the DOM.
      */
     disconnectedCallback() {
+        this.triggerElement?.removeEventListener('click', () => this.open = true)
+
         if (this.hasAttribute('closable')) {
             this.backdropElement?.removeEventListener('click', () => (this.open = false))
             this.closeButton?.removeEventListener('click', () => (this.open = false))

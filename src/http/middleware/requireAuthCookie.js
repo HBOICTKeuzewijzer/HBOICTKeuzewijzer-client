@@ -1,4 +1,6 @@
 import { Middleware } from '@http/middleware'
+import { router } from '@http/router'
+import { Cookie } from '@utils'
 
 /**
  * Inherits from the base `Middleware` class.
@@ -9,6 +11,9 @@ export class RequireAuthCookie extends Middleware {
      * @returns {Promise<boolean>} Resolves to `true` if the middleware passes, `false` otherwise.
      */
     async handle(context) {
-        return true
+        if (Cookie.get('x-session') == null)
+            router.redirect('/')
+
+        return true;
     }
 }

@@ -11,7 +11,9 @@ export const routes = [
         .add('/:uuid', () => import('@/http/pages/page.js')).routes,
 
     ...new RouteGroup([new RequireAuthCookie()])
+        .add('/saved-routes', () => import('@pages/saved-routes/page.js'))
         .add('/messages', () => import('@pages/messages/page.js'))
+        .add('/students', () => import('@pages/students/page.js'))
         .add('/admin/modules', () => import('@pages/modules/page.js'))
         .add('/admin/modules/:uuid', () => import('@pages/modules/page.js')).routes,
 ]

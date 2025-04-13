@@ -1,45 +1,61 @@
 :host {
+    --transform-x: -100%;
+
     display: flex;
     position: relative;
     width: auto;
     height: auto;
+
+    & [data-dialog] {
+        width: 100%;
+        display: none;
+        position: relative;
+        top: 0;
+        padding: 0;
+        transform: none;
+        margin: 12px;
+        flex: 1;
+        background-color: #fff;
+        border-right: 1px solid rgba(var(--color-gray-3), 0.2);
+        border-radius: var(--rounded-lg);
+        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+        z-index: 25;
+        transition-property:
+            color,
+            background-color,
+            border-color,
+            text-decoration-color,
+            fill,
+            stroke,
+            --tw-gradient-from,
+            --tw-gradient-via,
+            --tw-gradient-to,
+            opacity,
+            box-shadow,
+            transform,
+            translate,
+            scale,
+            rotate,
+            filter,
+            -webkit-backdrop-filter,
+            backdrop-filter;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        animation: slideOut 300ms forwards;
+    }
 }
 
-[data-dialog] {
-    display: none;
-    position: relative;
+:host([open]) [data-dialog] {
+    display: flex;
+    animation: slideIn 500ms forwards;
+}
+
+:host([side='left']) [data-dialog] {
     left: 0;
-    top: 0;
-    transform: none;
-    margin: 12px;
-    flex: 1;
-    padding: 1.5rem;
-    background-color: #fff;
-    border-right: 1px solid rgba(var(--color-gray-3), 0.2);
-    border-radius: var(--rounded-lg);
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    z-index: 25;
-    transition-property:
-        color,
-        background-color,
-        border-color,
-        text-decoration-color,
-        fill,
-        stroke,
-        --tw-gradient-from,
-        --tw-gradient-via,
-        --tw-gradient-to,
-        opacity,
-        box-shadow,
-        transform,
-        translate,
-        scale,
-        rotate,
-        filter,
-        -webkit-backdrop-filter,
-        backdrop-filter;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    animation: slideOut 300ms forwards;
+    --transform-x: -100%
+}
+:host([side='right']) [data-dialog] {
+    right: 0;
+    --transform-x: 100%
 }
 
 :host([type='floating']) [data-dialog] {
@@ -48,25 +64,21 @@
 
 @media (min-width: 640px) {
     [data-dialog] {
-        max-width: 16rem;
+        max-width: 20rem !important;
     }
 
-    :host([open]) [data-dialog] {
-        display: flex;
-        animation: slideIn 500ms forwards;
-    }
 }
 
 @keyframes slideIn {
     from {
         opacity: 1;
-        transform: translate3d(-100%, 0, 0) scale3d(1, 1, 1) rotate(0);
+        transform: translate3d(var(--transform-x), 0, 0) scale3d(1, 1, 1) rotate(0);
     }
 }
 
 @keyframes slideOut {
     to {
         opacity: 1;
-        transform: translate3d(-100%, 0, 0) scale3d(1, 1, 1) rotate(0);
+        transform: translate3d(var(--transform-x), 0, 0) scale3d(1, 1, 1) rotate(0);
     }
 }

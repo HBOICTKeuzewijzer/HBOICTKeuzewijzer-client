@@ -16,6 +16,7 @@ slot {
     font-weight: 500;
     cursor: pointer;
     text-decoration: none;
+    white-space: nowrap;
 }
 
 ::slotted([popover-action][danger]) {
