@@ -34,10 +34,10 @@
         
         & [data-content] {
             width: 100%;
-            max-width: 640px;
             display: flex;
             flex-direction: column;
             margin: 0 auto;
+            overflow-y: auto;
         }
     }
 
@@ -61,6 +61,13 @@
 :host([open][backdrop]) [data-backdrop] {
     display: flex;
     animation: backdropShow 150ms forwards;
+}
+
+@media (min-width: 640px) {
+    [data-content] {
+        max-width: 640px !important;
+    }
+
 }
 
 @keyframes slideIn {

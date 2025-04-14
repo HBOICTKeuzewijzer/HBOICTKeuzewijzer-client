@@ -25,39 +25,39 @@ import { Route } from '@models'
  */
 describe('[Models] Route', () => {
     /** @type {Function} */
-    const dummyComponent = () => import('@pages/page')
+    const pageMock = import('@pages/page')
     /** @type {Function} */
-    const dummyMiddleware = () => {}
+    const middlewareMock = () => {}
     /** @type {Function} */
-    const secondDummyMiddleware = () => {}
+    const secondMiddlewareMock = () => {}
 
     it('[Should] Create a route with path, component, and middleware array', () => {
-        const route = new Route('/planner', dummyComponent, [dummyMiddleware, secondDummyMiddleware])
+        const route = new Route('/planner', pageMock, [middlewareMock, secondMiddlewareMock])
 
         expect(route).toBeDefined()
         expect(route.path).toBe('/planner')
-        expect(route.component).toBe(dummyComponent)
+        expect(route.component).toBe(pageMock)
         expect(route.middlewares).toHaveLength(2)
-        expect(route.middlewares).toContain(dummyMiddleware)
-        expect(route.middlewares).toContain(secondDummyMiddleware)
+        expect(route.middlewares).toContain(middlewareMock)
+        expect(route.middlewares).toContain(secondMiddlewareMock)
     })
 
     it('[Should] Create a route without middleware', () => {
-        const route = new Route('/', dummyComponent)
+        const route = new Route('/', pageMock)
 
         expect(route.middlewares).toHaveLength(0)
     })
 
     it('[Should] Convert single middleware into an array', () => {
-        const route = new Route('/admin', dummyComponent, dummyMiddleware)
+        const route = new Route('/admin', pageMock, middlewareMock)
 
         expect(Array.isArray(route.middlewares)).toBe(true)
         expect(route.middlewares).toHaveLength(1)
-        expect(route.middlewares).toContain(dummyMiddleware)
+        expect(route.middlewares).toContain(middlewareMock)
     })
 
     it('[Should] Match dynamic param and parse it', () => {
-        const route = new Route('/modules/:id', dummyComponent)
+        const route = new Route('/modules/:id', pageMock)
 
         expect(route.match('/modules/42')).toEqual({
             params: { id: '42' },
@@ -66,7 +66,7 @@ describe('[Models] Route', () => {
     })
 
     it('[Should] Match query string and parse it', () => {
-        const route = new Route('/users', dummyComponent)
+        const route = new Route('/users', pageMock)
 
         expect(route.match('/users?sort=asc&limit=10')).toStrictEqual({
             params: {},
@@ -75,7 +75,7 @@ describe('[Models] Route', () => {
     })
 
     it('[Should] Match dynamic param and query string and parse them', () => {
-        const route = new Route('/events/:eventId', dummyComponent)
+        const route = new Route('/events/:eventId', pageMock)
 
         expect(route.match('/events/789?invite=true')).toStrictEqual({
             params: { eventId: '789' },
@@ -84,31 +84,31 @@ describe('[Models] Route', () => {
     })
 
     it('[Should] Return NULL for non-matching path', () => {
-        const route = new Route('/users/:id', dummyComponent)
+        const route = new Route('/users/:id', pageMock)
 
         expect(route.match('/accounts/42')).toBeNull()
     })
 
     it('[Should] Return NULL if segment counts differ', () => {
-        const route = new Route('/projects/:projectId', dummyComponent)
+        const route = new Route('/projects/:projectId', pageMock)
 
         expect(route.match('/projects/123/files')).toBeNull()
     })
 
     it('[Should not] Match if the dynamic parameter is missing in the URL', () => {
-        const route = new Route('/messages/:id', dummyComponent)
+        const route = new Route('/messages/:id', pageMock)
 
         expect(route.match('/messages/')).toBeNull()
     })
 
     it('[Should not] Match if base path differs', () => {
-        const route = new Route('/modules/:id', dummyComponent)
+        const route = new Route('/modules/:id', pageMock)
 
         expect(route.match('/admins/244')).toBeNull()
     })
 
     it('[Should not] Match if query string is malformed (e.g., missing "=")', () => {
-        const route = new Route('/search/data', dummyComponent)
+        const route = new Route('/search/data', pageMock)
 
         expect(route.match('/search/data?sort&filter')).toStrictEqual({
             params: {},

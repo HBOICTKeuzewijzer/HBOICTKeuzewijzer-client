@@ -16,6 +16,7 @@
         padding: 25px;
         flex-direction: column;
         background-color: #fff;
+        overflow-y: auto;
         box-shadow:
             rgb(255, 255, 255) 0 0 0 0,
             rgba(var(--color-gray-2), 0.2) 0 0 0 1px,
