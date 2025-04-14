@@ -2,9 +2,11 @@
 import { router } from '@http/router'
 
 // Component definitions
-import { Popper, Popover, Sheet, Tooltip } from '@components'
+import { Popper, Popover, Sheet, Tooltip, Input, MultilineInput } from '@components'
 customElements.define('x-popper', Popper)
 customElements.define('x-popover', Popover)
+customElements.define('x-input', Input);
+customElements.define('x-multiline-input', MultilineInput);
 customElements.define('x-sheet', Sheet)
 customElements.define('x-tooltip', Tooltip)
 
@@ -35,6 +37,5 @@ document.addEventListener(
             event.preventDefault() // Prevent default browser navigation
             router.navigate(anchor.getAttribute('href')) // Handle with client-side router
         }
-    },
-    { passive: true },
+    }
 )
