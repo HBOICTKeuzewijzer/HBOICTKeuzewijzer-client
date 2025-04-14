@@ -5,7 +5,7 @@
   --circle-color: #bbb;
   --circle-size: 1.5em;
   --circle-margin-left: 1em;
-  --accordion-border-radius: 8px;
+  --accordion-border-radius: var(--rounded-md);
   --info-icon-size: 1.5rem;
   --info-icon-color: #777;
 }
