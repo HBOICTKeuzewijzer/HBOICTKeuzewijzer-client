@@ -4,8 +4,8 @@ import styling from './style.css?raw'
 /**
  * Creates a template for the Sheet component, including styles and HTML structure.
  */
-const sheetTemplate = document.createElement('template')
-sheetTemplate.innerHTML = `
+const _template = document.createElement('template')
+_template.innerHTML = `
     <style>${styling}</style>
     ${template}
 `
@@ -29,7 +29,7 @@ export class Sheet extends HTMLElement {
         super()
 
         this.attachShadow({ mode: 'open' })
-        this.shadowRoot.appendChild(sheetTemplate.content.cloneNode(true))
+        this.shadowRoot.appendChild(_template.content.cloneNode(true))
 
         /**
          * Reference to the internal sheet container element.
@@ -90,4 +90,6 @@ export class Sheet extends HTMLElement {
         const isOpen = this.open
         if (this.container) this.container.toggleAttribute('open', isOpen)
     }
+
+    /* TODO: Justin Improve this code and add ARIA */
 }

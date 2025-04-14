@@ -1,16 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import './variables.css';
 
+/*==========================================*/
+/* Media Queries
+    @media (min-width: 640px) {}   // sm
+    @media (min-width: 768px) {}   // md
+    @media (min-width: 1024px) {}  // lg
+    @media (min-width: 1280px) {}  // xl
+===========================================*/
+
+/*=========================*/
+/*      Global Styles      */
+/*=========================*/
+
 :root {
-    font-family: 'Inter', sans-serif !important;
+    font-family: 'Inter', sans-serif;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
 }
 
 body {
     width: 100dvw;
     height: 100dvh;
-    margin: 0;
     background-color: rgb(var(--color-gray-5));
 }
+
+i.ph {
+    font-size: 20px;
+}
+
+/*=============================*/
+/*        App Structure        */
+/*=============================*/
 
 #_app,
 #_app > div {
@@ -19,19 +44,17 @@ body {
 }
 
 main {
+    position: relative;
     display: flex;
-    height: calc(100% - 76px);
+    height: calc(100% - var(--header-height)); /* Calculate the sreen heigt - header */
 }
 
-.container {
-    display: flex;
-    padding: 32px;
-    flex: 1;
-    height: calc(100% - 76px);
-}
+/*=========================*/
+/*         Header          */
+/*=========================*/
 
 header {
-    height: 50px;
+    height: var(--header-height);
     padding: 12px 32px;
     display: flex;
     align-items: center;
@@ -40,80 +63,119 @@ header {
     border-bottom: 2px solid rgb(var(--color-gold));
 }
 
-#header-profile {
-    display: flex;
-    gap: 10px;
-}
-
-header > img {
+header img {
     height: 53px;
 }
 
-header > div > button > i.ph.ph-list {
-    font-size: 20px;
-}
-
-header > div > a > i.ph.ph-chat {
-    font-size: 20px;
-}
-
-.icon-button {
-    padding: 0;
-    margin: 0;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
+.headerActions {
     display: flex;
+    gap: 8px;
     align-items: center;
-    text-decoration: none;
-    color: var(--color-black);
-}
-
-.icon-button:has(i.ph.ph-chat) {
-    display: none;
 }
 
 #profile {
     width: 40px;
     height: 40px;
     background-color: rgb(var(--color-light-blue));
-    border: 2px solid rgba(var(--color-blue), 0.1);
-    border-collapse: separate;
+    box-shadow: rgba(var(--color-blue), 0.2) 0 0 0 1px;
+    border: none;
     border-radius: var(--rounded-sm) !important;
-
-    font-size: 13px;
-    font-weight: bold;
     color: #fff;
     cursor: pointer;
-    display: none;
 }
 
+/* Responsive Header Padding */
 @media (min-width: 640px) {
     header {
         padding: 12px 48px 12px 48px;
     }
 }
 
-@media (min-width: 768px) {
-    .container {
-        padding: 32px 48px;
-    }
+/*=========================*/
+/*        Utilities        */
+/*=========================*/
 
-    .icon-button:has(i.ph.ph-list) {
+.container {
+    display: flex;
+    flex: 1;
+    height: 100%;
+    padding: 32px;
+}
+
+/* Display Helpers */
+.hidden {
+    display: none;
+}
+.flex {
+    display: flex;
+}
+.block {
+    display: block;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.color-black {
+    color: rgb(var(--color-black));
+}
+
+button[data-icon],
+a[data-icon] {
+    background-color: transparent;
+    color: rgb(var(--color-black));
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+@media (min-width: 640px) {
+    .sm\:hidden {
         display: none;
     }
-
-    .icon-button:has(i.ph.ph-chat) {
+    .sm\:flex {
         display: flex;
     }
+    .sm\:block {
+        display: block;
+    }
+}
 
-    #profile {
+@media (min-width: 768px) {
+    .md\:hidden {
+        display: none;
+    }
+    .md\:flex {
+        display: flex;
+    }
+    .md\:block {
         display: block;
     }
 }
 
 @media (min-width: 1024px) {
+    .lg\:hidden {
+        display: none;
+    }
+    .lg\:flex {
+        display: flex;
+    }
+    .lg\:block {
+        display: block;
+    }
 }
 
 @media (min-width: 1280px) {
+    .xl\:hidden {
+        display: none;
+    }
+    .xl\:flex {
+        display: flex;
+    }
+    .xl\:block {
+        display: block;
+    }
 }

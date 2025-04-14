@@ -1,4 +1,4 @@
-import { MiddlewarePipeline } from '@/http/middlewarePipeline'
+import { MiddlewarePipeline } from '@http/middlewarePipeline'
 import { routes } from '@/routes'
 
 class Router {
