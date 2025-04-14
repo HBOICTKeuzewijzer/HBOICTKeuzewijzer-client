@@ -2,6 +2,10 @@
 import { router } from '@/http/router'
 
 import { Sheet } from '@components/sheet'
+
+import { Input } from '@components/input'
+
+customElements.define('x-input', Input);
 customElements.define('x-sheet', Sheet)
 
 /**
@@ -31,6 +35,5 @@ document.addEventListener(
             event.preventDefault() // Prevent default browser navigation
             router.navigate(anchor.getAttribute('href')) // Handle with client-side router
         }
-    },
-    { passive: true },
+    }
 )
