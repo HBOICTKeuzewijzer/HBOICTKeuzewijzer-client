@@ -1,6 +1,5 @@
 import styling from './style.css?raw'
 import { html } from '@utils/functions'
-import CustomElement from '@components/customElement';
 
 const template = html`
 <style>${styling}</style>
@@ -10,6 +9,30 @@ const template = html`
     <slot class="icon-slot" name="append"></slot>
 </div>
 `
+
+class CustomElement extends HTMLElement {
+    constructor() {
+        super();
+        this.attachShadow({ mode: 'open' });
+    }
+
+    applyTemplate(template) {
+        this.shadowRoot.appendChild(template.content.cloneNode(true));
+    }
+
+    clearEmptySlots() {
+        const slots = this.shadowRoot.querySelectorAll('slot');
+
+        slots.forEach(slot => {
+            if (slot.assignedNodes().length === 0) {
+                slot.style.display = 'none';
+            } else {
+                slot.style.display = '';
+            }
+        });
+    }
+}
+
 
 export class Input extends CustomElement {
     static get observedAttributes() {
@@ -36,15 +59,6 @@ export class Input extends CustomElement {
         }
     }
 
-    #inputHandler = (event) => {
-        const value = e.target.value;
-        this.dispatchEvent(new CustomEvent('onValueChanged', {
-            detail: { query: value },
-            bubbles: true,
-            composed: true
-        }));
-    }
-
     connectedCallback() {
         this.applyTemplate(template);
         this.clearEmptySlots();
@@ -54,6 +68,15 @@ export class Input extends CustomElement {
 
         input.placeholder = this.getAttribute('placeholder') || '';
 
-        input.addEventListener('input', this.#inputHandler);
+        this._inputHandler = (e) => {
+            const value = e.target.value;
+            this.dispatchEvent(new CustomEvent('onValueChanged', {
+                detail: { query: value },
+                bubbles: true,
+                composed: true
+            }));
+        };
+
+        input.addEventListener('input', this._inputHandler);
     }
 }
