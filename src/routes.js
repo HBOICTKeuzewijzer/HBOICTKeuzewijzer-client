@@ -6,12 +6,14 @@ import { RequireAuthCookie, RequireStartYearCookie } from '@http/middleware'
  * @type {Route[]}
  */
 export const routes = [
-    ...new RouteGroup([RequireStartYearCookie])
-        .add('/', () => import('@/http/pages/page.js'))
-        .add('/:uuid', () => import('@/http/pages/page.js')).routes,
 
     ...new RouteGroup([RequireAuthCookie, RequireStartYearCookie])
         .add('/messages', () => import('@pages/messages/page.js'))
-        .add('/admin/modules', () => import('@pages/modules/page.js'))
-        .add('/admin/modules/:uuid', () => import('@pages/modules/page.js')).routes,
+        .add('/admin', () => import('@pages/admin/page.js'))
+        .add('/admin/modules', () => import('@pages/admin/modules/page.js'))
+        .add('/admin/modules/:uuid', () => import('@pages/admin/modules/page.js')).routes,
+
+    ...new RouteGroup([RequireStartYearCookie])
+        .add('/', () => import('@/http/pages/page.js'))
+        .add('/:uuid', () => import('@/http/pages/page.js')).routes,
 ]

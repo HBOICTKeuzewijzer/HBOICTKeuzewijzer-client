@@ -50,6 +50,8 @@ export default function PlannerPage(params) {
             </custom-accordion>
         </span>
     </x-sheet>
-    <div class="container"></div>
+    <div class="container">
+        <a href="/admin">admin</a>
+    </div>
   `
 }
