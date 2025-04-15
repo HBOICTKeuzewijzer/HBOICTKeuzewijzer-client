@@ -1,7 +1,8 @@
 import '@components/accordion';
+import '@components/save-button';
 
 export default function PlannerPage(params) {
-  return /*html*/ `
+    return /*html*/ `
     <x-sheet id="modulesSelector" open>
         <span style="display: flex; flex-direction: column; gap: 4px;">
             <h5 style="margin: 0; font-size: 18px;">Modules</h5>
@@ -50,6 +51,10 @@ export default function PlannerPage(params) {
             </custom-accordion>
         </span>
     </x-sheet>
-    <div class="container"></div>
+    <div class="container">
+        <save-share-button>
+            <span slot="icon">Opslaan</span>
+        </save-share-button>
+    </div>
   `;
 }

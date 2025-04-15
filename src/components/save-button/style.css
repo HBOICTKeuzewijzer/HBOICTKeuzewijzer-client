@@ -1,0 +1,45 @@
+:host {
+  --btn-bg: #FFFFFF;
+  --btn-hover-bg: #e0e0e0;
+  --btn-border-color: rgba(var(--color-gray-3), 0.2);
+  --btn-color: var(--color-black);
+  --btn-radius: 0.5rem;
+  --btn-padding: 0.5rem 1rem;
+  --btn-font-size: 0.875rem;
+  --btn-icon-size: 1rem;
+  --container-width: 100%;
+  display: block;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+button {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  gap: 0.25rem;
+  padding: var(--btn-padding);
+  background-color: var(--btn-bg);
+  color: var(--btn-color);
+  border: 1px solid var(--btn-border-color);
+  border-radius: var(--btn-radius);
+  font-size: var(--btn-font-size);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: var(--btn-hover-bg);
+}
+
+svg {
+  width: var(--btn-icon-size); 
+  height: var(--btn-icon-size);
+  fill: currentColor; 
+}
+
+.container {
+position: relative;
+}
+
