@@ -2,11 +2,12 @@
 import { router } from '@/http/router'
 
 import { Sheet } from '@components/sheet'
-
 import { Input } from '@components/input'
+import { MultilineInput } from '@components/multiLineInput';
 
 customElements.define('x-input', Input);
 customElements.define('x-sheet', Sheet)
+customElements.define('multiline-input', MultilineInput)
 
 /**
  * Handle client-side navigation:
