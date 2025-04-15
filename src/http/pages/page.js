@@ -1,7 +1,7 @@
-import '@components/accordion'
+import '@components/accordion';
 
 export default function PlannerPage(params) {
-    return /*html*/ `
+  return /*html*/ `
     <x-sheet id="modulesSelector" open>
         <span style="display: flex; flex-direction: column; gap: 4px;">
             <h5 style="margin: 0; font-size: 18px;">Modules</h5>
@@ -9,47 +9,47 @@ export default function PlannerPage(params) {
             <p style="margin: 0; font-size: 12px;">
                 Dit zijn alle beschikbare modules waaruit je kunt kiezen. Als je een externe module wilt volgen, kun je deze toevoegen via de 'Anders' optie onder 'Overig'.
             </p>
-            <custom-accordion style="--accordion-active-bg-color: #FFF4CE; --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-gold));">
+            <custom-accordion style="--accordion-active-bg-color: rgba(var(--color-gold), 0.2); --circle-color: rgb(var(--color-gold)); --accordion-border-color: rgba(var(--color-orange), 0.2); --circle-border-color: rgba(var(--color-orange), 0.2)">
                 <span slot="title">Software Engineering</span>
                 <div class="module-item" slot="content">
-                    <p>Webdevelopment</p>
+                    <span>Webdevelopment</span>
                 </div>
                 <div class="module-item" slot="content">
-                    <p>Software Engineering</p>
+                    <span>Software Engineering</span>
                 </div>      
             </custom-accordion>
-            <custom-accordion active style="--accordion-active-bg-color: rgb(var(--color-light-blue)); --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-blue));">
+            <custom-accordion style="--accordion-active-bg-color: rgba(var(--color-apple-green), 0.2); --circle-color: rgb(var(--color-dark-green)); --accordion-border-color: rgba(var(--color-dark-green), 0.2); --circle-border-color: rgba(var(--dark-green), 0.2)">
                 <span slot="title">Infrastructure Design & Security</span>
                 <div class="module-item" slot="content">
-                    <p>Applied IT Security</p>
+                    <span>Applied IT Security</span>
                 </div>
                 <div class="module-item" slot="content">
-                    <p>Cloud Computing</p>
+                    <span>Cloud Computing</span>
                 </div>
             </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: rgb(var(--color-apple-green)); --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-dark-green));">
+            <custom-accordion style="--accordion-active-bg-color: rgba(var(--color-blue), 0.2); --circle-color: rgb(var(--color-blue)); --accordion-border-color: rgba(var(--color-sky-blue), 0.2); --circle-border-color: rgba(var(--color-sky-blue), 0.2)">
                 <span slot="title">Business IT & Management</span>
                 <div class="module-item" slot="content">
-                    <p>Datascience</p>
+                    <span>Datascience</span>
                 </div>
                 <div class="module-item" slot="content">
-                    <p>Management of IT</p>
+                    <span>Management of IT</span>
                 </div>
             </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: #FEDFE4; --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-dark-pink));">
+            <custom-accordion style="--accordion-active-bg-color: rgba(var(--color-dark-pink), 0.2); --circle-color: rgb(var(--color-dark-pink)); --accordion-border-color: rgba(var(--color-red), 0.2); --circle-border-color: rgba(var(--color-red), 0.2)">
                 <span slot="title">Overig</span>
                 <div class="module-item" slot="content">
-                    <p>Tussen jaar</p>
+                    <span>Tussen jaar</span>
                 </div>
                 <div class="module-item" slot="content">
-                    <p>Minor</p>
+                    <span>Minor</span>
                 </div>
                 <div class="module-item" slot="content">
-                    <p>Eigen Keuze</p>
+                    <span>Eigen Keuze</span>
                 </div>
             </custom-accordion>
         </span>
     </x-sheet>
     <div class="container"></div>
-  `
+  `;
 }

@@ -34,6 +34,7 @@
         backdrop-filter;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     animation: slideOut 300ms forwards;
+    overflow-y: auto;
 }
 
 .sheetContent[type='floating'] {

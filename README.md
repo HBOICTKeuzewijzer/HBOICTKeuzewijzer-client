@@ -1,4 +1,4 @@
-# HBO-ICT Keuzewijzer
+ ru# HBO-ICT Keuzewijzer
 
 A study path advisor for HBO ICT part-time students at Windesheim.
 
