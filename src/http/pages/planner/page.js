@@ -1,53 +1,89 @@
 import '@components/accordion';
 import '../../../components/studyCard/studyCard.js';
-import '@components/studycard/studyCard.css?inline';
+import '@components/studyCard/studyCard.css';
+
 
 function addAccordionEventListeners() {
     const accordionItems = document.querySelectorAll('.module-item');
 
-    // Delegate the event handling to the parent custom-accordion
     accordionItems.forEach(item => {
-        item.addEventListener('click', (event) => {
-            const selectedContent = event.target.textContent.trim();
-            const selectedSemester = document.querySelector('.selected-semester');
+        // Verwijder dubbele listeners
+        item.removeEventListener('click', accordionClickHandler);
+        // Voeg nieuwe listener toe
+        item.addEventListener('click', accordionClickHandler);
+    });
+}
 
-            if (selectedSemester) {
-                selectedSemester.textContent = selectedContent;
-                selectedSemester.classList.remove('selected-semester');
 
-                // Get the accordion highlight color
-                const accordionColor = window.getComputedStyle(item.parentElement)
-                    .getPropertyValue('--accordion-active-bg-color').trim();
+function accordionClickHandler(event) {
+    const selectedContent = event.target.textContent.trim();
+    let foundSelectedSemester = false;
 
-                // Access shadow DOM
-                if (selectedSemester.tagName.toLowerCase() === 'study-semester' && selectedSemester.shadowRoot) {
-                    const shadowDiv = selectedSemester.shadowRoot.querySelector('.semester');
-                    if (shadowDiv) {
-                        // Remove old style classes
-                        shadowDiv.classList.remove('keuze-dotted', 'locked');
+    const studyCards = document.querySelectorAll('study-card');
 
-                        shadowDiv.classList.add('updated-semester');
+    studyCards.forEach(studyCard => {
+        if (studyCard.shadowRoot) {
+            const shadowSemesters = studyCard.shadowRoot.querySelectorAll('.semester');
 
-                        // Set colors dynamically
-                        shadowDiv.style.backgroundColor = accordionColor;
-                        shadowDiv.style.borderColor = accordionColor;
-                    }
+            shadowSemesters.forEach(shadowDiv => {
+                if (shadowDiv.classList.contains('selected-semester')) {
+                    // Update de tekst van het geselecteerde shadow-element
+                    shadowDiv.textContent = selectedContent;
+
+                    // Haal de actieve achtergrondkleur
+                    const accordionColor = window.getComputedStyle(event.target.parentElement)
+                        .getPropertyValue('--accordion-active-bg-color')
+                        .trim();
+
+                    // Pas stijlen aan
+                    shadowDiv.style.backgroundColor = accordionColor;
+                    shadowDiv.style.borderColor = accordionColor;
+
+                    foundSelectedSemester = true;
                 }
-            }
-        });
+            });
+        }
+    });
+
+    if (!foundSelectedSemester) {
+        // Geen geldig semester gevonden, dit wordt genegeerd
+    }
+}
+
+
+function addSemesterEventListeners() {
+    const studyCards = document.querySelectorAll('study-card');
+
+    studyCards.forEach(card => {
+        if (card.shadowRoot) {
+            const semesters = card.shadowRoot.querySelectorAll('.semester');
+
+            semesters.forEach(semester => {
+                // Verwijder dubbele listeners
+                semester.removeEventListener('click', semesterClickHandler);
+                // Voeg nieuwe listener toe
+                semester.addEventListener('click', semesterClickHandler);
+            });
+        }
     });
 }
 
-// Function to handle semester item selection
-function addSemesterEventListeners() {
-    const semesterContents = document.querySelectorAll('[id^="semester-"]');
-    semesterContents.forEach(content => {
-        content.addEventListener('click', (event) => {
-            semesterContents.forEach(c => c.classList.remove('selected-semester'));
-            event.target.classList.add('selected-semester');
-        });
+
+function semesterClickHandler(event) {
+    const studyCards = document.querySelectorAll('study-card');
+
+
+    studyCards.forEach(card => {
+        if (card.shadowRoot) {
+            const semesters = card.shadowRoot.querySelectorAll('.semester');
+            semesters.forEach(s => s.classList.remove('selected-semester'));
+        }
     });
+
+
+    event.target.classList.add('selected-semester');
 }
+
 
 function observeDOMChanges() {
     const observer = new MutationObserver(() => {
@@ -58,24 +94,28 @@ function observeDOMChanges() {
     observer.observe(document.body, { childList: true, subtree: true });
 }
 
-function addStudyCard(year, semester1Title, semester1Content, semester2Title, semester2Content) {
+// Initialisatie
+addAccordionEventListeners();
+addSemesterEventListeners();
+observeDOMChanges();
+function addStudyCard(year, semester1Title, semester1Content, semester1Status, semester2Title, semester2Content, semester2Status) {
     return `
         <study-card>
             <span slot="year-header">${year}</span>
             <span slot="semester-1-title">${semester1Title}</span>
-            <study-semester id="semester-1-content-${year}" slot="semester-1-content">${semester1Content}</study-semester>
+            <span id="semester-1-content-${year}" slot="semester-1-content" data-status="${semester1Status}">${semester1Content}</span>
             <span slot="semester-2-title">${semester2Title}</span>
-            <study-semester id="semester-2-content-${year}" slot="semester-2-content">${semester2Content}</study-semester>
+            <span id="semester-2-content-${year}" slot="semester-2-content" data-status="${semester2Status}">${semester2Content}</span>
         </study-card>
     `;
 }
-
 export default function PlannerPage(params) {
     setTimeout(() => {
         addAccordionEventListeners();
         addSemesterEventListeners();
         observeDOMChanges();
     }, 0);
+
 
     return /*html*/ `
     <x-sheet id="modulesSelector" open>
@@ -127,11 +167,11 @@ export default function PlannerPage(params) {
         </span>
     </x-sheet>
 
-    <div class="study-cards-container" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; justify-content: center; padding: 20px;">
-        ${addStudyCard('Jaar 1', 'Semester 1', 'Basisconcepten ICT 1', 'Semester 2', 'Basisconcepten ICT 2')}
-        ${addStudyCard('Jaar 2', 'Semester 1', 'Keuze 1', 'Semester 2', 'Keuze 2')}
-        ${addStudyCard('Jaar 3', 'Semester 1', 'Keuze 1', 'Semester 2', 'Keuze 2')}
-        ${addStudyCard('Jaar 4', 'Semester 1', 'Keuze 1', 'Semester 2', 'Keuze 2')}
+    <div class="study-cards-container">
+        ${addStudyCard('Jaar 1', 'Semester 1', 'Basisconcepten ICT 1', 'locked', 'Semester 2', 'Basisconcepten ICT 2', 'locked')}
+        ${addStudyCard('Jaar 2', 'Semester 1', 'Keuze 1', 'unlocked', 'Semester 2', 'Keuze 2', 'unlocked')}
+        ${addStudyCard('Jaar 3', 'Semester 1', 'Keuze 1', 'unlocked', 'Semester 2', 'Keuze 2', 'unlocked')}
+        ${addStudyCard('Jaar 4', 'Semester 1', 'Keuze 1', 'unlocked', 'Semester 2', 'Keuze 2', 'unlocked')}
     </div>
     `;
 }

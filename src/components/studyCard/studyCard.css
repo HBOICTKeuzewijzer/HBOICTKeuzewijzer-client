@@ -1,84 +1,110 @@
 .study-year {
-    display: grid;
-    grid-template-rows: auto auto;
-    background-color: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(var(--color-gray-5));
     border-radius: 12px;
-    padding: 24px;
-    width: 260px;
+    padding: 12px;
+    width: 242px;
+    height: 355px;
     font-family: sans-serif;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     position: relative;
     margin: 20px;
 }
 
-.year-header {
-    font-weight: 700;
-    font-size: 0.75rem; 
-    color: #444; 
-    margin-bottom: 12px;
-    text-align: center;
-}
-
-.semester-title {
-    font-size: 0.75rem;
-    font-weight: 700; 
-    margin: 0 0 8px 0;
-    color: #444;
-    text-align: center;
-}
 
 .semester {
-    background-color: #ffffff;
-    border-radius: 8px;
-    padding: 16px;
-    margin-top: 12px;
-    border: 2px solid #e0e0e0;
     position: relative;
+    border-radius: 8px;
+    border: 2px solid rgb(var(--color-gray-4));
+    width: 218px;
+    height: 120px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
-    .semester.locked {
-        background-color: rgb(var(--color-gray-4));
-        border: 2px solid rgb(var(--color-gray-4));
-        padding: 24px;
-        margin-top: 16px;
+    .semester.locked::before,
+    .semester.unlocked::before {
+        content: '';
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        width: 16px;
+        height: 16px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
     }
 
-        .semester.locked::before {
-            content: '';
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            width: 16px;
-            height: 16px;
-            background-image: url('https://unpkg.com/phosphor-icons@1.4.2/assets/regular/lock-simple.svg');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            filter: grayscale(100%) opacity(0.6);
-        }
-
-    .semester.keuze-dotted {
-        border: 2px dashed rgb(var(--color-gold));
-        ;
-        font-style: italic;
-        padding: 24px;
-        margin-top: 16px;
+    .semester.locked::before {
+        background-image: url('https://unpkg.com/phosphor-icons@1.4.2/assets/regular/lock-simple.svg');
+        filter: grayscale(100%) opacity(0.6); /* Vergrijsde look */
     }
+
+    .semester.unlocked::before {
+        background-image: url('https://unpkg.com/phosphor-icons@1.4.2/assets/regular/lock-open.svg');
+        filter: none; /* Heldere look */
+    }
+
 
     .semester p {
-        font-size: 0.75rem; 
-        font-weight: 700; 
-        color: #444; 
-        margin: 0;
+        font-family: 'Roboto', sans-serif;
+        font-weight: 700;
+        font-size: 16px;
+        color: rgb(var(--color-black));
         text-align: center;
+        margin: 0;
     }
 
-    .semester.updated-semester {
-        font-style: normal;
-        transition: background-color 0.2s ease, border 0.2s ease;
-        padding: 24px; 
-        margin-top: 16px; 
-    }
+.semester-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    color: rgb(var(--color-gray-2));
+    text-align: center;
+    margin: 14px;
+}
+
+.year-header {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    color: rgb(var(--color-black));
+    text-align: center;
+}
+
+.lock-icon {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 18px;
+    height: 18px;
+    color: rgb(var(--color-black));
+}
+
+.semester.unlocked .lock-icon {
+    color: rgb(var(--color-black));
+}
+
+.semester.locked .lock-icon {
+    color: rgb(var(--color-black));
+}
+
+.semester.keuze-dotted {
+    border: 2px dashed rgb(var(--color-gold));
+    font-style: italic;
+}
+
+.study-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 150px;
+    padding: 20px;
+    justify-content: center;
+    max-width: 900px;
+    margin: auto;
+}
