@@ -7,9 +7,9 @@ function addAccordionEventListeners() {
     const accordionItems = document.querySelectorAll('.module-item');
 
     accordionItems.forEach(item => {
-        // Verwijder dubbele listeners
+
         item.removeEventListener('click', accordionClickHandler);
-        // Voeg nieuwe listener toe
+
         item.addEventListener('click', accordionClickHandler);
     });
 }
@@ -27,15 +27,15 @@ function accordionClickHandler(event) {
 
             shadowSemesters.forEach(shadowDiv => {
                 if (shadowDiv.classList.contains('selected-semester')) {
-                    // Update de tekst van het geselecteerde shadow-element
-                    shadowDiv.textContent = selectedContent;
+                    const textWrapper = shadowDiv.querySelector('p');
+                    if (textWrapper) {
+                        textWrapper.textContent = selectedContent;
+                    }
 
-                    // Haal de actieve achtergrondkleur
                     const accordionColor = window.getComputedStyle(event.target.parentElement)
                         .getPropertyValue('--accordion-active-bg-color')
                         .trim();
 
-                    // Pas stijlen aan
                     shadowDiv.style.backgroundColor = accordionColor;
                     shadowDiv.style.borderColor = accordionColor;
 
@@ -46,10 +46,8 @@ function accordionClickHandler(event) {
     });
 
     if (!foundSelectedSemester) {
-        // Geen geldig semester gevonden, dit wordt genegeerd
     }
 }
-
 
 function addSemesterEventListeners() {
     const studyCards = document.querySelectorAll('study-card');
@@ -59,9 +57,7 @@ function addSemesterEventListeners() {
             const semesters = card.shadowRoot.querySelectorAll('.semester');
 
             semesters.forEach(semester => {
-                // Verwijder dubbele listeners
                 semester.removeEventListener('click', semesterClickHandler);
-                // Voeg nieuwe listener toe
                 semester.addEventListener('click', semesterClickHandler);
             });
         }
@@ -72,19 +68,20 @@ function addSemesterEventListeners() {
 function semesterClickHandler(event) {
     const studyCards = document.querySelectorAll('study-card');
 
-
     studyCards.forEach(card => {
         if (card.shadowRoot) {
             const semesters = card.shadowRoot.querySelectorAll('.semester');
-            semesters.forEach(s => s.classList.remove('selected-semester'));
+            semesters.forEach(semester => {
+                semester.classList.remove('selected-semester'); // Reset selectie
+            });
         }
     });
 
-
-    event.target.classList.add('selected-semester');
+    const semester = event.target;
+    if (semester.classList.contains('unlocked')) {
+        semester.classList.add('selected-semester');
+    }
 }
-
-
 function observeDOMChanges() {
     const observer = new MutationObserver(() => {
         addAccordionEventListeners();
@@ -168,8 +165,8 @@ export default function PlannerPage(params) {
     </x-sheet>
 
     <div class="study-cards-container">
-        ${addStudyCard('Jaar 1', 'Semester 1', 'Basisconcepten ICT 1', 'locked', 'Semester 2', 'Basisconcepten ICT 2', 'locked')}
-        ${addStudyCard('Jaar 2', 'Semester 1', 'Keuze 1', 'unlocked', 'Semester 2', 'Keuze 2', 'unlocked')}
+        ${addStudyCard('Jaar 1', 'Semester 1', 'Basisconcepten ICT 1', 'locked','Semester 2', 'Basisconcepten ICT 2', 'locked')}
+        ${addStudyCard('Jaar 2', 'Semester 1', 'Keuze 1', 'unlocked','Semester 2', 'Keuze 2', 'unlocked')}
         ${addStudyCard('Jaar 3', 'Semester 1', 'Keuze 1', 'unlocked', 'Semester 2', 'Keuze 2', 'unlocked')}
         ${addStudyCard('Jaar 4', 'Semester 1', 'Keuze 1', 'unlocked', 'Semester 2', 'Keuze 2', 'unlocked')}
     </div>

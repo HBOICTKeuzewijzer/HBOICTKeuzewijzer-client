@@ -40,15 +40,6 @@
         background-position: center;
     }
 
-    .semester.locked::before {
-        background-image: url('https://unpkg.com/phosphor-icons@1.4.2/assets/regular/lock-simple.svg');
-        filter: grayscale(100%) opacity(0.6); /* Vergrijsde look */
-    }
-
-    .semester.unlocked::before {
-        background-image: url('https://unpkg.com/phosphor-icons@1.4.2/assets/regular/lock-open.svg');
-        filter: none; /* Heldere look */
-    }
 
 
     .semester p {
@@ -86,9 +77,15 @@
     color: rgb(var(--color-black));
 }
 
-.semester.unlocked .lock-icon {
-    color: rgb(var(--color-black));
+
+.semester.unlocked {
+    border: 2px dashed rgba(var(--color-black), 1);
+    cursor: pointer;
 }
+
+    .semester.unlocked.selected-semester {
+        border: 2px dashed rgba(var(--color-gold), 1);
+    }
 
 .semester.locked .lock-icon {
     color: rgb(var(--color-black));
