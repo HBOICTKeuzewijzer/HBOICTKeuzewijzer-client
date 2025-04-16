@@ -7,7 +7,6 @@ import { fetcher } from "@/utils";
  * @property {function(Object): void=} edit - Called when edit button is pressed with row data.
  * @property {function(Object): void=} delete - Called when delete button is pressed with row data.
  * @property {function(Object): void=} inspect - Called when inspect button is pressed with row data.
- * @property {function(): void=} create - Called when create button is pressed (no row context).
  */
 
 /**
@@ -29,26 +28,19 @@ import { fetcher } from "@/utils";
  */
 
 const template = html`
-<div id="header-container">
-    <div id="header-content">
-        <h1 id="header-heading"></h1>
-        <p id="header-description"></p>
-    </div>
+<div class="container">
+    <div id="searchbar-container"></div>
+    <table>
+        <thead><tr></tr></thead>
+        <tbody></tbody>
+    </table>
+    <div id="paging-container"></div>
 </div>
-<div id="searchbar-container"></div>
-<table>
-    <caption></caption>
-    <thead><tr></tr></thead>
-    <tbody></tbody>
-</table>
-<div id="paging-container"></div>
 `;
-
-const captionKey = 'caption';
 
 export class Datatable extends CustomElement {
     static get observedAttributes() {
-        return [captionKey];
+        return [];
     }
 
     /**
@@ -60,30 +52,12 @@ export class Datatable extends CustomElement {
         super();
     }
 
-    /**
-     * Set the caption.
-     * @param {string} caption
-     */
-    set caption(caption) {
-        this.setAttribute(captionKey, caption);
-    }
-
-    /**
-     * Get the caption.
-     * @returns {string} Caption value.
-     */
-    get caption() {
-        return this.getAttribute(captionKey);
-    }
-
     get root() {
         return this.shadowRoot;
     }
 
     connectedCallback() {
         this.applyTemplate(template);
-
-        this.root.querySelector("caption").innerHTML = this.caption;
     }
 
     /**
@@ -204,7 +178,6 @@ export class Datatable extends CustomElement {
             console.error("Error loading table data:", error);
         }
     }
-
 
     #resolvePath(obj, path) {
         return path.split('.').reduce((acc, part) => acc && acc[part], obj);

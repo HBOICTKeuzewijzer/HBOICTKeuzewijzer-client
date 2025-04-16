@@ -1,7 +1,7 @@
 export default function AdminPage() {
     return /*html*/ `
         <div id="admindiv">
-            <x-data-table caption="Modules">
+            <x-data-table>
 
             </x-data-table>
         </div>
@@ -41,9 +41,6 @@ AdminPage.onPageLoaded = () => {
             inspect: function (rowdata) {
                 console.log(rowdata)
                 console.log("inspect")
-            },
-            create: function () {
-                console.log("create")
             }
         }
     })
