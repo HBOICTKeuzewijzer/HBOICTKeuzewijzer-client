@@ -18,12 +18,12 @@ import { Cookie } from '@utils'
  */
 describe('[Utils] Cookie', () => {
     /** @type {string} The name of the test cookie. */
-    const _cookieName = 'testCookie'
+    const cookieNameMock = 'testCookie'
     /** @type {string} The value of the test cookie. */
-    const _cookieValue = 'testValue'
+    const cookieValueMock = 'testValue'
 
     /** @type {string} Stores the current cookies. */
-    let cookieStore = ''
+    let cookieStoreMock = ''
 
     /**
      * Mocks the document.cookie property for testing purposes.
@@ -31,10 +31,10 @@ describe('[Utils] Cookie', () => {
      * - Updates `cookieStore` when cookies are set or retrieved.
      */
     const mockCookie = () => {
-        cookieStore = '' // Empty the cookie store before each test
+        cookieStoreMock = '' // Empty the cookie store before each test
 
         Object.defineProperty(document, 'cookie', {
-            get: () => cookieStore,
+            get: () => cookieStoreMock,
             set: cookie => {
                 const [keyValue] = cookie.split(';')
                 const [key, value] = keyValue.split('=')
@@ -44,10 +44,10 @@ describe('[Utils] Cookie', () => {
                 const regex = new RegExp(`(?:^|;\\s*)${key}=([^;]*)`)
 
                 // If the cookie is already set we want to update it
-                if (cookieStore.match(regex)) {
-                    cookieStore = cookieStore.replace(regex, `${key}=${encodedValue}`)
+                if (cookieStoreMock.match(regex)) {
+                    cookieStoreMock = cookieStoreMock.replace(regex, `${key}=${encodedValue}`)
                 } else {
-                    cookieStore += (cookieStore ? '; ' : '') + `${key}=${encodedValue}`
+                    cookieStoreMock += (cookieStoreMock ? '; ' : '') + `${key}=${encodedValue}`
                 }
             },
             configurable: true,
@@ -64,13 +64,13 @@ describe('[Utils] Cookie', () => {
     })
 
     it('[Should] Set a cookie in document.cookie', () => {
-        Cookie.set(_cookieName, _cookieValue)
-        expect(document.cookie).toContain(`${_cookieName}=${_cookieValue}`)
+        Cookie.set(cookieNameMock, cookieValueMock)
+        expect(document.cookie).toContain(`${cookieNameMock}=${cookieValueMock}`)
     })
 
     it('[Should] Retrieve the correct value for an existing cookie', () => {
-        Cookie.set(_cookieName, _cookieValue)
-        expect(Cookie.get(_cookieName)).toBe(_cookieValue)
+        Cookie.set(cookieNameMock, cookieValueMock)
+        expect(Cookie.get(cookieNameMock)).toBe(cookieValueMock)
     })
 
     it('[Should] Return NULL if the cookie does not exist', () => {
@@ -78,14 +78,14 @@ describe('[Utils] Cookie', () => {
     })
 
     it('[Should] Overwrite an existing cookie with the same name', () => {
-        Cookie.set(_cookieName, 'oldValue')
-        Cookie.set(_cookieName, _cookieValue)
+        Cookie.set(cookieNameMock, 'oldValue')
+        Cookie.set(cookieNameMock, cookieValueMock)
 
-        expect(Cookie.get(_cookieName)).toBe(_cookieValue)
+        expect(Cookie.get(cookieNameMock)).toBe(cookieValueMock)
     })
 
     it('[Should not] Set a cookie with invalid name', () => {
-        expect(() => Cookie.set('invalid cookie name', _cookieValue)).toThrowError(
+        expect(() => Cookie.set('invalid cookie name', cookieValueMock)).toThrowError(
             '[Cookie - Set] Cannot set a cookie with an invalid name',
         )
         expect(() => Cookie.get('invalid cookie name')).toThrowError(
@@ -94,16 +94,16 @@ describe('[Utils] Cookie', () => {
     })
 
     it('[Should not] Overwrite cookie with invalid value', () => {
-        Cookie.set(_cookieName, 'validValue')
+        Cookie.set(cookieNameMock, 'validValue')
 
-        const initialCookie = Cookie.get(_cookieName)
+        const initialCookie = Cookie.get(cookieNameMock)
         expect(initialCookie).toBe('validValue')
 
-        expect(() => Cookie.set(_cookieName, null)).toThrowError(
+        expect(() => Cookie.set(cookieNameMock, null)).toThrowError(
             '[Cookie - Set] Cannot set a cookie with an invalid value',
         )
 
-        const cookieAfterAttempt = Cookie.get(_cookieName)
+        const cookieAfterAttempt = Cookie.get(cookieNameMock)
         expect(cookieAfterAttempt).toBe('validValue')
     })
 })
