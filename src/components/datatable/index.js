@@ -1,31 +1,8 @@
-import { html } from "@/utils/functions";
+/** @typedef {import('@models/datatable/datatableConfig').DatatableConfig} DatatableConfig */
+
+import { html, resolvePath } from "@/utils/functions";
 import CustomElement from "@components/customElement";
 import { fetcher } from "@/utils";
-
-/**
- * @typedef {Object} DatatableButtons
- * @property {function(Object): void=} edit - Called when edit button is pressed with row data.
- * @property {function(Object): void=} delete - Called when delete button is pressed with row data.
- * @property {function(Object): void=} inspect - Called when inspect button is pressed with row data.
- */
-
-/**
- * @typedef DatatableColumn 
- * @property {string} path Path to the field in received data.
- * @property {string=} title Column header title, if left out will take path as value.
- * @property {boolean=} sorting Enables or disables sorting button on column header.
- * @property {Function=} render Method to modify data for that column bool > string value for example.
- */
-
-/**
- * @typedef DatatableConfig
- * @property {string} route Url to a datasource like a rest api.
- * @property {DatatableColumn[]} columns Configure columns.
- * @property {boolean=} searching Enables/disables searching.
- * @property {boolean=} paging Enables/disables paging.
- * @property {boolean=} pageSize Sets default page size if paging is enabled.
- * @property {DatatableButtons=} buttons - Optional button callbacks for actions.
- */
 
 const template = html`
 <div class="container">
@@ -37,6 +14,7 @@ const template = html`
         <tbody></tbody>
     </table>
     <div id="paging-container">
+        <p>Totaal <span id="amount-of-records"></span></p>
         <button name="to-start"><<</button>
         <button name="back"><</button>
         <button name="forward">></button>
@@ -69,20 +47,20 @@ export class Datatable extends CustomElement {
 
     /**
      * Collection of svg html strings copied from https://phosphoricons.com/
+     * @type {string[]}
      */
     #svgIcons = {
         edit: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM51.31,160,136,75.31,152.69,92,68,176.68ZM48,179.31,76.69,208H48Zm48,25.38L79.31,188,164,103.31,180.69,120Zm96-96L147.31,64l24-24L216,84.68Z"></path></svg>`,
         delete: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"></path></svg>`,
         inspect: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path></svg>`
-    }
+    };
 
     #queryState = {
-        currentPage: 1,
-        pageSize: 10,
+        page: 1,
         filter: "",
         sortColumn: "",
         sortDirection: ""
-    }
+    };
 
     #totalAmountOfRecords;
 
@@ -90,10 +68,6 @@ export class Datatable extends CustomElement {
 
     constructor() {
         super();
-    }
-
-    get root() {
-        return this.shadowRoot;
     }
 
     connectedCallback() {
@@ -111,8 +85,10 @@ export class Datatable extends CustomElement {
     dataTable(config) {
         this.#config = config;
         this.#validateConfig();
-        this.#constructTable();
+        this.#loadQueryParams();
         this.#updateQueryParams();
+        this.#constructTable();
+        this.#loadTable();
     }
 
     #validateConfig() {
@@ -125,7 +101,7 @@ export class Datatable extends CustomElement {
         }
 
         if (!this.#config.columns) {
-            throw new Error("No column defitions provided for datatable.")
+            throw new Error("No column defitions provided for datatable.");
         }
 
         for (let i = 0; i < this.#config.columns.length; i++) {
@@ -157,7 +133,9 @@ export class Datatable extends CustomElement {
 
         const searchbarContainer = this.root.querySelector("#searchbar-container");
         if (this.#config.searching) {
-            this.trackListener(searchbarContainer.querySelector("x-input"), "onValueChanged", event => this.#onSearch(event));
+            const searchbar = searchbarContainer.querySelector("x-input");
+            this.trackListener(searchbar, "onValueChanged", event => this.#onSearch(event));
+            searchbar.value = this.#queryState.filter;
         } else {
             searchbarContainer.style.display = "none";
         }
@@ -171,36 +149,21 @@ export class Datatable extends CustomElement {
         }
     }
 
-    #onSearch(event) {
-        this.#queryState.filter = event.detail.query;
-        this.#updateQueryParams();
-    }
+    #loadQueryParams() {
+        const url = new URL(window.location.href);
+        const params = url.searchParams;
 
-    #onPaging(event) {
-        const name = event.currentTarget.name;
+        for (const key in this.#queryState) {
+            const value = params.get(key);
 
-        switch (name) {
-            case "to-start":
-                this.#queryState.currentPage = 1;
-                break;
-            case "to-end":
-                this.#queryState.currentPage = this.#pageCount;
-                break;
-            case "forward":
-                if (this.#queryState.currentPage < this.#pageCount) {
-                    this.#queryState.currentPage++;
+            if (value !== null) {
+                if (key === "currentPage" || key === "pageSize") {
+                    this.#queryState[key] = parseInt(value, 10);
+                } else {
+                    this.#queryState[key] = value;
                 }
-                break;
-            case "back":
-                if (this.#queryState.currentPage > 1) {
-                    this.#queryState.currentPage--;
-                }
-                break;
-            default:
-                throw new Error("Not an expected button.");
+            }
         }
-
-        this.#updateQueryParams();
     }
 
     #updateQueryParams() {
@@ -218,16 +181,32 @@ export class Datatable extends CustomElement {
         }
 
         window.history.replaceState({}, "", url.toString());
-        this.#loadTable();
     }
 
+    /**
+     * Gets data with the url plus the querystate.
+     * @returns {Object} Data from api.
+     */
+    async #getData() {
+        const params = new URLSearchParams({
+            filter: this.#queryState.filter,
+            sortColumn: this.#queryState.sortColumn,
+            sortDirection: this.#queryState.sortDirection,
+            page: this.#queryState.page,
+            pageSize: this.#config.pageSize,
+        });
+
+        const url = `${this.#config.route}?${params.toString()}`;
+
+        return await fetcher(url, { method: "get" });
+    }
 
     /**
      * Starts setting up the table with data gotten from an endpoint.
      */
     async #loadTable() {
         try {
-            const data = await fetcher(this.#config.route, { method: "get" });
+            const data = await this.#getData();
 
             const tbody = this.root.querySelector("tbody");
 
@@ -236,12 +215,14 @@ export class Datatable extends CustomElement {
             this.#totalAmountOfRecords = Number(data.totalCount);
             this.#pageCount = Math.ceil(this.#totalAmountOfRecords / this.#config.pageSize);
 
+            this.root.querySelector("#amount-of-records").innerHTML = this.#totalAmountOfRecords;
+
             data.items.forEach(record => {
                 const tr = document.createElement("tr");
 
                 this.#config.columns.forEach(col => {
                     const td = document.createElement("td");
-                    const rawValue = this.#resolvePath(record, col.path);
+                    const rawValue = resolvePath(record, col.path);
                     const value = col.render ? col.render(rawValue, record) : rawValue;
                     td.innerHTML = value != null ? value : "";
                     tr.appendChild(td);
@@ -258,20 +239,19 @@ export class Datatable extends CustomElement {
                         const btn = document.createElement("button");
                         btn.setAttribute("data-action", button);
 
-                        // TODO: dit mag nog wat anders
                         btn.innerHTML = this.#svgIcons[button];
 
-                        this.trackListener(btn, "click", event => {
+                        this.trackListener(btn, "click", () => {
                             if (typeof callback === "function") {
                                 callback(record);
                             }
                         });
 
-                        const rowBtnHandler = (event) => {
+                        const rowBtnHandler = () => {
                             if (typeof callback === "function") {
                                 callback(record);
                             }
-                        }
+                        };
 
                         btn.addEventListener("click", rowBtnHandler);
 
@@ -288,11 +268,41 @@ export class Datatable extends CustomElement {
         }
     }
 
-    #resolvePath(obj, path) {
-        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
-    }
-
     attributeChangedCallback(name, oldValue, newValue) {
         if (oldValue === newValue) return;
+    }
+
+    #onSearch(event) {
+        this.#queryState.filter = event.detail.query;
+        this.#updateQueryParams();
+        this.#loadTable();
+    }
+
+    #onPaging(event) {
+        const name = event.currentTarget.name;
+
+        switch (name) {
+            case "to-start":
+                this.#queryState.page = 1;
+                break;
+            case "to-end":
+                this.#queryState.page = this.#pageCount;
+                break;
+            case "forward":
+                if (this.#queryState.page < this.#pageCount) {
+                    this.#queryState.page++;
+                }
+                break;
+            case "back":
+                if (this.#queryState.page > 1) {
+                    this.#queryState.page--;
+                }
+                break;
+            default:
+                throw new Error("Not an expected button.");
+        }
+
+        this.#updateQueryParams();
+        this.#loadTable();
     }
 }

@@ -31,18 +31,6 @@ export default class CustomElement extends HTMLElement {
 
     /**
      * Add a listener that will be tracked so that it is easy to remove with clearListeners().
-     * 
-     * Note things like this will not work:
-     * this.trackListener(btn, "click", event => {
-     *     if (typeof callback === "function") {
-     *         callback(record);
-     *     }
-     * });
-     * 
-     * You always need a named reference like so:
-     * const handler = (event) => {};
-     * this.trackListener(btn, "click", handler);
-     *
      * @param {HTMLElement} element 
      * @param {string} event 
      * @param {(event: Event) => void} handler
@@ -60,5 +48,12 @@ export default class CustomElement extends HTMLElement {
             element.removeEventListener(type, handler);
         }
         this.#eventListeners = [];
+    }
+
+    /**
+     * @returns {ShadowRoot} Shadowroot root
+     */
+    get root() {
+        return this.shadowRoot;
     }
 }

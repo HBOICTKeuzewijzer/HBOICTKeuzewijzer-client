@@ -7,7 +7,7 @@ const template = html`
 <textarea spellcheck="false"></textarea>
 `
 
-export class MultilineInput extends CustomElement {
+export class InputMultiline extends CustomElement {
     static get observedAttributes() {
         return ['placeholder'];
     }
