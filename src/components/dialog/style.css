@@ -1,0 +1,118 @@
+/* -------------------------------------------------------------
+ * Dialog Component Stylesheet
+ *
+ * This stylesheet defines the appearance and animation behavior
+ * for the <x-dialog> web component.
+ * ------------------------------------------------------------- */
+
+/* reset */
+:host button,
+:host fieldset,
+:host input {
+    all: unset;
+}
+
+:host([open]) [data-dialog] {
+    display: block;
+    animation: contentShow 150ms var(--easing-function);
+}
+
+:host([open][backdrop]) [data-backdrop] {
+    display: block;
+    animation: overlayShow 150ms var(--easing-function);
+}
+
+:host([closing]) [data-dialog] {
+    animation: contentHide 150ms var(--easing-function);
+}
+
+:host([closing][backdrop]) [data-backdrop] {
+    animation: overlayHide 150ms var(--easing-function);
+}
+
+:host([closable]) [data-close] {
+    display: block;
+}
+
+:host {
+    position: relative;
+    inset: 0;
+
+    & [data-dialog] {
+        display: none;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        max-width: 16rem;
+        padding: 1.5rem;
+        background-color: #fff;
+        border-radius: var(--rounded-sm);
+        box-shadow:
+            rgb(255, 255, 255) 0 0 0 0,
+            rgba(var(--color-gray-2), 0.2) 0 0 0 1px,
+            rgba(0, 0, 0, 0.1) 0 20px 25px -5px,
+            rgba(0, 0, 0, 0.1) 0 8px 10px -6px;
+        overflow-y: auto;
+        z-index: 25;
+    }
+
+    & [data-close] {
+        display: none;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        cursor: pointer;
+    }
+
+    & [data-backdrop] {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background-color: rgba(var(--color-black), 0.2);
+        z-index: 20;
+    }
+}
+
+/* === Animations === */
+
+@keyframes overlayShow {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes overlayHide {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes contentShow {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -48%) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes contentHide {
+    from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, -48%) scale(0.96);
+    }
+}

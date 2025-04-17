@@ -1,93 +1,121 @@
+/* -------------------------------------------------------------
+ * Popper Component Stylesheet
+ *
+ * This stylesheet defines the appearance and animation behavior
+ * for the <x-popper> web component.
+ * ------------------------------------------------------------- */
+
 :host {
+    --popper-offset: 6px;
+    --popper-padding: 0.25rem;
+    --popper-bg: #fff;
+    --popper-radius: var(--rounded-sm);
+    --popper-shadow:
+        0 0 0 0 rgba(255, 255, 255, 0), 0 0 0 1px rgba(var(--color-gray-2, 128, 128, 128), 0.2),
+        0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --popper-duration: 150ms;
+    --popper-easing: var(--easing-function);
+    --initial-transform: scale(0.96);
+
     position: relative;
-    display: inline-block;
-    width: fit-content;
-    height: fit-content;
-}
 
-.content {
-    display: none;
-    position: absolute;
-    padding: 0.25rem;
-    background-color: #fff;
-    animation: enter 0.15s;
-    box-shadow:
-        rgb(255, 255, 255) 0 0 0 0,
-        rgba(var(--color-gray-2), 0.2) 0 0 0 1px,
-        rgba(0, 0, 0, 0.1) 0 20px 25px -5px,
-        rgba(0, 0, 0, 0.1) 0 8px 10px -6px;
-    border-radius: var(--rounded-sm);
-    z-index: 50;
-}
-
-/* Tooltip-specific padding */
-:host([data-tooltip]) .content {
-    padding: 0.5rem 0.75rem;
-}
-
-/* Positioning based on location */
-:host([location='top']) .content {
-    bottom: 100%;
-    margin-bottom: 6px;
-}
-:host([location='right']) .content {
-    left: 100%;
-    margin-left: 6px;
-}
-:host([location='bottom']) .content {
-    top: 100%;
-    margin-top: 6px;
-}
-:host([location='left']) .content {
-    right: 100%;
-    margin-right: 6px;
-}
-
-/* Horizontal alignment (top & bottom) */
-:host([location='top'][placement='left']) .content,
-:host([location='bottom'][placement='left']) .content {
-    left: 0;
-}
-:host([location='top'][placement='right']) .content,
-:host([location='bottom'][placement='right']) .content {
-    right: 0;
-}
-:host([location='top'][placement='middle']) .content,
-:host([location='bottom'][placement='middle']) .content {
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-/* Vertical alignment (left & right) */
-:host([location='left'][placement='top']) .content,
-:host([location='right'][placement='top']) .content {
-    top: 0;
-}
-:host([location='left'][placement='middle']) .content,
-:host([location='right'][placement='middle']) .content {
-    top: 50%;
-    transform: translateY(-50%);
-}
-:host([location='left'][placement='bottom']) .content,
-:host([location='right'][placement='bottom']) .content {
-    bottom: 0;
-}
-
-:host([open]) .content {
-    display: flex;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 1;
-        transform: translate3d(-100%, 0, 0) scale3d(1, 1, 1) rotate(0);
+    & [data-content] {
+        position: absolute;
+        display: none;
+        padding: var(--popper-padding);
+        background: var(--popper-bg);
+        border-radius: var(--popper-radius);
+        box-shadow: var(--popper-shadow);
+        opacity: 0;
+        z-index: 15;
+        transform-origin: var(--popover-transform-origin, center);
+        transform: var(--initial-transform);
     }
 }
 
-@keyframes slideOut {
+:host button,
+:host fieldset,
+:host input {
+    all: unset;
+}
+
+:host([open]) [data-content] {
+    display: flex;
+    animation: contentShow var(--popper-duration) var(--popper-easing) forwards;
+}
+
+:host([closing]) [data-content] {
+    display: flex;
+    animation: contentHide var(--popper-duration) var(--popper-easing) forwards;
+}
+
+:host([position='top']) [data-content] {
+    inset-block-end: 100%;
+    margin-block-end: var(--popper-offset);
+    --popover-transform-origin: bottom center;
+}
+:host([position='bottom']) [data-content] {
+    inset-block-start: 100%;
+    margin-block-start: var(--popper-offset);
+    --popover-transform-origin: top center;
+}
+:host([position='left']) [data-content] {
+    inset-inline-end: 100%;
+    margin-inline-end: var(--popper-offset);
+    --popover-transform-origin: center right;
+}
+:host([position='right']) [data-content] {
+    inset-inline-start: 100%;
+    margin-inline-start: var(--popper-offset);
+    --popover-transform-origin: center left;
+}
+
+:host([position='top'][placement='left']) [data-content],
+:host([position='bottom'][placement='left']) [data-content] {
+    inset-inline-start: 0;
+}
+:host([position='top'][placement='right']) [data-content],
+:host([position='bottom'][placement='right']) [data-content] {
+    inset-inline-end: 0;
+}
+:host([position='top'][placement='middle']) [data-content],
+:host([position='bottom'][placement='middle']) [data-content] {
+    inset-block-start: -25%;
+    transform: translateX(50%) var(--initial-transform);
+}
+
+:host([position='left'][placement='top']) [data-content],
+:host([position='right'][placement='top']) [data-content] {
+    inset-block-start: 0;
+}
+:host([position='left'][placement='middle']) [data-content],
+:host([position='right'][placement='middle']) [data-content] {
+    inset-block-start: -25%;
+    transform: translateY(50%) var(--initial-transform);
+}
+:host([position='left'][placement='bottom']) [data-content],
+:host([position='right'][placement='bottom']) [data-content] {
+    inset-block-end: 0;
+}
+
+@keyframes contentShow {
+    from {
+        opacity: 0;
+        transform: var(--initial-transform);
+    }
     to {
         opacity: 1;
-        transform: translate3d(-100%, 0, 0) scale3d(1, 1, 1) rotate(0);
+        transform: scale(1);
     }
 }
-/* TODO: Justin fix animations */
+
+@keyframes contentHide {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: var(--initial-transform);
+    }
+}

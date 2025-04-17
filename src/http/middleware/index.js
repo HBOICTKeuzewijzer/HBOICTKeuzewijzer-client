@@ -1,3 +1,3 @@
 export * from './middleware'
 export * from './requireAuthCookie'
-export * from './requireStartYearCookie'
+export * from './ensureCohortIsSet'
