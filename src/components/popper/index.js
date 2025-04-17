@@ -11,25 +11,26 @@ _template.innerHTML = `
 `
 
 /**
- * Popper Web Component
+ * <x-popper>
  *
- * A base component for creating positioned floating elements.
- * Provides core positioning and ARIA functionality for tooltips and popovers.
+ * A reusable Web Component for creating positioned floating elements (tooltips, popovers, etc.).
+ * Handles core positioning via Popper, ARIA roles, and state attributes.
  *
  * Attributes:
- * - `open`: Controls visibility
- * - `position`: Positioning ('top'|'right'|'bottom'|'left')
- * - `placement`: Alignment ['top' || 'bottom']('left'|'right'|'middle') && ['right' || 'left']('top'|'bottom'|'middle')
+ * - `open`     : Boolean - toggles visibility of the popper content
+ * - `disabled` : Boolean - disables trigger interaction
+ * - `position` : String  - primary placement ('top' | 'right' | 'bottom' | 'left')
+ * - `placement`: String  - secondary alignment ('start' | 'center' | 'end')
  *
  * Slots:
- * - `trigger`: Element that controls the popper
- * - default: Content to show in the popper
+ * - `trigger` : The element that controls the popper (e.g., a button)
+ * - *default* : The content of the popper (annotated with `data-content`)
  *
  * Example:
  * ```html
  * <x-popper position="bottom" placement="center">
  *   <button slot="trigger">Trigger</button>
- *   <div>Popper content</div>
+ *   <div data-content role="tooltip">Tooltip text</div>
  * </x-popper>
  * ```
  */
@@ -38,6 +39,15 @@ export class Popper extends HTMLElement {
     triggerElement
     /** @type {HTMLElement | null} */
     contentElement
+
+    constructor() {
+        super()
+
+        this.attachShadow({ mode: 'open' }).appendChild(_template.content.cloneNode(true))
+
+        if (!this.hasAttribute('position')) this.setAttribute('position', (this.position = 'bottom'))
+        if (!this.hasAttribute('placement')) this.setAttribute('placement', (this.placement = 'middle'))
+    }
 
     /**
      * Specifies the observed attributes for the component.
@@ -61,7 +71,22 @@ export class Popper extends HTMLElement {
      * @returns {this}
      */
     set open(state) {
-        this.toggleAttribute('open', state)
+        if (state) {
+            this.setAttribute('open', '')
+            this.removeAttribute('closing')
+        } else {
+            this.setAttribute('closing', '')
+
+            this.contentElement?.addEventListener(
+                'animationend',
+                function handler() {
+                    this.removeAttribute('open')
+                    this.removeAttribute('closing')
+                    this.contentElement?.removeEventListener('animationend', handler)
+                }.bind(this),
+                { once: true },
+            )
+        }
     }
 
     /**
@@ -96,15 +121,6 @@ export class Popper extends HTMLElement {
      */
     set placement(location) {
         this.setAttribute('placement', location)
-    }
-
-    constructor() {
-        super()
-
-        this.attachShadow({ mode: 'open' }).appendChild(_template.content.cloneNode(true))
-
-        if (!this.hasAttribute('position')) this.setAttribute('position', (this.position = 'bottom'))
-        if (!this.hasAttribute('placement')) this.setAttribute('placement', (this.placement = 'middle'))
     }
 
     /**

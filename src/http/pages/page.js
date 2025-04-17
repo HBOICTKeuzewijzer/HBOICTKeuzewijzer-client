@@ -1,9 +1,7 @@
 import '@components/accordion'
 
 export default function PlannerPage(params) {
-
-    const selectableContent =
-        /*html*/ `
+    const selectableContent = /*html*/ `
             <div style="display: flex; flex-direction: column; padding: 24px 24px 0; gap: 6px">
                 <h5 style="margin: 0; font-size: 18px;">Modules</h5>
                 <div class="divider" style="background-color: rgb(var(--color-gray-4)); height:1px;"></div>
@@ -55,13 +53,19 @@ export default function PlannerPage(params) {
         `
 
     return /*html*/ `
-        <x-sheet id="modulesSelector" class="hidden md:flex" side="left" open>
-            ${selectableContent}
-        </x-sheet>
-        <x-drawer class="md:hidden" open>
-            ${selectableContent}
-        </x-drawer>
+        <x-dialog backdrop closable>
+            <button slot="trigger">Trigger Modal</button>
+        </x-dialog>
 
-        <div class="container"></div>
+        <div class="container">
+            <x-sheet class="hidden md:flex" side="left" open>
+                <button slot="trigger">Trigger Sheet</button>    
+                ${selectableContent}
+            </x-sheet>
+            <x-drawer class="md:hidden">
+                <button slot="trigger">Trigger Drawer</button>
+                ${selectableContent}
+            </x-drawer>
+        </div>
   `
 }

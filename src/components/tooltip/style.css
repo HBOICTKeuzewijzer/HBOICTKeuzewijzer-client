@@ -1,5 +1,3 @@
 :host {
-    & [data-content] {
-        padding: 0.5rem 0.75rem;
-    }
+    --popper-padding: 0.5rem 0.75rem;
 }

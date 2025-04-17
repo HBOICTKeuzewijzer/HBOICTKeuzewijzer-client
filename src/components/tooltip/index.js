@@ -2,21 +2,24 @@ import { Popper } from '@components'
 import styling from './style.css?raw'
 
 /**
- * Tooltip Web Component
+ * <x-tooltip>
  *
- * A lightweight tooltip that shows on hover.
- * Provides simple hover-based interaction with inherited positioning.
+ * A lightweight tooltip component that appears on hover or focus.
+ * Inherits positioning from Popper and includes accessibility improvements.
  *
- * Features:
- * - Shows on hover
- * - Hides on mouse out
- * - Inherits positioning from Popper
+ * Attributes:
+ * - `position`: String - tooltip placement ('top' | 'right' | 'bottom' | 'left')
+ * - `delay`   : Number - show/hide delay in milliseconds (default: 0)
+ *
+ * Slots:
+ * - `trigger` : Element that triggers the tooltip (hover/focus)
+ * - *default* : Tooltip content element annotated with `data-content`
  *
  * Example:
  * ```html
- * <x-tooltip position="top">
+ * <x-tooltip position="top" delay="200">
  *   <button slot="trigger">Hover me</button>
- *   <span>Helpful tooltip text</span>
+ *   <span data-content role="tooltip">Helpful tooltip text</span>
  * </x-tooltip>
  * ```
  */
@@ -36,8 +39,10 @@ export class Tooltip extends Popper {
     connectedCallback() {
         super.connectedCallback()
 
-        this.triggerElement?.addEventListener('mouseover', () => (this.open = true))
-        this.triggerElement?.addEventListener('mouseout', () => (this.open = false))
+        this.triggerElement?.addEventListener('mouseenter', this.#openHandler)
+        this.triggerElement?.addEventListener('mouseleave', this.#closeHandler)
+        this.triggerElement?.addEventListener('focus', this.#openHandler)
+        this.triggerElement?.addEventListener('blur', this.#closeHandler)
     }
 
     /**
@@ -46,7 +51,21 @@ export class Tooltip extends Popper {
     disconnectedCallback() {
         super.disconnectedCallback()
 
-        this.triggerElement?.removeEventListener('mouseover', () => (this.open = true))
-        this.triggerElement?.removeEventListener('mouseout', () => (this.open = false))
+        this.triggerElement?.removeEventListener('mouseenter', this.#openHandler)
+        this.triggerElement?.removeEventListener('mouseleave', this.#closeHandler)
+        this.triggerElement?.removeEventListener('focus', this.#openHandler)
+        this.triggerElement?.removeEventListener('blur', this.#closeHandler)
     }
+
+    /**
+     * Shows the tooltip.
+     * @private
+     */
+    #openHandler = () => { this.open = true }
+
+    /**
+     * Hides the tooltip.
+     * @private
+     */
+    #closeHandler = () => { this.open = false }
 }

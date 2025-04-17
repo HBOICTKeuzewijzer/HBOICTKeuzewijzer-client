@@ -2,24 +2,28 @@ import { Popper } from '@components'
 import styling from './style.css?raw'
 
 /**
- * Popover Web Component
+ * <x-popover>
  *
- * An interactive floating panel that shows on click.
- * Includes click-outside and escape key handling.
+ * A reusable Web Component for popovers (floating panels) that toggles on trigger interaction.
+ * Handles visibility, positioning via Popper, accessibility, and user interactions.
  *
- * Features:
- * - Click trigger to toggle
- * - Click outside to close
- * - Escape key to close
- * - Inherits positioning from Popper
+ * Attributes:
+ * - `open`     : Boolean - shows/hides the popover
+ * - `position` : String  - popover placement (e.g., "top", "bottom", "left", "right")
+ * - `disabled` : Boolean - disables user interaction (no toggle)
+ * - `closable` : Boolean - enables closing via clicking outside or Escape key
+ *
+ * Slots:
+ * - `trigger`  : The element that toggles the popover (e.g., a button)
+ * - *default*  : The content of the popover
  *
  * Example:
  * ```html
- * <x-popover position="bottom">
+ * <x-popover position="bottom" closable>
  *   <button slot="trigger">Open Menu</button>
- *   <div class="menu">
- *     <a href="#">Option 1</a>
- *     <a href="#">Option 2</a>
+ *   <div class="menu" role="menu">
+ *     <a href="#" role="menuitem">Option 1</a>
+ *     <a href="#" role="menuitem">Option 2</a>
  *   </div>
  * </x-popover>
  * ```
@@ -69,7 +73,7 @@ export class Popover extends Popper {
      * @private
      */
     #handleEscape = event => {
-        if (event.key === 'Escape') this.open = false
+        if (event.key === 'Escape' && this.open) this.open = false
     }
 
     /**
@@ -77,7 +81,7 @@ export class Popover extends Popper {
      * @private
      */
     #handleOutsideClick = event => {
-        if (!this.contains(event.target) && !this.triggerElement?.contains(event.target)) {
+        if (!this.contains(event.target) && !this.triggerElement?.contains(event.target) && this.open) {
             this.open = false
         }
     }

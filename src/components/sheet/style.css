@@ -1,85 +1,86 @@
-:host {
-    --transform-x: -100%;
+/* -------------------------------------------------------------
+ * Sheet Component Stylesheet
+ *
+ * Defines appearance, layout, and animation for the <x-sheet> component.
+ * Utilizes CSS variables for customization and respects reduced-motion settings.
+ * ------------------------------------------------------------- */
 
-    display: flex;
-    position: relative;
-    width: auto;
-    height: auto;
+:host {
+    --sheet-width: 20rem;
+    --sheet-gap: 12px;
+    --sheet-header-offset: var(--header-height, 0);
+    --sheet-duration: 500ms;
+    --sheet-easing: var(--easing-function, ease-in-out);
+
+    display: block;
 
     & [data-dialog] {
-        width: 100%;
         display: none;
-        position: relative;
-        top: 0;
-        padding: 0;
-        transform: none;
-        margin: 12px;
-        flex: 1;
-        background-color: #fff;
-        border-right: 1px solid rgba(var(--color-gray-3), 0.2);
-        border-radius: var(--rounded-lg);
-        box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-        z-index: 25;
-        overflow-y: auto;
-        transition-property:
-            color,
-            background-color,
-            border-color,
-            text-decoration-color,
-            fill,
-            stroke,
-            --tw-gradient-from,
-            --tw-gradient-via,
-            --tw-gradient-to,
-            opacity,
-            box-shadow,
-            transform,
-            translate,
-            scale,
-            rotate,
-            filter,
-            -webkit-backdrop-filter,
-            backdrop-filter;
-        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-        animation: slideOut 300ms forwards;
-    }
-}
+        position: fixed;
+        inset-block-start: calc(var(--sheet-header-offset) + var(--sheet-gap));
+        inset-block-end: var(--sheet-gap);
+        inset-inline-start: var(--sheet-gap);
+        inset-inline-end: var(--sheet-gap);
 
-:host([open]) [data-dialog] {
-    display: flex;
-    animation: slideIn 500ms forwards;
+        width: 100%;
+        max-inline-size: var(--sheet-width);
+        height: calc(100% - var(--sheet-header-offset) - (var(--sheet-gap) * 2));
+
+        padding: 0;
+        background-color: #fff;
+        border-radius: var(--rounded-lg, 0.5rem);
+        box-shadow:
+            rgba(var(--color-gray-2, 0, 0, 0), 0.2) 0 0 0 1px,
+            rgba(0, 0, 0, 0.1) 0 20px 25px -5px,
+            rgba(0, 0, 0, 0.1) 0 8px 10px -6px;
+        overflow-y: auto;
+        z-index: 15;
+
+        transform: translateX(var(--transform-x, -100%));
+    }
 }
 
 :host([side='left']) [data-dialog] {
-    left: 0;
-    --transform-x: -100%
+    inset-inline-start: var(--sheet-gap);
+    inset-inline-end: auto;
+    --transform-x: -100%;
 }
 :host([side='right']) [data-dialog] {
-    right: 0;
-    --transform-x: 100%
+    inset-inline-start: auto;
+    inset-inline-end: var(--sheet-gap);
+    --transform-x: 100%;
 }
 
-:host([type='floating']) [data-dialog] {
-    position: fixed;
+/* Open and closing animations */
+:host([open]) [data-dialog] {
+    display: block;
+    animation: slide-in var(--sheet-duration) var(--sheet-easing) forwards;
+}
+:host([closing]) [data-dialog] {
+    animation: slide-out var(--sheet-duration) var(--sheet-easing) forwards;
 }
 
-@media (min-width: 640px) {
-    [data-dialog] {
-        max-width: 20rem !important;
-    }
-
-}
-
-@keyframes slideIn {
+@keyframes slide-in {
     from {
-        opacity: 1;
-        transform: translate3d(var(--transform-x), 0, 0) scale3d(1, 1, 1) rotate(0);
+        transform: translateX(calc(var(--transform-x) - var(--sheet-gap)));
+    }
+    to {
+        transform: translateX(0);
     }
 }
 
-@keyframes slideOut {
+@keyframes slide-out {
+    from {
+        transform: translateX(0);
+    }
     to {
-        opacity: 1;
-        transform: translate3d(var(--transform-x), 0, 0) scale3d(1, 1, 1) rotate(0);
+        transform: translateX(calc(var(--transform-x) - var(--sheet-gap)));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-dialog] {
+        animation: none !important;
+        transition: none !important;
     }
 }

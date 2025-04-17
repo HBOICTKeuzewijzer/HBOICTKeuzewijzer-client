@@ -11,9 +11,8 @@ export class RequireAuthCookie extends Middleware {
      * @returns {Promise<boolean>} Resolves to `true` if the middleware passes, `false` otherwise.
      */
     async handle(context) {
-        if (Cookie.get('x-session') == null)
-            router.redirect('/')
+        if (Cookie.get('x-session') == null) router.redirect('/')
 
-        return true;
+        return true
     }
 }

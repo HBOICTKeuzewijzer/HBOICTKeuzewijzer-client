@@ -1,9 +1,7 @@
 import template from './template.html?raw'
 import styling from './style.css?raw'
 
-/**
- * Creates a template for the Dialog component, including styles and HTML structure.
- */
+// Create and attach the component's shadow DOM template
 const _template = document.createElement('template')
 _template.innerHTML = `
     <style>${styling}</style>
@@ -11,39 +9,39 @@ _template.innerHTML = `
 `
 
 /**
- * Dialog Web Component
+ * <x-dialog>
  *
- * A base component for modal-like interfaces that can be shown/hidden.
- * Provides core functionality for managing visibility and accessibility.
+ * A reusable Web Component for modal dialogs.
+ * Handles visibility, accessibility, and user interaction.
  *
  * Attributes:
- * - `open`: Controls visibility of the dialog
- * - `disabled`: Disables interaction with the dialog
+ * - `open`     : Boolean - shows/hides the dialog
+ * - `disabled` : Boolean - disables interaction
+ * - `closable` : Boolean - enables close interactions (click on backdrop or close button)
  *
- * Properties:
- * - `open`: Boolean getter/setter for visibility
- * - `disabled`: Boolean getter/setter for disabled state
+ * Slots:
+ * - `trigger` : An optional button or element to open the dialog
  *
  * Example:
  * ```html
- * <x-dialog>
+ * <x-dialog closable>
+ *   <button slot="trigger">Open</button>
  *   <div>Dialog content here</div>
  * </x-dialog>
  * ```
  */
 export class Dialog extends HTMLElement {
     /** @type {HTMLElement | null} */
-    triggerElement = null
-    /** @type {HTMLElement | null} */
     contentElement = null
     /** @type {HTMLElement | null} */
     backdropElement = null
+    /** @type {HTMLElement | null} */
+    triggerElement = null
     /** @type {HTMLButtonElement | null} */
     closeButton = null
 
     constructor() {
         super()
-
         this.attachShadow({ mode: 'open' }).appendChild(_template.content.cloneNode(true))
     }
 
@@ -69,7 +67,22 @@ export class Dialog extends HTMLElement {
      * @returns {this}
      */
     set open(state) {
-        this.toggleAttribute('open', state)
+        if (state) {
+            this.setAttribute('open', '')
+            this.removeAttribute('closing')
+        } else {
+            this.setAttribute('closing', '')
+
+            this.contentElement?.addEventListener(
+                'animationend',
+                function handler() {
+                    this.removeAttribute('open')
+                    this.removeAttribute('closing')
+                    this.contentElement?.removeEventListener('animationend', handler)
+                }.bind(this),
+                { once: true },
+            )
+        }
     }
 
     /**
@@ -94,16 +107,16 @@ export class Dialog extends HTMLElement {
      * Lifecycle method triggered when the component is added to the DOM.
      */
     connectedCallback() {
-        this.triggerElement = this.querySelector('[slot="trigger"]')
         this.contentElement = this.shadowRoot?.querySelector('[data-dialog]')
         this.backdropElement = this.shadowRoot?.querySelector('[data-backdrop]')
         this.closeButton = this.shadowRoot?.querySelector('[data-close]')
+        this.triggerElement = this.querySelector('[slot="trigger"]')
 
-        this.triggerElement?.addEventListener('click', () => this.open = true)
+        this.triggerElement?.addEventListener('click', this._openHandler)
 
         if (this.hasAttribute('closable')) {
-            this.backdropElement?.addEventListener('click', () => (this.open = false))
-            this.closeButton?.addEventListener('click', () => (this.open = false))
+            this.backdropElement?.addEventListener('click', this._closeHandler)
+            this.closeButton?.addEventListener('click', this._closeHandler)
         }
 
         this.contentElement?.setAttribute(
@@ -111,18 +124,18 @@ export class Dialog extends HTMLElement {
             `dialog-${crypto.randomUUID?.() || Math.random().toString(36).slice(2, 9)}`,
         )
 
-        this._updateAriaProperties()
+        this.#updateAriaProperties()
     }
 
     /**
      * Lifecycle method triggered when the component is removed from the DOM.
      */
     disconnectedCallback() {
-        this.triggerElement?.removeEventListener('click', () => this.open = true)
+        this.triggerElement?.removeEventListener('click', this._openHandler)
 
         if (this.hasAttribute('closable')) {
-            this.backdropElement?.removeEventListener('click', () => (this.open = false))
-            this.closeButton?.removeEventListener('click', () => (this.open = false))
+            this.backdropElement?.removeEventListener('click', this._closeHandler)
+            this.closeButton?.removeEventListener('click', this._closeHandler)
         }
     }
 
@@ -133,9 +146,10 @@ export class Dialog extends HTMLElement {
      * @param {string | null} newValue - The new value of the attribute.
      */
     attributeChangedCallback(name, oldValue, newValue) {
-        if (newValue !== oldValue && (name === 'open' || name === 'disabled')) {
-            this.triggerElement?.toggleAttribute('disabled', this.hasAttribute('disabled').toString())
-            this._updateAriaProperties()
+        if (oldValue !== newValue) {
+            if (name === 'disabled') this.triggerElement?.toggleAttribute('disabled', this.disabled)
+
+            this.#updateAriaProperties()
         }
     }
 
@@ -143,9 +157,12 @@ export class Dialog extends HTMLElement {
      * Updates ARIA attributes based on dialog state.
      * @private
      */
-    _updateAriaProperties() {
-        this.triggerElement?.setAttribute('aria-expanded', this.open.toString())
-        this.triggerElement?.setAttribute('aria-disabled', this.hasAttribute('disabled').toString())
-        this.contentElement?.setAttribute('aria-hidden', (!this.open).toString())
+    #updateAriaProperties() {
+        this.triggerElement?.setAttribute('aria-expanded', this.open)
+        this.triggerElement?.setAttribute('aria-disabled', this.hasAttribute('disabled'))
+        this.contentElement?.setAttribute('aria-hidden', !this.open)
     }
+
+    _openHandler = () => (this.open = true)
+    _closeHandler = () => (this.open = false)
 }

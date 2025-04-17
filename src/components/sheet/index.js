@@ -2,16 +2,16 @@ import { Dialog } from '@components'
 import styling from './style.css?raw'
 
 /**
- * Sheet Web Component
+ * <x-sheet>
  *
- * A sliding panel component that appears from the edge of the screen.
- * Extends Dialog to provide a side-drawer or modal-like interface.
+ * A sliding panel component that can be used as a side-drawer or modal-like interface.
+ * Inherits from `Dialog` and provides control over which side the sheet appears from.
  *
  * Attributes:
- * - Inherits `open` and `disabled` from Dialog
- * - `side`: Controls which side the sheet appears from ('left'|'right'|'top'|'bottom')
+ * - Inherits `open` and `disabled` from the `Dialog` component.
+ * - `side`     : Specifies which side the sheet slides in from ('left', 'right', 'top', or 'bottom').
  *
- * Example:
+ * Example usage:
  * ```html
  * <x-sheet side="right">
  *   <h2>Sheet Title</h2>

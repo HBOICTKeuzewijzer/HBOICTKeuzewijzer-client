@@ -7,12 +7,12 @@ export default function Layout(children) {
     return /*html*/ `
         <div>
             <header>
-                <a href="/planner">
+                <a href="/">
                     <img src="${imageURL}"/>
                 </a>
                 <div class="headerActions">
                     ${
-                        hasSession
+                        hasSession || true
                             ? /*html*/ `
                                 <x-tooltip position="left" placement="middle">
                                     <a slot="trigger" href="/messages" data-icon>
