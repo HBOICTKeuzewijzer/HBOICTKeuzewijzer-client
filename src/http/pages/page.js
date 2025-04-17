@@ -1,5 +1,5 @@
-import '@components/accordion';
-import '@components/save-button';
+import '@components/accordion'
+import '@components/save-button'
 
 export default function PlannerPage(params) {
     const selectableContent = /*html*/ `
