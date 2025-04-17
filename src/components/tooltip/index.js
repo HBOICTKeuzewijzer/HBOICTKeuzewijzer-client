@@ -61,11 +61,15 @@ export class Tooltip extends Popper {
      * Shows the tooltip.
      * @private
      */
-    #openHandler = () => { this.open = true }
+    #openHandler = () => {
+        this.open = true
+    }
 
     /**
      * Hides the tooltip.
      * @private
      */
-    #closeHandler = () => { this.open = false }
+    #closeHandler = () => {
+        this.open = false
+    }
 }
