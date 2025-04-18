@@ -16,6 +16,24 @@ export class InputMultiline extends CustomElement {
         super();
     }
 
+    get placeholder() {
+        return this.getAttribute('placeholder');
+    }
+
+    set placeholder(value) {
+        this.setAttribute('placeholder', value);
+    }
+
+    get value() {
+        const input = this.shadowRoot?.querySelector('input');
+        return input?.value || '';
+    }
+
+    set value(val) {
+        const input = this.shadowRoot?.querySelector('input');
+        if (input) input.value = val;
+    }
+
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'placeholder' && this.shadowRoot) {
             const input = this.shadowRoot.querySelector('textarea');
@@ -32,7 +50,7 @@ export class InputMultiline extends CustomElement {
         }
     }
 
-    #inputHandler = (event) => {
+    #inputHandler = (e) => {
         const value = e.target.value;
         this.dispatchEvent(new CustomEvent('onValueChanged', {
             detail: { query: value },
@@ -47,7 +65,7 @@ export class InputMultiline extends CustomElement {
         const input = this.shadowRoot.querySelector('textarea');
         if (!input) return;
 
-        input.placeholder = this.getAttribute('placeholder') || '';
+        input.placeholder = this.placeholder;
 
         input.addEventListener('input', this.#inputHandler);
     }
