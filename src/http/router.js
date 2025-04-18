@@ -6,6 +6,8 @@ class Router {
     #DOMContainer
     /** @type {Array} The list of application routes. */
     #routes
+    /** @type {} */
+    #currentPageComponent = null
 
     constructor() {
         this.#routes = routes
@@ -77,9 +79,11 @@ class Router {
      * @returns {Promise<void>}
      */
     async #render(componentLoader, params) {
+        this.#currentPageComponent?.default.onBeforePageUnloaded?.()
+
         // Load the page component dynamically.
-        const PageComponent = await componentLoader()
-        const content = PageComponent.default(params)
+        this.#currentPageComponent = await componentLoader()
+        const content = this.#currentPageComponent.default(params)
 
         // Load the layout and wrap the content inside it.
         const layout = (await import('@pages/layout.js')).default(content)
@@ -87,6 +91,8 @@ class Router {
         // Clear the container and append the new layout.
         this.#DOMContainer.innerHTML = ''
         this.#DOMContainer.appendChild(layout instanceof HTMLElement ? layout : this.#createElementFromHTML(layout))
+
+        this.#currentPageComponent.default.onPageLoaded?.()
     }
 
     /**
