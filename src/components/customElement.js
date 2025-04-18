@@ -44,8 +44,8 @@ export default class CustomElement extends HTMLElement {
      * Clears all tracked listeners
      */
     clearListeners() {
-        for (const { element, type, handler } of this.#eventListeners) {
-            element.removeEventListener(type, handler);
+        for (const { element, event, handler } of this.#eventListeners) {
+            element.removeEventListener(event, handler);
         }
         this.#eventListeners = [];
     }
