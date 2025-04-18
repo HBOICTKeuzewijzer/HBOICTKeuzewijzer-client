@@ -17,9 +17,10 @@ export class Sidebar extends CustomElement {
 
         const sidebar = this.shadowRoot.getElementById('sidebar')
         const sidebarWrapper = this.shadowRoot.getElementById('sidebar-wrapper')
+        
 
-        sidebarWrapper.addEventListener('click', () => {
-            sidebar.classList.toggle('hidden')
+        this.trackListener(sidebarWrapper, 'click', () => {
+            sidebar.classList.toggle('collapsed')
         })
     }
 }

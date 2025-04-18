@@ -1,5 +1,5 @@
 .sidebar {
-    width: 100%;
+    width: 280px; /* Vaste breedte ipv 100% */
     position: relative;
     border-radius: 0px 12px 12px 0px;
     background-color: #fff;
@@ -17,23 +17,38 @@
     font-size: 14px;
     color: #231f20;
     font-family: Inter;
-    transition: transform 0.3s ease;
+    transition: width 0.3s ease, padding 0.3s ease; /* Animaties voor width en padding */
 }
 
-.sidebar.hidden {
-    transform: translateX(60%);
+.sidebar.collapsed {
+    width: 72px; /* Alleen genoeg ruimte voor icons */
+    padding: 24px 12px; /* Minder padding in collapsed state */
+}
+
+/* Verberg tekst in collapsed state */
+.sidebar.collapsed .beheer,
+.sidebar.collapsed .modules,
+.sidebar.collapsed .oer,
+.sidebar.collapsed .categorien,
+.sidebar.collapsed .rollen-toewijzen,
+.sidebar.collapsed .slb-relaties {
+    display: none;
+}
+
+/* Pas de beheer-parent aan voor collapsed state */
+.sidebar.collapsed .beheer-parent {
+    justify-content: center; /* Centreer het hamburger icoon */
 }
 
 .beheer {
     flex: 1;
-    width: 100%;
     position: relative;
     font-size: 20px;
     font-weight: 900;
     font-family: Roboto;
     color: #231f20;
     text-align: left;
-    display: inline-block;
+    white-space: nowrap; /* Voorkom line breaks */
 }
 
 .sidebar-wrapper {
@@ -44,6 +59,7 @@
     align-items: center;
     justify-content: flex-start;
     padding: 8px 16px;
+    cursor: pointer; /* Duidelijk dat het klikbaar is */
 }
 
 .beheer-parent {
@@ -57,14 +73,6 @@
     gap: 10px;
     font-size: 20px;
     font-family: Roboto;
-}
-
-.frame-child {
-    width: 253px;
-    position: relative;
-    border-top: 1px solid #d0d2d3;
-    box-sizing: border-box;
-    height: 1px;
 }
 
 .button {
@@ -82,6 +90,17 @@
     justify-content: flex-start;
     padding: 8px 16px;
     gap: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.button:hover {
+    background-color: rgba(166, 168, 171, 0.3);
+}
+
+.button.active {
+    background-color: #ffcb05;
+    border-color: #ffcb05;
 }
 
 .button-modules {
@@ -99,6 +118,7 @@
     justify-content: flex-start;
     padding: 8px 16px;
     gap: 4px;
+    cursor: pointer;
 }
 
 .frame-parent {
@@ -112,42 +132,11 @@
     gap: 10px;
 }
 
-.slb-relaties {
-    position: relative;
-    font-size: 14px;
-    font-weight: 600;
-    font-family: Inter;
-    color: #231f20;
-    text-align: left;
-}
-
-.rollen-toewijzen {
-    position: relative;
-    font-size: 14px;
-    font-weight: 600;
-    font-family: Inter;
-    color: #231f20;
-    text-align: left;
-}
-
-.categorien {
-    position: relative;
-    font-size: 14px;
-    font-weight: 600;
-    font-family: Inter;
-    color: #231f20;
-    text-align: left;
-}
-
-.oer {
-    position: relative;
-    font-size: 14px;
-    font-weight: 600;
-    font-family: Inter;
-    color: #231f20;
-    text-align: left;
-}
-
+/* Responsive text classes - blijft hetzelfde */
+.slb-relaties,
+.rollen-toewijzen,
+.categorien,
+.oer,
 .modules {
     position: relative;
     font-size: 14px;
@@ -155,4 +144,5 @@
     font-family: Inter;
     color: #231f20;
     text-align: left;
+    white-space: nowrap;
 }
