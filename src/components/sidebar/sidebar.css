@@ -1,34 +1,158 @@
 .sidebar {
-    border-left: 3px solid black; /* Alleen linkerborder voor een sidebar-look */
-    border-radius: 0 20px 20px 0; /* Alleen rechterhoeken afgerond */
-    padding: 20px; /* Gelijke padding aan alle kanten */
-    margin: 0; /* Geen extra ruimte buiten het element */
-    background-color: #f0f0f0; /* Subtiele achtergrondkleur */
-    max-width: 250px; /* Breedte van de sidebar */
-    font-size: 16px;
-    text-align: left; /* Tekst links uitlijnen */
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Optionele schaduw voor diepte */
-}
-
-.sidebar h1, .sidebar h2 {
-    font-size: 18px; /* Kopjes iets groter maken */
-    margin-bottom: 10px; /* Ruimte onder kopjes */
-    color: #333; /* Donkere tekstkleur */
-}
-
-.sidebar button {
-    display: block; /* Knoppen onder elkaar */
-    width: 100%; /* Knoppen vullen de breedte van de sidebar */
-    padding: 10px;
-    margin: 10px 0; /* Ruimte tussen knoppen */
-    border: none;
-    border-radius: 5px;
-    background-color: #007BFF; /* Blauwe knopkleur */
-    color: white;
+    width: 100%;
+    position: relative;
+    border-radius: 0px 12px 12px 0px;
+    background-color: #fff;
+    border-right: 1px solid rgba(166, 168, 171, 0.2);
+    box-sizing: border-box;
+    height: 763px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 24px;
+    text-align: left;
     font-size: 14px;
-    cursor: pointer;
+    color: #231f20;
+    font-family: Inter;
+    transition: transform 0.3s ease;
 }
 
-.sidebar button:hover {
-    background-color: #0056b3; /* Donkerdere kleur bij hover */
+.sidebar.hidden {
+    transform: translateX(60%);
+}
+
+.beheer {
+    flex: 1;
+    width: 100%;
+    position: relative;
+    font-size: 20px;
+    font-weight: 900;
+    font-family: Roboto;
+    color: #231f20;
+    text-align: left;
+    display: inline-block;
+}
+
+.sidebar-wrapper {
+    background-color: #fff;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 16px;
+}
+
+.beheer-parent {
+    align-self: stretch;
+    background-color: #fff;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    font-size: 20px;
+    font-family: Roboto;
+}
+
+.frame-child {
+    width: 253px;
+    position: relative;
+    border-top: 1px solid #d0d2d3;
+    box-sizing: border-box;
+    height: 1px;
+}
+
+.button {
+    align-self: stretch;
+    border-radius: 12px;
+    background-color: rgba(166, 168, 171, 0.2);
+    border: 1px solid rgba(166, 168, 171, 0.2);
+    box-sizing: border-box;
+    height: 42px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 16px;
+    gap: 4px;
+}
+
+.button-modules {
+    align-self: stretch;
+    border-radius: 12px;
+    background-color: #ffcb05;
+    border: 1px solid rgba(166, 168, 171, 0.2);
+    box-sizing: border-box;
+    height: 42px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 16px;
+    gap: 4px;
+}
+
+.frame-parent {
+    align-self: stretch;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.slb-relaties {
+    position: relative;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Inter;
+    color: #231f20;
+    text-align: left;
+}
+
+.rollen-toewijzen {
+    position: relative;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Inter;
+    color: #231f20;
+    text-align: left;
+}
+
+.categorien {
+    position: relative;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Inter;
+    color: #231f20;
+    text-align: left;
+}
+
+.oer {
+    position: relative;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Inter;
+    color: #231f20;
+    text-align: left;
+}
+
+.modules {
+    position: relative;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Inter;
+    color: #231f20;
+    text-align: left;
 }
