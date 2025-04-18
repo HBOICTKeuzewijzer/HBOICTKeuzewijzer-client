@@ -36,7 +36,7 @@ export class Input extends CustomElement {
         }
     }
 
-    #inputHandler = (event) => {
+    #inputHandler = (e) => {
         const value = e.target.value;
         this.dispatchEvent(new CustomEvent('onValueChanged', {
             detail: { query: value },
