@@ -1,5 +1,5 @@
-import styling from './style.css?raw'
-import { html } from '@utils/functions'
+import styling from './style.css?raw';
+import { html } from '@utils/functions';
 import CustomElement from '@components/customElement';
 
 const template = html`
@@ -9,7 +9,7 @@ const template = html`
     <input type="text" />
     <slot class="icon-slot" name="append"></slot>
 </div>
-`
+`;
 
 export class Input extends CustomElement {
     static get observedAttributes() {
@@ -18,6 +18,24 @@ export class Input extends CustomElement {
 
     constructor() {
         super();
+    }
+
+    get placeholder() {
+        return this.getAttribute('placeholder');
+    }
+
+    set placeholder(value) {
+        this.setAttribute('placeholder', value);
+    }
+
+    get value() {
+        const input = this.shadowRoot?.querySelector('input');
+        return input?.value || '';
+    }
+
+    set value(val) {
+        const input = this.shadowRoot?.querySelector('input');
+        if (input) input.value = val;
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -43,16 +61,16 @@ export class Input extends CustomElement {
             bubbles: true,
             composed: true
         }));
-    }
+    };
 
     connectedCallback() {
         this.applyTemplate(template);
-        this.clearEmptySlots();
+        this.hideEmptySlots();
 
         const input = this.shadowRoot.querySelector('input');
         if (!input) return;
 
-        input.placeholder = this.getAttribute('placeholder') || '';
+        input.placeholder = this.placeholder;
 
         input.addEventListener('input', this.#inputHandler);
     }

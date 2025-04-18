@@ -7,13 +7,31 @@ const template = html`
 <textarea spellcheck="false"></textarea>
 `
 
-export class MultilineInput extends CustomElement {
+export class InputMultiline extends CustomElement {
     static get observedAttributes() {
         return ['placeholder'];
     }
 
     constructor() {
         super();
+    }
+
+    get placeholder() {
+        return this.getAttribute('placeholder');
+    }
+
+    set placeholder(value) {
+        this.setAttribute('placeholder', value);
+    }
+
+    get value() {
+        const input = this.shadowRoot?.querySelector('input');
+        return input?.value || '';
+    }
+
+    set value(val) {
+        const input = this.shadowRoot?.querySelector('input');
+        if (input) input.value = val;
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -47,7 +65,7 @@ export class MultilineInput extends CustomElement {
         const input = this.shadowRoot.querySelector('textarea');
         if (!input) return;
 
-        input.placeholder = this.getAttribute('placeholder') || '';
+        input.placeholder = this.placeholder;
 
         input.addEventListener('input', this.#inputHandler);
     }
