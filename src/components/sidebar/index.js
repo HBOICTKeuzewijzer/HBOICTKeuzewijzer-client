@@ -1,20 +1,16 @@
-class Sidebar extends HTMLElement {
+import CustomElement from '../customElement'
+import sidebar from './sidebar.html?raw' 
+import styles from './sidebar.css?raw'
+import { html } from '@/utils/functions'
+
+const template = html`
+    <style>${styles}</style>
+    ${sidebar}
+`
+
+export class Sidebar extends CustomElement {
     constructor() {
-        super();
-        const shadow = this.attachShadow({mode: 'open'});
-        
-        const template = document.createElement('template');
-        template.innerHTML = `
-            <style>
-                @import url("sidebar.css");
-            </style>
-            <slot>No content provided</slot>
-        `;
-    
-        shadow.appendChild(template.content.cloneNode(true));
-        
+        super()
+        this.applyTemplate(template)
     }
 }
-
-// Gebruik een naam MET STREEPJE
-customElements.define('app-sidebar', Sidebar);  // Nu werkt het wel!
