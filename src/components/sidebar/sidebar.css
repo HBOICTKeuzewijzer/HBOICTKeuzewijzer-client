@@ -1,0 +1,34 @@
+.sidebar {
+    border-left: 3px solid black; /* Alleen linkerborder voor een sidebar-look */
+    border-radius: 0 20px 20px 0; /* Alleen rechterhoeken afgerond */
+    padding: 20px; /* Gelijke padding aan alle kanten */
+    margin: 0; /* Geen extra ruimte buiten het element */
+    background-color: #f0f0f0; /* Subtiele achtergrondkleur */
+    max-width: 250px; /* Breedte van de sidebar */
+    font-size: 16px;
+    text-align: left; /* Tekst links uitlijnen */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Optionele schaduw voor diepte */
+}
+
+.sidebar h1, .sidebar h2 {
+    font-size: 18px; /* Kopjes iets groter maken */
+    margin-bottom: 10px; /* Ruimte onder kopjes */
+    color: #333; /* Donkere tekstkleur */
+}
+
+.sidebar button {
+    display: block; /* Knoppen onder elkaar */
+    width: 100%; /* Knoppen vullen de breedte van de sidebar */
+    padding: 10px;
+    margin: 10px 0; /* Ruimte tussen knoppen */
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF; /* Blauwe knopkleur */
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.sidebar button:hover {
+    background-color: #0056b3; /* Donkerdere kleur bij hover */
+}

@@ -8,7 +8,7 @@ class Sidebar extends HTMLElement {
             <style>
                 @import url("sidebar.css");
             </style>
-           
+            <slot>No content provided</slot>
         `;
     
         shadow.appendChild(template.content.cloneNode(true));
