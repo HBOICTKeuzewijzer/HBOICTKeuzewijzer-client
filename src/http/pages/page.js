@@ -53,17 +53,11 @@ export default function PlannerPage(params) {
         `
 
     return /*html*/ `
-        <x-dialog backdrop closable>
-            <button slot="trigger">Trigger Modal</button>
-        </x-dialog>
-
         <div class="container">
             <x-sheet class="hidden md:flex" side="left" open>
-                <button slot="trigger">Trigger Sheet</button>    
                 ${selectableContent}
             </x-sheet>
-            <x-drawer class="md:hidden">
-                <button slot="trigger">Trigger Drawer</button>
+            <x-drawer class="md:hidden" open>
                 ${selectableContent}
             </x-drawer>
         </div>
