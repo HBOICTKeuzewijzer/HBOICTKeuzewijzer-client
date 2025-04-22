@@ -23,7 +23,7 @@
 }
 
 .sidebar.collapsed {
-    width: 72px; /* Alleen genoeg ruimte voor icons */
+    width: 78px; /* Alleen genoeg ruimte voor icons */
     padding: 24px 12px; /* Minder padding in collapsed state */
 }
 
@@ -103,8 +103,6 @@
     background-color: #ffcb05;
     border-color: #ffcb05;
 }
-
-
 
 .frame-parent {
     align-self: stretch;
