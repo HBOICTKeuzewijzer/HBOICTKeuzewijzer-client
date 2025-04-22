@@ -19,11 +19,11 @@ export class Sidebar extends CustomElement {
 
     connectedCallback() {
         const buttons = [
-            { id: 'button-modules', route: 'Admin/modules' },
-            { id: 'button-oer', route: 'Admin/oer' },
-            { id: 'button-categorien', route: 'Admin/categorien' },
-            { id: 'button-rollen-toewijzen', route: 'Admin/rollen-toewijzen' },
-            { id: 'button-slb-relaties', route: 'Admin/slb-relaties' },
+            { id: 'button-modules', route: '/admin/modules' },
+            { id: 'button-oer', route: '/admin/oer' },
+            { id: 'button-categorien', route: '/admin/categorien' },
+            { id: 'button-rollen-toewijzen', route: '/admin/rollen-toewijzen' },
+            { id: 'button-slb-relaties', route: '/admin/slb-relaties' },
         ]
 
         const sidebar = this.shadowRoot.getElementById('sidebar')
@@ -39,23 +39,43 @@ export class Sidebar extends CustomElement {
             if (btnElement) {
                 this.trackListener(btnElement, 'click', () => {
                     router.navigate(button.route)
+                    this.updateActiveButton(button.route)
                 })
             } else {
                 console.error(`Element with ID ${button.id} not found`)
             }
         })
 
-        router.on('routeChange', newRoute => {
-            buttons.forEach(button => {
-                const btnElement = this.shadowRoot.getElementById(button.id)
-                if (btnElement) {
-                    if (newRoute === button.route) {
-                        btnElement.classList.add('active')
-                    } else {
-                        btnElement.classList.remove('active')
-                    }
+        // Initial update of the active button
+        this.updateActiveButton(window.location.pathname)
+
+        // Listen for route changes using popstate
+        window.addEventListener('popstate', () => {
+            this.updateActiveButton(window.location.pathname)
+        })
+    }
+
+    updateActiveButton(currentRoute) {
+        const buttons = [
+            { id: 'button-modules', route: '/admin/modules' },
+            { id: 'button-oer', route: '/admin/oer' },
+            { id: 'button-categorien', route: '/admin/categorien' },
+            { id: 'button-rollen-toewijzen', route: '/admin/rollen-toewijzen' },
+            { id: 'button-slb-relaties', route: '/admin/slb-relaties' },
+        ]
+
+        console.log('Route changed to:', currentRoute) // Debugging
+        buttons.forEach(button => {
+            const btnElement = this.shadowRoot.getElementById(button.id)
+            if (btnElement) {
+                console.log(`Checking button: ${button.id} for route: ${button.route}`) // Debugging
+                if (currentRoute === button.route) {
+                    console.log(`Activating button: ${button.id}`) // Debugging
+                    btnElement.classList.add('active')
+                } else {
+                    btnElement.classList.remove('active')
                 }
-            })
+            }
         })
     }
 }

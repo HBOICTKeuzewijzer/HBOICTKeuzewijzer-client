@@ -6,6 +6,13 @@ import { EnsureCohortIsSet, RequireAuthCookie } from '@http/middleware'
  * @type {Route[]}
  */
 export const routes = [
+    ...new RouteGroup()
+        .add('/admin/modules', () => import('@pages/modules/page.js'))
+        .add('/admin/oer', () => import('@pages/oer/page.js'))
+        .add('/admin/categorien', () => import('@pages/categorien/page.js'))
+        .add('/admin/rollen-toewijzen', () => import('@pages/rollen-toewijzen/page.js'))
+        .add('/admin/slb-relaties', () => import('@pages/slb-relaties/page.js')).routes,
+
     ...new RouteGroup([new EnsureCohortIsSet()])
         .add('/', () => import('@/http/pages/page.js'))
         .add('/:uuid', () => import('@/http/pages/page.js')).routes,
