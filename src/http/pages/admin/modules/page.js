@@ -29,6 +29,7 @@ export default function ModulesPage() {
         </style>
 
         <div class="page-container">
+            <x-sidebar></x-sidebar>
             <div id="module-div">
                 <x-data-table>
                     <i class="ph ph-magnifying-glass" slot="input-icon"></i>
@@ -59,8 +60,8 @@ ModulesPage.onPageLoaded = () => {
                 }
             }),
         ],
-        searching: true,
-        paging: true,
+        searching: true, // TODO: test false
+        paging: true, // TODO: test false, viel me al op dat met false nog steeds maar 10 records laat zien.
         pageSize: 10,
         buttons: new DatatableButtons({
             edit: (row) => console.log("Editing:", row),

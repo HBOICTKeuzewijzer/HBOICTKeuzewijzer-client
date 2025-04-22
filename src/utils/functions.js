@@ -27,3 +27,18 @@ export function html(strings, ...values) {
 export function resolvePath(obj, path) {
     return path.split('.').reduce((acc, part) => acc && acc[part], obj);
 }
+
+
+/**
+ * Calls a specified function after delay ms
+ * @param {Function} fn To call after delay
+ * @param {number} delay Delay in ms
+ * @returns 
+ */
+export function debounce(fn, delay) {
+    let timeout;
+    return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => fn.apply(this, args), delay);
+    };
+}

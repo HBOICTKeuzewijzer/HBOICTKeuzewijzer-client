@@ -1,6 +1,6 @@
 /** @typedef {import('@models/datatable/datatableConfig').DatatableConfig} DatatableConfig */
 
-import { html, resolvePath } from "@/utils/functions";
+import { debounce, html, resolvePath } from "@/utils/functions";
 import CustomElement from "@components/customElement";
 import { fetcher } from "@/utils";
 import styles from "./styles.css?raw"
@@ -198,7 +198,9 @@ export class Datatable extends CustomElement {
         const searchbarContainer = this.root.querySelector("#searchbar-container");
         if (this.#config.searching) {
             const searchbar = searchbarContainer.querySelector("x-input");
-            this.trackListener(searchbar, "onValueChanged", event => this.#onSearch(event));
+
+            this.trackListener(searchbar, "onValueChanged", debounce(this.#onSearch.bind(this), 300));
+
             searchbar.value = this.#queryState.filter;
         } else {
             searchbarContainer.style.display = "none";
