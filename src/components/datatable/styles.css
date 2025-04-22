@@ -1,83 +1,86 @@
 :host {
-    width: 100%;
     display: block;
 }
 
+/* Layout Containers */
 .container {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.searchbar-sizer {
-    max-width: 33%;
-}
+
 
 .table-container {
+    max-width: 100%;
+    overflow-y: auto;
+    overflow-x: auto;
     border-radius: var(--rounded-md);
-    overflow: hidden; 
-    border: 2px solid rgba(var(--color-gray-3), 0.2); 
+    border: 2px solid rgba(var(--color-gray-3), 0.2);
 }
 
+/* Table */
 table {
-    flex-grow: 1;
     border-collapse: collapse;
-    width: 100%; 
     table-layout: auto;
 }
 
-table td, table th {
-    text-align: left;
-    border-top: 2px solid rgba(var(--color-gray-3), 0.2);
-    border-bottom: 2px solid rgba(var(--color-gray-3), 0.2); 
-    padding: 1rem 0 1rem 0;
-}
-
-table td:first-child, table th:first-child {
-    padding-left: 1rem;
-}
-
-.button-column {
-    padding-right: 1rem;
-    white-space: nowrap;
-    width: 1%;
-}
-
-table tr:first-child td, table tr:first-child th {
-    border-top: none;
-}
-
-table tr:last-child td, table tr:last-child th {
-    border-bottom: none;
-}
-
-table thead {
+thead {
     background-color: rgba(var(--color-gray-5), 1);
     border-bottom: 2px solid rgba(var(--color-gray-3), 0.2);
 }
 
-.paging-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
+td, th {
+    text-align: left;
+    padding: .2rem .4rem;
+    border-top: 2px solid rgba(var(--color-gray-3), 0.2);
+    border-bottom: 2px solid rgba(var(--color-gray-3), 0.2);
 }
 
+td:first-child, th:first-child {
+    padding-left: 1rem;
+}
+
+tr:first-child td,
+tr:first-child th {
+    border-top: none;
+}
+
+tr:last-child td,
+tr:last-child th {
+    border-bottom: none;
+}
+
+.button-column {
+    width: 1%;
+    white-space: nowrap;
+    padding-right: 1rem;
+}
+
+/* Header content */
+.th-inner-container {
+    display: flex;
+    gap: .75rem;
+    align-items: center;
+    width: 100%;
+}
+
+.sort-button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* General Button Style */
 button {
     background-color: white;
     border: none;
     border-radius: var(--rounded-sm);
     aspect-ratio: 1;
     box-shadow: none;
-    height: 28px;
     padding: 0;
     cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
-    color: rgb(var(--color-gray-3));
-}
-
-.paging-container button {
-    border: 2px solid rgba(var(--color-gray-3), 0.2);
-    color: black;
 }
 
 button:hover {
@@ -91,12 +94,26 @@ button:active {
     transform: scale(0.97);
 }
 
-.table-footer-container {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 1.5rem 0 1.5rem;
+/* Specialized Button Types */
+.sort-button {
+    background-color: transparent;
+    color: inherit;
+    font-size: 12px;
 }
 
+.table-footer-container button,
+.paging-container button {
+    height: 28px;
+    border: 2px solid rgba(var(--color-gray-3), 0.2);
+    color: black;
+}
+
+.row-button {
+    height: 28px;
+    color: rgb(var(--color-gray-3));
+}
+
+/* Misc */
 .text-container {
     display: flex;
     flex-direction: column;
@@ -105,4 +122,53 @@ button:active {
 
 p {
     margin: 0;
+}
+
+#amount-of-records-container {
+    display: none;
+}
+
+.table-footer-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.paging-container {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+th[col-data-direction="asc"] button[data-direction="asc"] {
+    visibility: hidden;
+}
+
+th[col-data-direction="desc"] button[data-direction="desc"] {
+    visibility: hidden;
+}
+
+@media (min-width: 640px) {
+    #amount-of-records-container {
+        display: block;
+    }
+
+    .table-footer-container {
+        justify-content: space-between;
+        padding: 0 1.5rem;
+    }
+
+    td, th {
+        padding: 0.75rem 1rem;
+    }
+
+    .paging-container {
+        display: flex;
+        justify-content: unset;
+        gap: 12px;
+        width: unset;
+    }
+
+    .searchbar-sizer {
+        max-width: 33%;
+    }
 }

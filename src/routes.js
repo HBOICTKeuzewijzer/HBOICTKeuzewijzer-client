@@ -8,6 +8,8 @@ import { EnsureCohortIsSet, RequireAuthCookie } from '@http/middleware'
  */
 export const routes = [
     new Route('/admin', () => import('@pages/admin/page.js')),
+    new Route('/admin/modules', () => import('@pages/admin/modules/page.js')),
+    new Route('/admin/oer', () => import('@pages/admin/oer/page.js')),
 
     ...new RouteGroup([new RequireAuthCookie()])
         .add('/saved-routes', () => import('@pages/saved-routes/page.js'))

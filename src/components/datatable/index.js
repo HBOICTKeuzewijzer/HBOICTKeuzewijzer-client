@@ -22,7 +22,7 @@ const template = html`
         </table>
     </div>
     <div class="table-footer-container">
-        <div class="text-container">
+        <div class="text-container" id="amount-of-records-container">
             <p>Totaal <span id="amount-of-records"></span></p>
         </div>
         <div class="paging-container">
@@ -146,7 +146,45 @@ export class Datatable extends CustomElement {
             let title = col.title ? col.title : col.path;
 
             let th = document.createElement("th");
-            th.textContent = title;
+
+            let thInnerContainer = document.createElement('div');
+            thInnerContainer.classList.add('th-inner-container');
+
+            let thText = document.createElement('span');
+            thText.classList.add('text-container');
+            thText.textContent = title;
+
+            thInnerContainer.appendChild(thText);
+
+            if (col.sorting) {
+                let ascSortBtn = document.createElement('button');
+                let descSortBtn = document.createElement('button');
+
+                ascSortBtn.classList.add('sort-button');
+                descSortBtn.classList.add('sort-button');
+
+                descSortBtn.setAttribute("data-direction", "desc");
+                ascSortBtn.setAttribute("data-direction", "asc")
+
+                descSortBtn.setAttribute("data-path", col.path);
+                ascSortBtn.setAttribute("data-path", col.path);
+
+                this.trackListener(ascSortBtn, "click", (event) => this.#onSort(event));
+                this.trackListener(descSortBtn, "click", (event) => this.#onSort(event));
+
+                ascSortBtn.textContent = '▲';
+                descSortBtn.textContent = '▼'
+
+                let sortBtnContainer = document.createElement('div');
+                sortBtnContainer.classList.add('sort-button-container');
+
+                sortBtnContainer.appendChild(ascSortBtn);
+                sortBtnContainer.appendChild(descSortBtn);
+
+                thInnerContainer.appendChild(sortBtnContainer)
+            }
+
+            th.appendChild(thInnerContainer);
 
             tableHeader.appendChild(th);
         });
@@ -274,6 +312,7 @@ export class Datatable extends CustomElement {
                         const btn = document.createElement("button");
                         btn.setAttribute("data-action", button);
                         btn.innerHTML = this.#svgIcons[button];
+                        btn.classList.add('row-button');
 
                         this.trackListener(btn, "click", () => {
                             if (typeof callback === "function") {
@@ -327,6 +366,22 @@ export class Datatable extends CustomElement {
             default:
                 throw new Error("Not an expected button.");
         }
+
+        this.#updateQueryParams();
+        this.#loadTable();
+    }
+
+    #onSort(event) {
+        this.root.querySelectorAll('[col-data-direction]').forEach(el => el.removeAttribute('col-data-direction'));
+
+        const direction = event.currentTarget.getAttribute('data-direction');
+        const path = event.currentTarget.getAttribute('data-path');
+
+        const th = event.currentTarget.closest('th');
+        th.setAttribute('col-data-direction', direction);
+
+        this.#queryState.sortColumn = path;
+        this.#queryState.sortDirection = direction;
 
         this.#updateQueryParams();
         this.#loadTable();
