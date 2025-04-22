@@ -15,6 +15,10 @@ export class DatatableButtons {
         this.#inspect = inspect;
     }
 
+    get inspect() {
+        return this.#inspect;
+    }
+
     get edit() {
         return this.#edit;
     }
@@ -23,7 +27,11 @@ export class DatatableButtons {
         return this.#delete;
     }
 
-    get inspect() {
-        return this.#inspect;
+    toObject() {
+        const result = {};
+        if (this.#edit) result.edit = this.#edit;
+        if (this.#delete) result.delete = this.#delete;
+        if (this.#inspect) result.inspect = this.#inspect;
+        return result;
     }
 }

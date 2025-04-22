@@ -3,22 +3,48 @@
 import { html, resolvePath } from "@/utils/functions";
 import CustomElement from "@components/customElement";
 import { fetcher } from "@/utils";
+import styles from "./styles.css?raw"
 
 const template = html`
+<style>${styles}</style>
 <div class="container">
     <div id="searchbar-container">
-        <x-input placeholder="Zoeken"></x-input>
+        <div class="searchbar-sizer">
+            <x-input placeholder="Zoeken" id="src">
+                <slot name="input-icon" slot="prepend"></slot>
+            </x-input>
+        </div>
     </div>
-    <table>
-        <thead><tr></tr></thead>
-        <tbody></tbody>
-    </table>
-    <div id="paging-container">
-        <p>Totaal <span id="amount-of-records"></span></p>
-        <button name="to-start"><<</button>
-        <button name="back"><</button>
-        <button name="forward">></button>
-        <button name="to-end">>></button>
+    <div class="table-container">
+        <table>
+            <thead><tr></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="table-footer-container">
+        <div class="text-container">
+            <p>Totaal <span id="amount-of-records"></span></p>
+        </div>
+        <div class="paging-container">
+            <div class="text-container">
+                <p>Pagina <span id="current-page"></span> van <span id="total-pages"></span></p>
+            </div>
+
+            <div class="button-container">
+                <button name="to-start">
+                    <slot name="to-start-icon"></slot>
+                </button>
+                <button name="back">
+                    <slot name="back-icon"></slot>
+                </button>
+                <button name="forward">
+                    <slot name="forward-icon"></slot>
+                </button>
+                <button name="to-end">
+                    <slot name="to-end-icon"></slot>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 `;
@@ -50,9 +76,9 @@ export class Datatable extends CustomElement {
      * @type {string[]}
      */
     #svgIcons = {
-        edit: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM51.31,160,136,75.31,152.69,92,68,176.68ZM48,179.31,76.69,208H48Zm48,25.38L79.31,188,164,103.31,180.69,120Zm96-96L147.31,64l24-24L216,84.68Z"></path></svg>`,
-        delete: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"></path></svg>`,
-        inspect: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path></svg>`
+        edit: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M227.31,73.37,182.63,28.68a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31L227.31,96a16,16,0,0,0,0-22.63ZM92.69,208H48V163.31l88-88L180.69,120ZM192,108.68,147.31,64l24-24L216,84.68Z"></path></svg>`,
+        delete: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z"></path></svg>`,
+        inspect: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 256 256"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path></svg>`
     };
 
     #queryState = {
@@ -127,7 +153,7 @@ export class Datatable extends CustomElement {
 
         if (this.#config.buttons) {
             const th = document.createElement("th");
-            th.setAttribute("data-action-column", "true");
+            th.classList.add('button-column');
             tableHeader.appendChild(th);
         }
 
@@ -140,7 +166,7 @@ export class Datatable extends CustomElement {
             searchbarContainer.style.display = "none";
         }
 
-        const pagingContainer = this.root.querySelector("#paging-container");
+        const pagingContainer = this.root.querySelector(".paging-container");
         if (this.#config.paging) {
             pagingContainer.style.display = "";
             pagingContainer.querySelectorAll("button").forEach(button => this.trackListener(button, "click", event => this.#onPaging(event)));
@@ -215,6 +241,14 @@ export class Datatable extends CustomElement {
             this.#totalAmountOfRecords = Number(data.totalCount);
             this.#pageCount = Math.ceil(this.#totalAmountOfRecords / this.#config.pageSize);
 
+
+            // <p>Pagina <span id="current-page"></span> van <span id="total-pages"></span></p>
+
+            const curPageEl = this.root.querySelector("#current-page");
+            curPageEl.innerHTML = this.#queryState.page;
+            const totalPageEl = this.root.querySelector("#total-pages");
+            totalPageEl.innerHTML = this.#pageCount;
+
             this.root.querySelector("#amount-of-records").innerHTML = this.#totalAmountOfRecords;
 
             data.items.forEach(record => {
@@ -228,17 +262,17 @@ export class Datatable extends CustomElement {
                     tr.appendChild(td);
                 });
 
-                const buttons = this.#config.buttons;
+                const buttons = this.#config.buttons?.toObject?.();
+
                 if (buttons) {
                     const td = document.createElement("td");
+                    td.classList.add('button-column')
 
-                    for (const button in buttons) {
+                    for (const [button, callback] of Object.entries(buttons)) {
                         if (button === "create") continue;
 
-                        const callback = buttons[button];
                         const btn = document.createElement("button");
                         btn.setAttribute("data-action", button);
-
                         btn.innerHTML = this.#svgIcons[button];
 
                         this.trackListener(btn, "click", () => {
@@ -246,14 +280,6 @@ export class Datatable extends CustomElement {
                                 callback(record);
                             }
                         });
-
-                        const rowBtnHandler = () => {
-                            if (typeof callback === "function") {
-                                callback(record);
-                            }
-                        };
-
-                        btn.addEventListener("click", rowBtnHandler);
 
                         td.appendChild(btn);
                     }
