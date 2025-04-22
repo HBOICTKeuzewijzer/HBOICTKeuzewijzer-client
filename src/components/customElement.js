@@ -3,6 +3,9 @@ export default class CustomElement extends HTMLElement {
         super();
         this.attachShadow({ mode: 'open' });
     }
+
+    #eventListeners = [];
+
  
     #eventListeners = [];
  
@@ -13,12 +16,14 @@ export default class CustomElement extends HTMLElement {
     applyTemplate(template) {
         this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
+
  
     /**
      * Hides <slot> that have not received content.
      */
     hideEmptySlots() {
         const slots = this.shadowRoot.querySelectorAll('slot');
+
  
         slots.forEach(slot => {
             if (slot.assignedNodes().length === 0) {
@@ -28,6 +33,11 @@ export default class CustomElement extends HTMLElement {
             }
         });
     }
+
+    /**
+     * Add a listener that will be tracked so that it is easy to remove with clearListeners().
+     * @param {HTMLElement} element 
+     * @param {string} event 
  
     /**
      * Add a listener that will be tracked so that it is easy to remove with clearListeners().
@@ -39,11 +49,18 @@ export default class CustomElement extends HTMLElement {
         element.addEventListener(event, handler);
         this.#eventListeners.push({ element, event, handler });
     }
+
  
     /**
      * Clears all tracked listeners
      */
     clearListeners() {
+        for (const { element, event, handler } of this.#eventListeners) {
+            element.removeEventListener(event, handler);
+        }
+        this.#eventListeners = [];
+    }
+
         for (const { element, type, handler } of this.#eventListeners) {
             element.removeEventListener(type, handler);
         }
