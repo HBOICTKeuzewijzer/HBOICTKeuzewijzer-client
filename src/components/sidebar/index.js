@@ -28,14 +28,13 @@ export class Sidebar extends CustomElement {
 
         const sidebar = this.shadowRoot.getElementById('sidebar')
         const sidebarWrapper = this.shadowRoot.getElementById('sidebar-wrapper')
-        console.log(sidebar, sidebarWrapper) // Debugging
 
         this.trackListener(sidebarWrapper, 'click', () => {
             sidebar.classList.toggle('collapsed')
         })
         buttons.forEach(button => {
             const btnElement = this.shadowRoot.getElementById(button.id)
-            console.log(btnElement) // Debugging
+
             if (btnElement) {
                 this.trackListener(btnElement, 'click', () => {
                     router.navigate(button.route)
@@ -46,10 +45,8 @@ export class Sidebar extends CustomElement {
             }
         })
 
-        // Initial update of the active button
         this.updateActiveButton(window.location.pathname)
 
-        // Listen for route changes using popstate
         window.addEventListener('popstate', () => {
             this.updateActiveButton(window.location.pathname)
         })
@@ -64,13 +61,10 @@ export class Sidebar extends CustomElement {
             { id: 'button-slb-relaties', route: '/admin/slb-relaties' },
         ]
 
-        console.log('Route changed to:', currentRoute) // Debugging
         buttons.forEach(button => {
             const btnElement = this.shadowRoot.getElementById(button.id)
             if (btnElement) {
-                console.log(`Checking button: ${button.id} for route: ${button.route}`) // Debugging
                 if (currentRoute === button.route) {
-                    console.log(`Activating button: ${button.id}`) // Debugging
                     btnElement.classList.add('active')
                 } else {
                     btnElement.classList.remove('active')
