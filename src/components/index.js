@@ -7,3 +7,5 @@ export * from './tooltip'
 export * from './input'
 export * from './inputMultiline'
 export * from './datatable'
+export * from './sidebar'
+

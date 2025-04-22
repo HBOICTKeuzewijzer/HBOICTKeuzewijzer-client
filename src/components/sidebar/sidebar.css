@@ -1,0 +1,148 @@
+.sidebar {
+    width: 280px; /* Vaste breedte ipv 100% */
+    position: relative;
+    border-radius: 0px 12px 12px 0px;
+    background-color: #fff;
+    border-right: 1px solid rgba(166, 168, 171, 0.2);
+    box-sizing: border-box;
+    height: 763px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 24px;
+    text-align: left;
+    font-size: 14px;
+    color: #231f20;
+    font-family: Inter;
+    transition: width 0.3s ease, padding 0.3s ease; /* Animaties voor width en padding */
+}
+
+.sidebar.collapsed {
+    width: 72px; /* Alleen genoeg ruimte voor icons */
+    padding: 24px 12px; /* Minder padding in collapsed state */
+}
+
+/* Verberg tekst in collapsed state */
+.sidebar.collapsed .beheer,
+.sidebar.collapsed .modules,
+.sidebar.collapsed .oer,
+.sidebar.collapsed .categorien,
+.sidebar.collapsed .rollen-toewijzen,
+.sidebar.collapsed .slb-relaties {
+    display: none;
+}
+
+/* Pas de beheer-parent aan voor collapsed state */
+.sidebar.collapsed .beheer-parent {
+    justify-content: center; /* Centreer het hamburger icoon */
+}
+
+.beheer {
+    flex: 1;
+    position: relative;
+    font-size: 20px;
+    font-weight: 900;
+    font-family: Roboto;
+    color: #231f20;
+    text-align: left;
+    white-space: nowrap; /* Voorkom line breaks */
+}
+
+.sidebar-wrapper {
+    background-color: #fff;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 16px;
+    cursor: pointer; /* Duidelijk dat het klikbaar is */
+}
+
+.beheer-parent {
+    align-self: stretch;
+    background-color: #fff;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    font-size: 20px;
+    font-family: Roboto;
+}
+
+.button {
+    align-self: stretch;
+    border-radius: 12px;
+    background-color: rgba(166, 168, 171, 0.2);
+    border: 1px solid rgba(166, 168, 171, 0.2);
+    box-sizing: border-box;
+    height: 42px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 16px;
+    gap: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.button:hover {
+    background-color: rgba(166, 168, 171, 0.3);
+}
+
+.button.active {
+    background-color: #ffcb05;
+    border-color: #ffcb05;
+}
+
+.button-modules {
+    align-self: stretch;
+    border-radius: 12px;
+    background-color: #ffcb05;
+    border: 1px solid rgba(166, 168, 171, 0.2);
+    box-sizing: border-box;
+    height: 42px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 16px;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.frame-parent {
+    align-self: stretch;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+/* Responsive text classes - blijft hetzelfde */
+.slb-relaties,
+.rollen-toewijzen,
+.categorien,
+.oer,
+.modules {
+    position: relative;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: Inter;
+    color: #231f20;
+    text-align: left;
+    white-space: nowrap;
+}

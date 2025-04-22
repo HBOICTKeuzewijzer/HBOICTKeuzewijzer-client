@@ -14,12 +14,14 @@ export default class CustomElement extends HTMLElement {
         this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
+ 
     /**
      * Hides <slot> that have not received content.
      */
     hideEmptySlots() {
         const slots = this.shadowRoot.querySelectorAll('slot');
 
+ 
         slots.forEach(slot => {
             if (slot.assignedNodes().length === 0) {
                 slot.style.display = 'none';
@@ -33,6 +35,11 @@ export default class CustomElement extends HTMLElement {
      * Add a listener that will be tracked so that it is easy to remove with clearListeners().
      * @param {HTMLElement} element 
      * @param {string} event 
+ 
+    /**
+     * Add a listener that will be tracked so that it is easy to remove with clearListeners().
+     * @param {HTMLElement} element
+     * @param {string} event
      * @param {(event: Event) => void} handler
      */
     trackListener(element, event, handler) {
@@ -40,16 +47,17 @@ export default class CustomElement extends HTMLElement {
         this.#eventListeners.push({ element, event, handler });
     }
 
+ 
     /**
      * Clears all tracked listeners
      */
     clearListeners() {
-        for (const { element, type, handler } of this.#eventListeners) {
-            element.removeEventListener(type, handler);
+        for (const { element, event, handler } of this.#eventListeners) {
+            element.removeEventListener(event, handler);
         }
         this.#eventListeners = [];
     }
-
+ 
     /**
      * @returns {ShadowRoot} Shadowroot root
      */
