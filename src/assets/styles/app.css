@@ -1,24 +1,26 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import './variables.css';
 
-/*
-Default Media Query's
-    @media (min-width: 640px) {}
-    @media (min-width: 768px) {}
-    @media (min-width: 1024px) {}
-    @media (min-width: 1280px) {}
-*/
+/*==========================================*/
+/* Media Queries
+    @media (min-width: 640px) {}   // sm
+    @media (min-width: 768px) {}   // md
+    @media (min-width: 1024px) {}  // lg
+    @media (min-width: 1280px) {}  // xl
+===========================================*/
 
-/* +==================+ */
-/* | Application Root | */
-/* +==================+ */
+/*=========================*/
+/*      Global Styles      */
+/*=========================*/
+
 :root {
-    font-family: 'Inter', sans-serif !important;
+    font-family: 'Inter', sans-serif;
 }
 
 * {
     padding: 0;
     margin: 0;
+    box-sizing: border-box;
 }
 
 body {
@@ -26,6 +28,15 @@ body {
     height: 100dvh;
     background-color: rgb(var(--color-gray-5));
 }
+
+i.ph,
+i.ph-duotone {
+    font-size: 20px;
+}
+
+/*=============================*/
+/*        App Structure        */
+/*=============================*/
 
 #_app,
 #_app > div {
@@ -35,28 +46,25 @@ body {
 
 main {
     display: flex;
-    height: calc(100% - 76px);
+    height: calc(100% - var(--header-height)); /* Calculate the sreen heigt - header */
 }
 
-i.ph {
-    font-size: 20px;
-}
+/*=========================*/
+/*         Header          */
+/*=========================*/
 
-/* +====================+ */
-/* | Application Header | */
-/* +====================+ */
 header {
-    height: 50px;
+    height: var(--header-height);
     padding: 12px 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     background-color: #fff;
     border-bottom: 2px solid rgb(var(--color-gold));
-}
 
-header > img {
-    height: 53px;
+    & img {
+        height: 53px;
+    }
 }
 
 .headerActions {
@@ -76,28 +84,37 @@ header > img {
     cursor: pointer;
 }
 
+/* Responsive Header Padding */
 @media (min-width: 640px) {
     header {
         padding: 12px 48px 12px 48px;
     }
 }
 
-/* +=======================+ */
-/* | Application Utilities | */
-/* +=======================+ */
+/*=========================*/
+/*        Utilities        */
+/*=========================*/
+
 .container {
     display: flex;
-    padding: 32px;
     flex: 1;
-    height: calc(100% - 76px);
+    height: 100%;
+    padding: 32px;
 }
 
-.hidden { display: none; }
-.flex { display: flex; }
-.block { display: block; }
+/* Display Helpers */
+.hidden {
+    display: none;
+}
+.flex {
+    display: flex;
+}
+.block {
+    display: block;
+}
 
 .text-sm {
-    font-size: .875rem; 
+    font-size: 0.875rem;
     line-height: 1.25rem;
 }
 
@@ -105,14 +122,15 @@ header > img {
     color: rgb(var(--color-black));
 }
 
-button[data-icon] {
-    background-color: transparent;
-    color: rgb(var(--color-black));
-    align-items: center;
-    border: none;
-    cursor: pointer;
+.animate-ping {
+    animation: var(--animate-ping);
 }
 
+.animate-pulse {
+    animation: var(--animate-pulse);
+}
+
+button[data-icon],
 a[data-icon] {
     background-color: transparent;
     color: rgb(var(--color-black));
@@ -123,24 +141,49 @@ a[data-icon] {
 }
 
 @media (min-width: 640px) {
-    .sm-hidden { display: none; }
-    .sm-flex { display: flex; }
-    .sm-block { display: block; }
+    .sm\:hidden {
+        display: none;
+    }
+    .sm\:flex {
+        display: flex;
+    }
+    .sm\:block {
+        display: block;
+    }
 }
-@media (min-width: 768px) {
-    .container { padding: 32px 48px; }
 
-    .md-hidden { display: none; }
-    .md-flex { display: flex; }
-    .md-block { display: block; }
+@media (min-width: 768px) {
+    .md\:hidden {
+        display: none;
+    }
+    .md\:flex {
+        display: flex;
+    }
+    .md\:block {
+        display: block;
+    }
 }
+
 @media (min-width: 1024px) {
-    .lg-hidden { display: none; }
-    .lg-flex { display: flex; }
-    .lg-block { display: block; }
+    .lg\:hidden {
+        display: none;
+    }
+    .lg\:flex {
+        display: flex;
+    }
+    .lg\:block {
+        display: block;
+    }
 }
+
 @media (min-width: 1280px) {
-    .xl-hidden { display: none; }
-    .xl-flex { display: flex; }
-    .xl-block { display: block; }
+    .xl\:hidden {
+        display: none;
+    }
+    .xl\:flex {
+        display: flex;
+    }
+    .xl\:block {
+        display: block;
+    }
 }

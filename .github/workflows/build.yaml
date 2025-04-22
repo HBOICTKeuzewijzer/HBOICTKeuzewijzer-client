@@ -1,0 +1,50 @@
+name: Build
+
+on:
+    push:
+        branches:
+            - main
+            - '**pipeline**'
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: self-hosted
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 23.11.0
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Build Vite app
+              run: npm run build
+
+            - name: Check dist contents
+              run: ls -lah ./dist
+
+            - name: Upload build to server
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+                  chmod 600 ~/.ssh/id_rsa
+
+                  # Ensure remote path exists and is clean
+                  ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} \
+                    ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+                    "mkdir -p ${{ secrets.DEPLOY_PATH }} && rm -rf ${{ secrets.DEPLOY_PATH }}/*"
+
+                  # Upload files
+                  scp -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -P ${{ secrets.SSH_PORT }} -r ./dist/* \
+                    ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}
+
+                  # Fix ownership and permissions (assuming nginx runs as www-data)
+                  ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} \
+                    ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+                    "chown -R www-data:www-data ${{ secrets.DEPLOY_PATH }} && chmod -R 755 ${{ secrets.DEPLOY_PATH }}"

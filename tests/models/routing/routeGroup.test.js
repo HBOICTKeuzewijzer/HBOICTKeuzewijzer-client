@@ -12,66 +12,64 @@ import { RouteGroup } from '@models'
  * - Handle edge cases such as missing parameters or invalid input.
  *
  * The following test cases are included:
- * 
+ *
  * Route Definition & Grouping:
  * - [Should] Apply common middleware to all routes in the group,
  * - [Should] Apply the prefix to the route path,
  * - [Should] Allow adding multiple routes with different middlewares,
  * - [Should] Return itself for chaining,
  * - [Should] Correctly handle routes with no prefix,
- * 
+ *
  * Edge Cases & Validation:
  * - [Should not] Accept invalid paths,
  * - [Should not] Add route if component is missing,
  */
 describe('[Models] RouteGroup', () => {
     /** @type {Function} */
-    const dummyComponent = () => import('@pages/page')
+    const pageMock = import('@pages/page')
     /** @type {Function} */
-    const dummyMiddleware = () => {}
+    const middlewareMock = () => {}
     /** @type {Function} */
-    const secondDummyMiddleware = () => {}
+    const secondMiddlewareMock = () => {}
 
     it('[Should] Apply common middleware to all routes in the group', () => {
-        const group = new RouteGroup([dummyMiddleware, secondDummyMiddleware])
-            .add('/users', dummyComponent)
-            .add('/notifications', dummyComponent)
+        const group = new RouteGroup([middlewareMock, secondMiddlewareMock])
+            .add('/users', pageMock)
+            .add('/notifications', pageMock)
 
         expect(group.routes).toHaveLength(2)
 
         group.routes.forEach(route => {
-            expect(route.middlewares).toContain(dummyMiddleware)
-            expect(route.middlewares).toContain(secondDummyMiddleware)
+            expect(route.middlewares).toContain(middlewareMock)
+            expect(route.middlewares).toContain(secondMiddlewareMock)
         })
     })
 
     it('[Should] Apply the prefix to the route path', () => {
-        const group = new RouteGroup([], '/admin')
-            .add('/dashboard', dummyComponent)
+        const group = new RouteGroup([], '/admin').add('/dashboard', pageMock)
 
         expect(group.routes[0].path).toBe('/admin/dashboard')
     })
 
     it('[Should] Allow adding multiple routes with different middlewares', () => {
         const group = new RouteGroup([], '/admin')
-            .add('/users', dummyComponent, [secondDummyMiddleware])
-            .add('/settings', dummyComponent)
+            .add('/users', pageMock, [secondMiddlewareMock])
+            .add('/settings', pageMock)
 
         expect(group.routes).toHaveLength(2)
-        expect(group.routes[0].middlewares).toContain(secondDummyMiddleware)
+        expect(group.routes[0].middlewares).toContain(secondMiddlewareMock)
         expect(group.routes[1].middlewares).toHaveLength(0)
     })
 
     it('[Should] Return itself for chaining', () => {
         const group = new RouteGroup()
-        const result = group.add('/projects', dummyComponent)
+        const result = group.add('/projects', pageMock)
 
         expect(result).toBe(group)
     })
 
     it('[Should] Correctly handle routes with no prefix', () => {
-        const group = new RouteGroup()
-            .add('/contact', dummyComponent)
+        const group = new RouteGroup().add('/contact', pageMock)
 
         expect(group.routes[0].path).toBe('/contact')
     })
@@ -80,7 +78,7 @@ describe('[Models] RouteGroup', () => {
         const group = new RouteGroup()
 
         expect(() => {
-            group.add('', dummyComponent)
+            group.add('', pageMock)
         }).toThrowError('[Route] Cannot define a route without a path')
     })
 
