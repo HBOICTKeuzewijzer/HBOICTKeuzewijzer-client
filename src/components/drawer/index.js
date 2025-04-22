@@ -80,6 +80,8 @@ export class Drawer extends HTMLElement {
      */
     set open(state) {
         if (state) {
+            this.contentElement.style.top = '';
+
             this.setAttribute('open', '')
             this.removeAttribute('closing')
         } else {
@@ -189,10 +191,8 @@ export class Drawer extends HTMLElement {
         if (!this.contentElement || this.disabled || this.#dragging) return
 
         const rect = this.contentElement.getBoundingClientRect()
-
-        // Remember the initial position of the drawer
-        this.#initialTop = rect.top
         const clientY = event instanceof MouseEvent ? event.clientY : event.touches[0]?.clientY
+        this.#initialTop = rect.top
 
         if (clientY !== undefined) {
             this.#startY = clientY
