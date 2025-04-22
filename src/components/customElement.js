@@ -6,9 +6,6 @@ export default class CustomElement extends HTMLElement {
 
     #eventListeners = [];
 
- 
-    #eventListeners = [];
- 
     /**
      * Apply a <template> to the shadow root.
      * @param {HTMLTemplateElement} template The template element to clone and set.
@@ -57,12 +54,6 @@ export default class CustomElement extends HTMLElement {
     clearListeners() {
         for (const { element, event, handler } of this.#eventListeners) {
             element.removeEventListener(event, handler);
-        }
-        this.#eventListeners = [];
-    }
-
-        for (const { element, type, handler } of this.#eventListeners) {
-            element.removeEventListener(type, handler);
         }
         this.#eventListeners = [];
     }

@@ -22,8 +22,8 @@ export class Sidebar extends CustomElement {
             { id: 'button-modules', route: 'Admin/modules' },
             { id: 'button-oer', route: 'Admin/oer' },
             { id: 'button-categorien', route: 'Admin/categorien' },
-            { id: 'button-rollen-toewijzen', route: 'admin/rollen-toewijzen' },
-            { id: 'button-slb-relaties', route: 'admin/slb-relaties' },
+            { id: 'button-rollen-toewijzen', route: 'Admin/rollen-toewijzen' },
+            { id: 'button-slb-relaties', route: 'Admin/slb-relaties' },
         ]
 
         const sidebar = this.shadowRoot.getElementById('sidebar')
@@ -43,6 +43,19 @@ export class Sidebar extends CustomElement {
             } else {
                 console.error(`Element with ID ${button.id} not found`)
             }
+        })
+
+        router.on('routeChange', newRoute => {
+            buttons.forEach(button => {
+                const btnElement = this.shadowRoot.getElementById(button.id)
+                if (btnElement) {
+                    if (newRoute === button.route) {
+                        btnElement.classList.add('active')
+                    } else {
+                        btnElement.classList.remove('active')
+                    }
+                }
+            })
         })
     }
 }

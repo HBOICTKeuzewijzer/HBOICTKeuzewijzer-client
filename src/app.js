@@ -1,6 +1,6 @@
 // Component definitions
-import { Dialog, Drawer, Popper, Popover, Sheet, Tooltip, InputMultiline, Input } from '@components'
-import { Dialog, Drawer, Popper, Popover, Sheet, Tooltip, Sidebar } from '@components'
+import { Dialog, Drawer, Popper, Popover, Sheet, Tooltip, InputMultiline, Input , Sidebar } from '@components'
+
 customElements.define('x-dialog', Dialog)
 customElements.define('x-drawer', Drawer)
 customElements.define('x-popper', Popper)
