@@ -4,6 +4,7 @@ import styles from './sidebar.css?raw'
 import { html } from '@/utils/functions'
 import { router } from '@/http/router'
 
+
 const template = html`
     <style>
         ${styles}
@@ -19,43 +20,57 @@ export class Sidebar extends CustomElement {
 
     connectedCallback() {
         const buttons = [
-            { id: 'button-modules', route: 'Admin/modules' },
-            { id: 'button-oer', route: 'Admin/oer' },
-            { id: 'button-categorien', route: 'Admin/categorien' },
-            { id: 'button-rollen-toewijzen', route: 'Admin/rollen-toewijzen' },
-            { id: 'button-slb-relaties', route: 'Admin/slb-relaties' },
+            { id: 'button-modules', route: '/admin/modules' },
+            { id: 'button-oer', route: '/admin/oer' },
+            { id: 'button-categorien', route: '/admin/categorien' },
+            { id: 'button-rollen-toewijzen', route: '/admin/rollen-toewijzen' },
+            { id: 'button-slb-relaties', route: '/admin/slb-relaties' },
         ]
 
         const sidebar = this.shadowRoot.getElementById('sidebar')
         const sidebarWrapper = this.shadowRoot.getElementById('sidebar-wrapper')
-        console.log(sidebar, sidebarWrapper) // Debugging
 
         this.trackListener(sidebarWrapper, 'click', () => {
             sidebar.classList.toggle('collapsed')
         })
         buttons.forEach(button => {
             const btnElement = this.shadowRoot.getElementById(button.id)
-            console.log(btnElement) // Debugging
+
             if (btnElement) {
                 this.trackListener(btnElement, 'click', () => {
                     router.navigate(button.route)
+                    this.updateActiveButton(button.route)
                 })
             } else {
                 console.error(`Element with ID ${button.id} not found`)
             }
         })
 
-        router.on('routeChange', newRoute => {
-            buttons.forEach(button => {
-                const btnElement = this.shadowRoot.getElementById(button.id)
-                if (btnElement) {
-                    if (newRoute === button.route) {
-                        btnElement.classList.add('active')
-                    } else {
-                        btnElement.classList.remove('active')
-                    }
+        this.updateActiveButton(window.location.pathname)
+
+        window.addEventListener('popstate', () => {
+            this.updateActiveButton(window.location.pathname)
+        })
+    }
+
+    updateActiveButton(currentRoute) {
+        const buttons = [
+            { id: 'button-modules', route: '/admin/modules' },
+            { id: 'button-oer', route: '/admin/oer' },
+            { id: 'button-categorien', route: '/admin/categorien' },
+            { id: 'button-rollen-toewijzen', route: '/admin/rollen-toewijzen' },
+            { id: 'button-slb-relaties', route: '/admin/slb-relaties' },
+        ]
+
+        buttons.forEach(button => {
+            const btnElement = this.shadowRoot.getElementById(button.id)
+            if (btnElement) {
+                if (currentRoute === button.route) {
+                    btnElement.classList.add('active')
+                } else {
+                    btnElement.classList.remove('active')
                 }
-            })
+            }
         })
     }
 }
