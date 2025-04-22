@@ -7,11 +7,11 @@ import { EnsureCohortIsSet, RequireAuthCookie } from '@http/middleware'
  */
 export const routes = [
     ...new RouteGroup()
-        .add('/admin/modules', () => import('@pages/modules/page.js'))
-        .add('/admin/oer', () => import('@pages/oer/page.js'))
-        .add('/admin/categorien', () => import('@pages/categorien/page.js'))
-        .add('/admin/rollen-toewijzen', () => import('@pages/rollen-toewijzen/page.js'))
-        .add('/admin/slb-relaties', () => import('@pages/slb-relaties/page.js')).routes,
+        .add('/admin/modules', () => import('@/http/pages/admin/modules/page.js'))
+        .add('/admin/oer', () => import('@/http/pages/admin/oer/page.js'))
+        .add('/admin/categorien', () => import('@/http/pages/admin/categorien/page.js'))
+        .add('/admin/rollen-toewijzen', () => import('@/http/pages/admin/rollen-toewijzen/page.js'))
+        .add('/admin/slb-relaties', () => import('@/http/pages/admin/slb-relaties/page.js')).routes,
 
     ...new RouteGroup([new EnsureCohortIsSet()])
         .add('/', () => import('@/http/pages/page.js'))
@@ -21,6 +21,6 @@ export const routes = [
         .add('/saved-routes', () => import('@pages/saved-routes/page.js'))
         .add('/messages', () => import('@pages/messages/page.js'))
         .add('/students', () => import('@pages/students/page.js'))
-        .add('/admin/modules', () => import('@pages/modules/page.js'))
-        .add('/admin/modules/:uuid', () => import('@pages/modules/page.js')).routes,
+        .add('/admin/modules', () => import('@/http/pages/admin/modules/page.js'))
+        .add('/admin/modules/:uuid', () => import('@/http/pages/admin/modules/page.js')).routes,
 ]

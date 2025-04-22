@@ -4,6 +4,7 @@ import styles from './sidebar.css?raw'
 import { html } from '@/utils/functions'
 import { router } from '@/http/router'
 
+
 const template = html`
     <style>
         ${styles}
