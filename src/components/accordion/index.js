@@ -17,9 +17,6 @@ class Accordion extends HTMLElement {
       <div class="accordion-container">
         <button class="accordion" tabindex="0" aria-expanded="false">
           <slot name="title"></slot>
-          <svg class="accordion-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-            <path d="M200,136H136v64a8,8,0,0,1-16,0V136H56a8,8,0,0,1,0-16h64V56a8,8,0,0,1,16,0v64h64a8,8,0,0,1,0,16Z"/>
-          </svg>
         </button>
         <div class="panel">
           <slot name="content"></slot>

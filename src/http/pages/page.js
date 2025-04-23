@@ -1,6 +1,106 @@
 import '@components/accordion'
+import '@components/studyCard/studyCard.js'
+import '@components/studyCard/studyCard.css'
 
+
+function addAccordionEventListeners() {
+    const accordionItems = document.querySelectorAll('.module-item');
+
+    accordionItems.forEach(item => {
+
+        item.removeEventListener('click', accordionClickHandler);
+
+        item.addEventListener('click', accordionClickHandler);
+    });
+}
+
+
+function accordionClickHandler(event) {
+    const selectedContent = event.target.textContent.trim();
+    let foundSelectedSemester = false;
+
+    const studyCards = document.querySelectorAll('study-card');
+
+    studyCards.forEach(studyCard => {
+        if (studyCard.shadowRoot) {
+            const shadowSemesters = studyCard.shadowRoot.querySelectorAll('.semester');
+
+            shadowSemesters.forEach(shadowDiv => {
+                if (shadowDiv.classList.contains('selected-semester')) {
+                    const textWrapper = shadowDiv.querySelector('p');
+                    if (textWrapper) {
+                        textWrapper.textContent = selectedContent;
+                    }
+
+                    const accordionColor = window.getComputedStyle(event.target.parentElement)
+                        .getPropertyValue('--accordion-active-bg-color')
+                        .trim();
+
+                    shadowDiv.style.backgroundColor = accordionColor;
+                    shadowDiv.style.borderColor = accordionColor;
+
+                    foundSelectedSemester = true;
+                }
+            });
+        }
+    });
+
+    if (!foundSelectedSemester) {
+    }
+}
+
+function addSemesterEventListeners() {
+    const studyCards = document.querySelectorAll('study-card');
+
+    studyCards.forEach(card => {
+        if (card.shadowRoot) {
+            const semesters = card.shadowRoot.querySelectorAll('.semester');
+
+            semesters.forEach(semester => {
+                semester.removeEventListener('click', semesterClickHandler);
+                semester.addEventListener('click', semesterClickHandler);
+            });
+        }
+    });
+}
+
+
+function semesterClickHandler(event) {
+    console.log('Semester clicked:', event.target.textContent.trim());
+    const studyCards = document.querySelectorAll('study-card');
+
+    studyCards.forEach(card => {
+        if (card.shadowRoot) {
+            const semesters = card.shadowRoot.querySelectorAll('.semester');
+            semesters.forEach(semester => {
+                semester.classList.remove('selected-semester'); // Reset selectie
+            });
+        }
+    });
+
+    const semester = event.target;
+    if (semester.classList.contains('unlocked')) {
+        semester.classList.add('selected-semester');
+    }
+}
+
+
+function addStudyCard(year, semester1Title, semester1Content, semester1Status, semester2Title, semester2Content, semester2Status) {
+    return `
+        <study-card>
+            <span slot="year-header">${year}</span>
+            <span slot="semester-1-title">${semester1Title}</span>
+            <span id="semester-1-content-${year}" slot="semester-1-content" data-status="${semester1Status}">${semester1Content}</span>
+            <span slot="semester-2-title">${semester2Title}</span>
+            <span id="semester-2-content-${year}" slot="semester-2-content" data-status="${semester2Status}">${semester2Content}</span>
+        </study-card>
+    `;
+}
 export default function PlannerPage(params) {
+    PlannerPage.onPageLoaded = () => {
+        addAccordionEventListeners();
+        addSemesterEventListeners();
+    }
     const selectableContent = /*html*/ `
             <div style="display: flex; flex-direction: column; padding: 24px 24px 0; gap: 6px">
                 <h5 style="margin: 0; font-size: 18px;">Modules</h5>
@@ -10,7 +110,7 @@ export default function PlannerPage(params) {
                 </p>
             </div>
 
-            <div style="display: flex; flex-direction: column; padding: 24px;">            
+            <div style="display: flex; flex-direction: column; padding: 24px;">
                 <custom-accordion style="--accordion-active-bg-color: #FFF4CE; --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-gold));">
                     <span slot="title">Software Engineering</span>
                     <div class="module-item" slot="content">
@@ -18,7 +118,7 @@ export default function PlannerPage(params) {
                     </div>
                     <div class="module-item" slot="content">
                         <p>Software Engineering</p>
-                    </div>      
+                    </div>
                 </custom-accordion>
                 <custom-accordion active style="--accordion-active-bg-color: rgb(var(--color-light-blue)); --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-blue));">
                     <span slot="title">Infrastructure Design & Security</span>
@@ -51,9 +151,12 @@ export default function PlannerPage(params) {
                     </div>
                 </custom-accordion>
             </div>
+
+
         `
 
     return /*html*/ `
+
         <div class="container">
             <x-sheet class="hidden md:flex" side="left" open>
                 ${selectableContent}
@@ -61,6 +164,14 @@ export default function PlannerPage(params) {
             <x-drawer class="md:hidden" open>
                 ${selectableContent}
             </x-drawer>
+            <div class="study-cards-container">
+        ${addStudyCard('Jaar 1', 'Semester 1', 'Basisconcepten ICT 1', 'locked', 'Semester 2', 'Basisconcepten ICT 2', 'locked')}
+        ${addStudyCard('Jaar 2', 'Semester 1', 'Keuze 1', 'unlocked', 'Semester 2', 'Keuze 2', 'unlocked')}
+        ${addStudyCard('Jaar 3', 'Semester 1', 'Keuze 1', 'unlocked', 'Semester 2', 'Keuze 2', 'unlocked')}
+        ${addStudyCard('Jaar 4', 'Semester 1', 'Keuze 1', 'unlocked', 'Semester 2', 'Keuze 2', 'unlocked')}
+    </div> 
         </div>
+
+
   `
 }
