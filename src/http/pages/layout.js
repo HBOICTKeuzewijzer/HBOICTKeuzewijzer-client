@@ -12,7 +12,7 @@ export default function Layout(children) {
                 </a>
                 <div class="headerActions">
                     ${
-                        hasSession || true
+                        hasSession
                             ? /*html*/ `
                                 <x-tooltip position="left" placement="middle">
                                     <a slot="trigger" href="/messages" data-icon>
