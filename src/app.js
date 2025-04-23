@@ -1,3 +1,6 @@
+// Import the router instance from the router module
+import { router } from '@http/router'
+
 // Component definitions
 import { Dialog, Drawer, Popper, Popover, Sheet, Tooltip, InputMultiline, Input } from '@components'
 customElements.define('x-dialog', Dialog)

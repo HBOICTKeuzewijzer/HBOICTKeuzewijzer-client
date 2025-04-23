@@ -9,6 +9,7 @@ export default function PlannerPage(params) {
                     Dit zijn alle beschikbare modules waaruit je kunt kiezen. Als je een externe module wilt volgen, kun je deze toevoegen via de 'Anders' optie onder 'Overig'.
                 </p>
             </div>
+
             <div style="display: flex; flex-direction: column; padding: 24px;">            
                 <custom-accordion style="--accordion-active-bg-color: #FFF4CE; --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-gold));">
                     <span slot="title">Software Engineering</span>
@@ -53,17 +54,11 @@ export default function PlannerPage(params) {
         `
 
     return /*html*/ `
-        <x-dialog backdrop closable>
-            <button slot="trigger">Trigger Modal</button>
-        </x-dialog>
-
         <div class="container">
             <x-sheet class="hidden md:flex" side="left" open>
-                <button slot="trigger">Trigger Sheet</button>    
                 ${selectableContent}
             </x-sheet>
-            <x-drawer class="md:hidden">
-                <button slot="trigger">Trigger Drawer</button>
+            <x-drawer class="md:hidden" open>
                 ${selectableContent}
             </x-drawer>
         </div>
