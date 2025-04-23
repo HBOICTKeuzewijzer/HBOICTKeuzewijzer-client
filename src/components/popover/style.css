@@ -1,0 +1,32 @@
+slot {
+    display: flex;
+    flex-direction: column;
+}
+
+::slotted([popover-action]) {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 16px !important;
+    gap: 8px;
+    border: none;
+    background-color: transparent;
+    border-radius: var(--popper-radius);
+    color: rgb(var(--color-black));
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color var(--popper-duration) var(--popper-easing);
+}
+
+::slotted([popover-action][danger]) {
+    color: rgb(var(--color-red));
+}
+
+::slotted([popover-action]:hover) {
+    background-color: rgba(var(--color-gray-4), 0.3) !important;
+}
+::slotted([popover-action][danger]:hover) {
+    background-color: rgba(var(--color-red), 0.1) !important;
+}

@@ -1,7 +1,7 @@
-import style from './style.css?inline';
+import style from './style.css?inline'
 
-const template = document.createElement('template');
-template.innerHTML = /*html*/`
+const template = document.createElement('template')
+template.innerHTML = /*html*/ `
   <style>${style}</style>
   <button>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
@@ -9,34 +9,38 @@ template.innerHTML = /*html*/`
     </svg>
     Opslaan
   </button>
-`;
+`
 
 class SaveShareButton extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
-  }
+    constructor() {
+        super()
+        this.attachShadow({ mode: 'open' })
+        this.shadowRoot.appendChild(template.content.cloneNode(true))
+    }
 
-  connectedCallback() {
-    this.shadowRoot.querySelector('button').addEventListener('click', () => {
-      this.dispatchEvent(new CustomEvent('saveshare', {
-        bubbles: true,
-        composed: true,
-        detail: { timestamp: new Date() }
-      }));
+    connectedCallback() {
+        this.shadowRoot.querySelector('button').addEventListener('click', () => {
+            this.dispatchEvent(
+                new CustomEvent('saveshare', {
+                    bubbles: true,
+                    composed: true,
+                    detail: { timestamp: new Date() },
+                }),
+            )
 
-      if (navigator.share) {
-        navigator.share({
-          title: 'Mijn planning',
-          text: 'Bekijk mijn moduleplanning',
-          url: window.location.href
-        }).catch(err => console.warn('Delen geannuleerd of mislukt:', err));
-      } else {
-        alert('Deel deze pagina met CTRL+C of via de browser');
-      }
-    });
-  }
+            if (navigator.share) {
+                navigator
+                    .share({
+                        title: 'Mijn planning',
+                        text: 'Bekijk mijn moduleplanning',
+                        url: window.location.href,
+                    })
+                    .catch(err => console.warn('Delen geannuleerd of mislukt:', err))
+            } else {
+                alert('Deel deze pagina met CTRL+C of via de browser')
+            }
+        })
+    }
 }
 
-customElements.define('save-share-button', SaveShareButton);
+customElements.define('save-share-button', SaveShareButton)
