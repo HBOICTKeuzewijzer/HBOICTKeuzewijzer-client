@@ -1,9 +1,9 @@
 :host {
-  --accordion-bg-color: #F6F7F8;
-  --accordion-hover-bg-color: #ccc;
-  --accordion-active-bg-color: #bbb;
+  --accordion-bg-color: rgb(var(--color-gray-5));
+  --accordion-hover-bg-color: rgb(var(--color-gray-3), 0.2);
+  --accordion-active-bg-color: rgba(var(--color-gray-3), 0.2);
   --accordion-border-color: rgba(var(--color-gray-4), 0.2);
-  --circle-color: #bbb;
+  --circle-color: rgb(var(--color-gray-2));
   --circle-size: 1.5em;
   --circle-margin-left: 1em;
   --accordion-border-radius: var(--rounded-md);
@@ -13,9 +13,37 @@
   --circle-border-width: 0.1em;
 }
 
+:host([type="SE"]) {
+  --accordion-active-bg-color: rgba(var(--color-gold), 0.2);
+  --circle-color: rgb(var(--color-gold));
+  --accordion-border-color: rgba(var(--color-orange), 0.2);
+  --circle-border-color: rgba(var(--color-orange), 0.2);
+}
+
+:host([type="IDS"]) {
+  --accordion-active-bg-color: rgba(var(--color-apple-green), 0.2);
+  --circle-color: rgb(var(--color-dark-green));
+  --accordion-border-color: rgba(var(--color-dark-green), 0.2);
+  --circle-border-color: rgba(var(--color-dark-green), 0.2);
+}
+
+:host([type="BIM"]) {
+  --accordion-active-bg-color: rgba(var(--color-blue), 0.2);
+  --circle-color: rgb(var(--color-blue));
+  --accordion-border-color: rgba(var(--color-sky-blue), 0.2);
+  --circle-border-color: rgba(var(--color-sky-blue), 0.2);
+}
+
+:host([type="OVERIG"]) {
+  --accordion-active-bg-color: rgba(var(--color-dark-pink), 0.2);
+  --circle-color: rgb(var(--color-dark-pink));
+  --accordion-border-color: rgba(var(--color-red), 0.2);
+  --circle-border-color: rgba(var(--color-red), 0.2);
+}
+
 .accordion {
   background-color: var(--accordion-bg-color);
-  color: #444;
+  color: rgb(var(--color-gray-1));
   cursor: pointer;
   padding: 0.875rem 1rem 0.875rem 1.5rem;
   width: 100%;
@@ -94,7 +122,6 @@
   border-radius: var(--accordion-border-radius);
   padding: 0.5rem 2rem 0.5rem 0.625rem !important;
   margin: 0.3125rem !important;
-  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.1);
   font-size: 0.75rem;
   font-weight: 700;
   line-height: 1.4;

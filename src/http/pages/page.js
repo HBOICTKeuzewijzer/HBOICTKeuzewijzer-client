@@ -10,7 +10,7 @@ export default function PlannerPage(params) {
             <p style="margin: 0; font-size: 12px;">
                 Dit zijn alle beschikbare modules waaruit je kunt kiezen. Als je een externe module wilt volgen, kun je deze toevoegen via de 'Anders' optie onder 'Overig'.
             </p>
-            <custom-accordion style="--accordion-active-bg-color: rgba(var(--color-gold), 0.2); --circle-color: rgb(var(--color-gold)); --accordion-border-color: rgba(var(--color-orange), 0.2); --circle-border-color: rgba(var(--color-orange), 0.2)">
+            <custom-accordion type="SE">
                 <span slot="title">Software Engineering</span>
                 <div class="module-item" slot="content">
                     <span>Webdevelopment</span>
@@ -19,7 +19,7 @@ export default function PlannerPage(params) {
                     <span>Software Engineering</span>
                 </div>      
             </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: rgba(var(--color-apple-green), 0.2); --circle-color: rgb(var(--color-dark-green)); --accordion-border-color: rgba(var(--color-dark-green), 0.2); --circle-border-color: rgba(var(--dark-green), 0.2)">
+            <custom-accordion type="IDS">
                 <span slot="title">Infrastructure Design & Security</span>
                 <div class="module-item" slot="content">
                     <span>Applied IT Security</span>
@@ -28,7 +28,7 @@ export default function PlannerPage(params) {
                     <span>Cloud Computing</span>
                 </div>
             </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: rgba(var(--color-blue), 0.2); --circle-color: rgb(var(--color-blue)); --accordion-border-color: rgba(var(--color-sky-blue), 0.2); --circle-border-color: rgba(var(--color-sky-blue), 0.2)">
+            <custom-accordion type="BIM">
                 <span slot="title">Business IT & Management</span>
                 <div class="module-item" slot="content">
                     <span>Datascience</span>
@@ -37,7 +37,7 @@ export default function PlannerPage(params) {
                     <span>Management of IT</span>
                 </div>
             </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: rgba(var(--color-dark-pink), 0.2); --circle-color: rgb(var(--color-dark-pink)); --accordion-border-color: rgba(var(--color-red), 0.2); --circle-border-color: rgba(var(--color-red), 0.2)">
+            <custom-accordion type="OVERIG">
                 <span slot="title">Overig</span>
                 <div class="module-item" slot="content">
                     <span>Tussen jaar</span>
