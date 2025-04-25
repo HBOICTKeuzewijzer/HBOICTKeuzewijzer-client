@@ -56,7 +56,7 @@ export class Dialog extends composeTraits(HTMLElement, Openable, AriaReflector) 
     }
 
     connectedCallback() {
-        super.connectedCallback?.();
+        super.connectedCallback?.()
 
         this.triggerElement = this.querySelector('[slot="trigger"]')
         this.contentElement = this.shadowRoot?.querySelector('[data-dialog]')
@@ -71,13 +71,16 @@ export class Dialog extends composeTraits(HTMLElement, Openable, AriaReflector) 
             this.closeButton?.addEventListener('click', this._closeHandler)
         }
 
-        this.contentElement?.setAttribute('id', `dialog-${crypto.randomUUID?.() || Math.random().toString(36).slice(2, 10)}`)
+        this.contentElement?.setAttribute(
+            'id',
+            `dialog-${crypto.randomUUID?.() || Math.random().toString(36).slice(2, 10)}`,
+        )
 
         this.#updateAriaProperties()
     }
 
     disconnectedCallback() {
-        super.disconnectedCallback?.();
+        super.disconnectedCallback?.()
 
         this.triggerElement?.removeEventListener('click', this._openHandler)
         if (this.hasAttribute('closable')) {
@@ -93,7 +96,7 @@ export class Dialog extends composeTraits(HTMLElement, Openable, AriaReflector) 
      * @param {string | null} newValue
      */
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback?.(name, oldValue, newValue);
+        super.attributeChangedCallback?.(name, oldValue, newValue)
 
         if (newValue !== oldValue) {
             if (name === 'open') {

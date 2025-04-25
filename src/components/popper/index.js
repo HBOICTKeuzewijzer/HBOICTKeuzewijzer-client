@@ -100,7 +100,7 @@ export class Popper extends composeTraits(HTMLElement, Openable, AriaReflector) 
      * Initializes references and accessibility attributes.
      */
     connectedCallback() {
-        super.connectedCallback?.();
+        super.connectedCallback?.()
 
         this.triggerElement = this.querySelector('[slot="trigger"]')
         this.contentElement = this.shadowRoot.querySelector('[data-content]')
@@ -117,7 +117,7 @@ export class Popper extends composeTraits(HTMLElement, Openable, AriaReflector) 
             this.triggerElement.setAttribute('aria-expanded', this.open.toString())
             this.triggerElement.setAttribute(
                 'tabindex',
-                this.triggerElement.tabIndex < 0 ? '0' : this.triggerElement.tabIndex.toString()
+                this.triggerElement.tabIndex < 0 ? '0' : this.triggerElement.tabIndex.toString(),
             )
         }
     }
@@ -131,8 +131,8 @@ export class Popper extends composeTraits(HTMLElement, Openable, AriaReflector) 
      * @param {string | null} newValue - The new value.
      */
     attributeChangedCallback(name, oldValue, newValue) {
-        super.attributeChangedCallback?.(name, oldValue, newValue);
-        
+        super.attributeChangedCallback?.(name, oldValue, newValue)
+
         if (newValue === oldValue) return
 
         const isDisabledChanged = name === 'disabled'

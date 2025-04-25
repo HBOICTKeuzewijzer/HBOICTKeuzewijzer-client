@@ -79,8 +79,7 @@ export class Popover extends composeTraits(Popper, KeyboardNavigable) {
      * @private
      */
     #handleOutsideClick = event => {
-        const isOutside = !this.contains(event.target) &&
-                          !this.triggerElement?.contains(event.target)
+        const isOutside = !this.contains(event.target) && !this.triggerElement?.contains(event.target)
 
         if (isOutside && this.open && this.hasAttribute('closable')) {
             this.open = false

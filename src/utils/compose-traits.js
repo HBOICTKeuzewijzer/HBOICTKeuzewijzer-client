@@ -16,10 +16,10 @@
  * class MyElement extends composeTraits(HTMLElement, TraitA, TraitB, TraitC) {}
  */
 export function composeTraits(Base, ...traits) {
-  traits.forEach(Trait => {
-    if (Trait && typeof Trait === 'function') {
-      Base = Trait(Base);
-    }
-  });
-  return Base;
+    traits.forEach(Trait => {
+        if (Trait && typeof Trait === 'function') {
+            Base = Trait(Base)
+        }
+    })
+    return Base
 }

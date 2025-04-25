@@ -45,7 +45,7 @@ export class Tooltip extends Popper {
      * @returns {void}
      */
     connectedCallback() {
-        super.connectedCallback?.();
+        super.connectedCallback?.()
 
         this.triggerElement?.addEventListener('mouseenter', this._openHandler)
         this.triggerElement?.addEventListener('mouseleave', this._closeHandler)
