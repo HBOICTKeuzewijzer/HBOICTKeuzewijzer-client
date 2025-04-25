@@ -23,6 +23,7 @@ export default defineConfig({
                     ['@http', './src/http'],
                     ['@pages', './src/http/pages'],
                     ['@models', './src/models'],
+                    ['@traits', './src/traits'],
                     ['@utils', './src/utils'],
                 ],
             },
