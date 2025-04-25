@@ -1,68 +1,8 @@
+import '@components/modules_header'
+
 export default function ModulesPage() {
     return /*html*/ `
-      <style>
-        body {
-          margin: 0;
-          font-family: Inter, sans-serif;
-        }
-  
-        .page-wrapper {
-          height: 100vh;
-          display: flex;
-          flex-direction: column;
-        }
-  
-        .header {
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 24px 40px;
-          background-color: #f9f9f9;
-          border-bottom: 1px solid #ddd;
-          box-sizing: border-box;
-        }
-  
-        .text-group h1 {
-          margin: 0;
-          font-size: 24px;
-          font-weight: 700;
-          color: #000;
-        }
-  
-        .text-group p {
-          margin: 4px 0 0;
-          font-size: 14px;
-          color: #444;
-          padding-right:10px;
-        }
-  
-        .add-button {
-          background-color: #f4c721;
-          color: #000;
-          padding: 10px 18px;
-          border: none;
-          border-radius: 10px;
-          font-weight: bold;
-          cursor: pointer;
-          transition: background-color 0.2s ease;
-        }
-  
-        .add-button:hover {
-          background-color: #e5b800;
-        }
-      </style>
-  
-      <div class="page-wrapper">
-        <div class="header">
-          <div class="text-group">
-            <h1>Modules beheren</h1>
-            <p>Bekijk hier een overzicht van alle modules. Hier kan je modules toevoegen en verwijderen</p>
-          </div>
-          <button class="add-button">Module toevoegen</button>
-        </div>
-  
-      </div>
+        <x-modules-header></x-modules-header>
     `
   }
   
