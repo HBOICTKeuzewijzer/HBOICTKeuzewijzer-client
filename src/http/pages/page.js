@@ -56,7 +56,7 @@ export default function PlannerPage(params) {
 
     return /*html*/ `
         <div class="container">
-            <x-sheet class="hidden md:flex" side="left" open>
+            <x-sheet class="hidden md:flex" side="left" open floating>
                 ${selectableContent}
             </x-sheet>
             <x-drawer class="md:hidden" open>

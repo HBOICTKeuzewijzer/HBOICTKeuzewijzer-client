@@ -24,8 +24,6 @@
 }
 
 body {
-    width: 100dvw;
-    height: 100dvh;
     background-color: rgb(var(--color-gray-5));
 }
 
@@ -38,15 +36,23 @@ i.ph-duotone {
 /*        App Structure        */
 /*=============================*/
 
-#_app,
-#_app > div {
-    width: 100%;
-    height: 100%;
-}
-
-main {
+#_app {
     display: flex;
-    height: calc(100% - var(--header-height)); /* Calculate the sreen heigt - header */
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+
+    & > div {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    & main {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
 }
 
 /*=========================*/
@@ -84,6 +90,26 @@ header {
     cursor: pointer;
 }
 
+button {
+    height: 38px;
+    padding: 0 12px;
+    color: rgb(var(--color-black));
+    background-color: rgb(var(--color-gold));
+    border: 1px solid rgba(var(--color-orange), 0.2);
+    border-radius: var(--rounded-md);
+    font-size: 14px;
+    font-weight: 600;
+  
+    &[variant="secondary"] {
+      background-color: rgb(var(--color-white));
+      border: 1px solid rgba(var(--color-gray-5), 0.2);
+    }
+
+    &:hover {
+        background-color: rgb(var(--color-orange));
+    }
+  }
+
 /* Responsive Header Padding */
 @media (min-width: 640px) {
     header {
@@ -97,8 +123,8 @@ header {
 
 .container {
     display: flex;
+    flex-direction: column;
     flex: 1;
-    height: 100%;
     padding: 32px;
 }
 
@@ -116,6 +142,10 @@ header {
 .text-sm {
     font-size: 0.875rem;
     line-height: 1.25rem;
+}
+
+.bg-white {
+    background-color: #fff;
 }
 
 .color-black {

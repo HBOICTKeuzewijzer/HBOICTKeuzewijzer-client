@@ -2,22 +2,22 @@ import { Popper } from '@components'
 import styling from './style.css?raw'
 
 /**
- * <x-popover>
+ * `<x-popover>`
  *
- * A reusable Web Component for popovers (floating panels) that toggles on trigger interaction.
- * Handles visibility, positioning via Popper, accessibility, and user interactions.
+ * A reusable Web Component for popovers (floating UI panels) that toggle visibility
+ * based on trigger interaction. Inherits from `Popper` for positioning logic.
  *
- * Attributes:
- * - `open`     : Boolean - shows/hides the popover
- * - `position` : String  - popover placement (e.g., "top", "bottom", "left", "right")
- * - `disabled` : Boolean - disables user interaction (no toggle)
- * - `closable` : Boolean - enables closing via clicking outside or Escape key
+ * ### Attributes:
+ * - `open`      — Boolean. Controls visibility of the popover.
+ * - `position`  — String. Sets the position of the popover (`top`, `bottom`, `left`, `right`, etc.).
+ * - `disabled`  — Boolean. Prevents interaction (popover won't toggle).
+ * - `closable`  — Boolean. Enables auto-closing when clicking outside or pressing `Escape`.
  *
- * Slots:
- * - `trigger`  : The element that toggles the popover (e.g., a button)
- * - *default*  : The content of the popover
+ * ### Slots:
+ * - `trigger`   — The element used to open/close the popover (e.g., a button).
+ * - *default*   — The popover content itself.
  *
- * Example:
+ * ### Example:
  * ```html
  * <x-popover position="bottom" closable>
  *   <button slot="trigger">Open Menu</button>
@@ -32,56 +32,54 @@ export class Popover extends Popper {
     constructor() {
         super()
 
-        /** @type {HTMLStyleElement} */
+        /**
+         * Scoped popover styles injected into the shadow DOM.
+         * @type {HTMLStyleElement}
+         * @private
+         */
         const _styleElement = document.createElement('style')
         _styleElement.textContent = styling
         this.shadowRoot.appendChild(_styleElement)
     }
 
     /**
-     * Lifecycle method triggered when the component is added to the DOM.
+     * Called automatically when the element is inserted into the DOM.
+     * Sets up event listeners for click toggling, outside click, and Escape key handling.
+     *
+     * @returns {void}
      */
     connectedCallback() {
-        super.connectedCallback()
+        super.connectedCallback?.()
 
-        this.triggerElement?.addEventListener('click', this.#handleTriggerClick)
-        document.addEventListener('keydown', this.#handleEscape)
+        this.triggerElement?.addEventListener('click', this._toggleHandler)
+        document.addEventListener('Escape', this._handleEscape)
         document.addEventListener('click', this.#handleOutsideClick)
     }
 
     /**
-     * Lifecycle method triggered when the component is removed from the DOM.
+     * Called automatically when the element is removed from the DOM.
+     * Cleans up event listeners to prevent memory leaks.
+     *
+     * @returns {void}
      */
     disconnectedCallback() {
-        super.disconnectedCallback()
+        super.disconnectedCallback?.()
 
-        this.triggerElement?.removeEventListener('click', this.#handleTriggerClick)
-        document.removeEventListener('keydown', this.#handleEscape)
+        this.triggerElement?.removeEventListener('click', this._toggleHandler)
+        document.removeEventListener('Escape', this._handleEscape)
         document.removeEventListener('click', this.#handleOutsideClick)
     }
 
     /**
-     * Toggles the popover open state.
-     * @private
-     */
-    #handleTriggerClick = () => {
-        this.open = !this.open
-    }
-
-    /**
-     * Closes the popover when the Escape key is pressed.
-     * @private
-     */
-    #handleEscape = event => {
-        if (event.key === 'Escape' && this.open) this.open = false
-    }
-
-    /**
-     * Closes the popover when clicking outside the component.
+     * Handles clicks outside the popover to close it, if open and closable.
+     *
+     * @param {MouseEvent} event - The mouse click event.
      * @private
      */
     #handleOutsideClick = event => {
-        if (!this.contains(event.target) && !this.triggerElement?.contains(event.target) && this.open) {
+        const isOutside = !this.contains(event.target) && !this.triggerElement?.contains(event.target)
+
+        if (isOutside && this.open) {
             this.open = false
         }
     }
