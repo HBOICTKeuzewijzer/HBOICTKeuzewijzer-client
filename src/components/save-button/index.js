@@ -11,7 +11,7 @@ template.innerHTML = /*html*/ `
   </button>
 `
 
-class SaveShareButton extends HTMLElement {
+export class SaveShareButton extends HTMLElement {
     constructor() {
         super()
         this.attachShadow({ mode: 'open' })
@@ -42,5 +42,3 @@ class SaveShareButton extends HTMLElement {
         })
     }
 }
-
-customElements.define('save-share-button', SaveShareButton)

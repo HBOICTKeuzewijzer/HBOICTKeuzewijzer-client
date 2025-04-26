@@ -8,5 +8,4 @@ export default function ModulesPage() {
         <div class="container bg-white">
         </div>
     `
-  }
-  
+}

@@ -1,4 +1,3 @@
-import '@components/accordion'
 import '@components/save-button'
 
 export default function PlannerPage(params) {
@@ -12,45 +11,109 @@ export default function PlannerPage(params) {
             </div>
 
             <div style="display: flex; flex-direction: column; padding: 24px;">            
-            <custom-accordion type="SE">
+            <x-accordion type="SE">
             <span slot="title">Software Engineering</span>
-            <div class="module-item" slot="content">
+            <div class="module-item">
                 <span>Webdevelopment</span>
+                <x-tooltip position="right" placement="middle">
+                    <div slot="trigger" data-icon>
+                        <i class="ph ph-info"></i>
+                    </div>
+                    <p class="color-black text-sm">
+                        Berichten
+                    </p>
+                </x-tooltip>
             </div>
-            <div class="module-item" slot="content">
+            <div class="module-item">
                 <span>Software Engineering</span>
+                <x-tooltip position="right" placement="middle">
+                <div slot="trigger" data-icon>
+                    <i class="ph ph-info"></i>
+                </div>
+                <p class="color-black text-sm">
+                    Berichten
+                </p>
+            </x-tooltip>
             </div>      
-        </custom-accordion>
-        <custom-accordion type="IDS">
+        </x-accordion>
+        <x-accordion type="IDS">
             <span slot="title">Infrastructure Design & Security</span>
-            <div class="module-item" slot="content">
+            <div class="module-item">
                 <span>Applied IT Security</span>
+                <x-tooltip position="right" placement="middle">
+                <div slot="trigger" data-icon>
+                    <i class="ph ph-info"></i>
+                </div>
+                <p class="color-black text-sm">
+                    Berichten
+                </p>
+            </x-tooltip>
             </div>
-            <div class="module-item" slot="content">
+            <div class="module-item">
                 <span>Cloud Computing</span>
+                <x-tooltip position="right" placement="middle">
+                <div slot="trigger" data-icon>
+                    <i class="ph ph-info"></i>
+                </div>
+                <p class="color-black text-sm">
+                    Berichten
+                </p>
+            </x-tooltip>
             </div>
-        </custom-accordion>
-        <custom-accordion type="BIM">
+        </x-accordion>
+        <x-accordion type="BIM">
             <span slot="title">Business IT & Management</span>
-            <div class="module-item" slot="content">
+            <div class="module-item">
                 <span>Datascience</span>
+                <x-tooltip position="right" placement="middle">
+                <div slot="trigger" data-icon>
+                    <i class="ph ph-info"></i>
+                </div>
+                <p class="color-black text-sm">
+                    Berichten
+                </p>
+            </x-tooltip>
             </div>
-            <div class="module-item" slot="content">
+            <div class="module-item">
                 <span>Management of IT</span>
+                <x-tooltip position="right" placement="middle">
+                <div slot="trigger" data-icon>
+                    <i class="ph ph-info"></i>
+                </div>
+                <p class="color-black text-sm">
+                    Berichten
+                </p>
+            </x-tooltip>
             </div>
-        </custom-accordion>
-        <custom-accordion type="OVERIG">
+        </x-accordion>
+        <x-accordion type="Overig">
             <span slot="title">Overig</span>
-            <div class="module-item" slot="content">
+            <div class="module-item">
                 <span>Tussen jaar</span>
+                <x-tooltip position="right" placement="middle">
+                <div slot="trigger" data-icon>
+                    <i class="ph ph-info"></i>
+                </div>
+                <p class="color-black text-sm">
+                    Berichten
+                </p>
+            </x-tooltip>
             </div>
-            <div class="module-item" slot="content">
+            <div class="module-item">
                 <span>Minor</span>
+                <x-tooltip position="right" placement="middle">
+                <div slot="trigger" data-icon>
+                    <i class="ph ph-info"></i>
+                </div>
+                <p class="color-black text-sm">
+                    Berichten
+                </p>
+            </x-tooltip>
             </div>
-            <div class="module-item" slot="content">
+            <div class="module-item">
                 <span>Eigen Keuze</span>
             </div>
-        </custom-accordion>
+        </x-accordion>
             </div>
         `
 
