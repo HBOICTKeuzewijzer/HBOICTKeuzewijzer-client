@@ -1,6 +1,4 @@
 import { Popper } from '@components'
-import { KeyboardNavigable } from '@traits'
-import { composeTraits } from '@utils'
 import styling from './style.css?raw'
 
 /**
@@ -30,7 +28,7 @@ import styling from './style.css?raw'
  * </x-popover>
  * ```
  */
-export class Popover extends composeTraits(Popper, KeyboardNavigable) {
+export class Popover extends Popper {
     constructor() {
         super()
 
@@ -54,7 +52,7 @@ export class Popover extends composeTraits(Popper, KeyboardNavigable) {
         super.connectedCallback?.()
 
         this.triggerElement?.addEventListener('click', this._toggleHandler)
-        document.addEventListener('keypress_escape', this._handleEscape)
+        document.addEventListener('Escape', this._handleEscape)
         document.addEventListener('click', this.#handleOutsideClick)
     }
 
@@ -68,7 +66,7 @@ export class Popover extends composeTraits(Popper, KeyboardNavigable) {
         super.disconnectedCallback?.()
 
         this.triggerElement?.removeEventListener('click', this._toggleHandler)
-        document.removeEventListener('keypress_escape', this._handleEscape)
+        document.removeEventListener('Escape', this._handleEscape)
         document.removeEventListener('click', this.#handleOutsideClick)
     }
 
@@ -81,7 +79,7 @@ export class Popover extends composeTraits(Popper, KeyboardNavigable) {
     #handleOutsideClick = event => {
         const isOutside = !this.contains(event.target) && !this.triggerElement?.contains(event.target)
 
-        if (isOutside && this.open && this.hasAttribute('closable')) {
+        if (isOutside && this.open) {
             this.open = false
         }
     }

@@ -77,16 +77,4 @@ export const Openable = Base =>
         _toggleHandler = () => {
             this.open = !this.open
         }
-
-        /**
-         * Handles `Escape` key press to close the element if open and closable.
-         *
-         * @param {KeyboardEvent} event - The keyboard event.
-         * @private
-         */
-        _handleEscape = event => {
-            if (event.key === 'Escape' && this.open && this.hasAttribute('closable')) {
-                this.open = false
-            }
-        }
     }
