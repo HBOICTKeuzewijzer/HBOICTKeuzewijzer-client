@@ -15,7 +15,7 @@ export default function PlannerPage(params) {
             <span slot="title">Software Engineering</span>
             <div class="module-item">
                 <span>Webdevelopment</span>
-                <x-tooltip position="right" placement="middle">
+                <x-tooltip position="left" placement="middle">
                     <div slot="trigger" data-icon>
                         <i class="ph ph-info"></i>
                     </div>
@@ -26,7 +26,7 @@ export default function PlannerPage(params) {
             </div>
             <div class="module-item">
                 <span>Software Engineering</span>
-                <x-tooltip position="right" placement="middle">
+                <x-tooltip position="left" placement="middle">
                 <div slot="trigger" data-icon>
                     <i class="ph ph-info"></i>
                 </div>
@@ -40,7 +40,7 @@ export default function PlannerPage(params) {
             <span slot="title">Infrastructure Design & Security</span>
             <div class="module-item">
                 <span>Applied IT Security</span>
-                <x-tooltip position="right" placement="middle">
+                <x-tooltip position="left" placement="middle">
                 <div slot="trigger" data-icon>
                     <i class="ph ph-info"></i>
                 </div>
@@ -51,7 +51,7 @@ export default function PlannerPage(params) {
             </div>
             <div class="module-item">
                 <span>Cloud Computing</span>
-                <x-tooltip position="right" placement="middle">
+                <x-tooltip position="left" placement="middle">
                 <div slot="trigger" data-icon>
                     <i class="ph ph-info"></i>
                 </div>
@@ -65,7 +65,7 @@ export default function PlannerPage(params) {
             <span slot="title">Business IT & Management</span>
             <div class="module-item">
                 <span>Datascience</span>
-                <x-tooltip position="right" placement="middle">
+                <x-tooltip position="left" placement="middle">
                 <div slot="trigger" data-icon>
                     <i class="ph ph-info"></i>
                 </div>
@@ -76,7 +76,7 @@ export default function PlannerPage(params) {
             </div>
             <div class="module-item">
                 <span>Management of IT</span>
-                <x-tooltip position="right" placement="middle">
+                <x-tooltip position="left" placement="middle">
                 <div slot="trigger" data-icon>
                     <i class="ph ph-info"></i>
                 </div>
@@ -90,7 +90,7 @@ export default function PlannerPage(params) {
             <span slot="title">Overig</span>
             <div class="module-item">
                 <span>Tussen jaar</span>
-                <x-tooltip position="right" placement="middle">
+                <x-tooltip position="left" placement="middle">
                 <div slot="trigger" data-icon>
                     <i class="ph ph-info"></i>
                 </div>
@@ -101,7 +101,7 @@ export default function PlannerPage(params) {
             </div>
             <div class="module-item">
                 <span>Minor</span>
-                <x-tooltip position="right" placement="middle">
+                <x-tooltip position="left" placement="middle">
                 <div slot="trigger" data-icon>
                     <i class="ph ph-info"></i>
                 </div>
