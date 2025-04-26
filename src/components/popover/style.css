@@ -9,11 +9,11 @@ slot {
     height: 40px;
     padding: 0 16px !important;
     gap: 8px;
-    border: none;
-    background-color: transparent;
-    border-radius: var(--popper-radius);
+    border: none !important;
+    background-color: transparent !important;
+    border-radius: var(--popper-radius) !important;
     color: rgb(var(--color-black));
-    font-weight: 500;
+    font-weight: 500 !important;
     cursor: pointer;
     text-decoration: none;
     white-space: nowrap;
@@ -21,7 +21,7 @@ slot {
 }
 
 ::slotted([popover-action][danger]) {
-    color: rgb(var(--color-red));
+    color: rgb(var(--color-red)) !important;
 }
 
 ::slotted([popover-action]:hover) {

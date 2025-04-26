@@ -1,13 +1,13 @@
 /**
  * Creates a template from a tagged HTML string.
- * @param {TemplateStringsArray} strings 
- * @param  {...any} values 
+ * @param {TemplateStringsArray} strings
+ * @param  {...any} values
  * @returns {HTMLTemplateElement}
  */
 export function html(strings, ...values) {
-    const template = document.createElement('template');
-    template.innerHTML = String.raw({ raw: strings }, ...values);
-    return template;
+    const template = document.createElement('template')
+    template.innerHTML = String.raw({ raw: strings }, ...values)
+    return template
 }
 
 /**
@@ -25,5 +25,5 @@ export function html(strings, ...values) {
  * @returns Retrieved data from object at path.
  */
 export function resolvePath(obj, path) {
-    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj)
 }

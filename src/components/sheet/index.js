@@ -1,21 +1,22 @@
-import { Dialog } from '@components'
 import styling from './style.css?raw'
+import { Dialog } from '@components'
 
 /**
- * <x-sheet>
+ * `<x-sheet>`
  *
- * A sliding panel component that can be used as a side-drawer or modal-like interface.
- * Inherits from `Dialog` and provides control over which side the sheet appears from.
+ * A Web Component that displays a sliding panel (or sheet), functioning like a side drawer or modal.
+ * Inherits behavior from the `<x-dialog>` component and adds directional control via the `side` attribute.
  *
- * Attributes:
- * - Inherits `open` and `disabled` from the `Dialog` component.
- * - `side`     : Specifies which side the sheet slides in from ('left', 'right', 'top', or 'bottom').
+ * ### Attributes:
+ * - `open`     — Boolean (inherited): Whether the sheet is open.
+ * - `disabled` — Boolean (inherited): Whether the sheet is interactive.
+ * - `side`     — String: Defines which side the sheet slides in from (`'left'`, `'right'`, `'top'`, `'bottom'`).
  *
- * Example usage:
+ * ### Example:
  * ```html
- * <x-sheet side="right">
- *   <h2>Sheet Title</h2>
- *   <div>Sheet content here</div>
+ * <x-sheet side="right" open>
+ *   <h2>Settings</h2>
+ *   <p>Panel content...</p>
  * </x-sheet>
  * ```
  */
@@ -30,26 +31,31 @@ export class Sheet extends Dialog {
     }
 
     /**
-     * Specifies the observed attributes for the component.
-     * @returns {string[]} List of attributes to observe.
+     * Attributes to observe. Extends the parent's list by including `side`.
+     * @returns {string[]}
      */
     static get observedAttributes() {
         return [...super.observedAttributes, 'side']
     }
 
     /**
-     * Returns the current `side` state.
-     * @returns {string}
+     * Gets the value of the `side` attribute.
+     * @returns {'left' | 'right' | 'top' | 'bottom'}
      */
     get side() {
-        return this.getAttribute('side')
+        const val = this.getAttribute('side')
+        return ['left', 'right', 'top', 'bottom'].includes(val) ? val : 'bottom'
     }
 
     /**
-     * Sets the current `side` state.
-     * @param {string} value
+     * Sets the value of the `side` attribute.
+     * @param {'left' | 'right' | 'top' | 'bottom'} value
      */
-    set side(value) {
-        this.setAttribute('side', value)
+    set side(value = 'bottom') {
+        if (['left', 'right', 'top', 'bottom'].includes(value)) {
+            this.setAttribute('side', value)
+        } else {
+            console.warn(`<x-sheet> invalid "side" value: ${value}`)
+        }
     }
 }
