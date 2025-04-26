@@ -57,33 +57,33 @@ class Router {
     async #handleRoute() {
         // Find a matching route based on the current path.
         const matchedRoute = this.#routes
-        .slice() // Clone the original route list to avoid mutating it during sorting
-        .sort((a, b) => {
-            // Split paths into segments for comparison (e.g., "/admin/modules/:uuid" → ["admin", "modules", ":uuid"])
-            const aSegments = a.path.replace(/^\/|\/$/g, '').split('/')
-            const bSegments = b.path.replace(/^\/|\/$/g, '').split('/')
-    
-            // Determine if the route is dynamic (i.e., contains parameters like ":uuid")
-            const aIsDynamic = aSegments.some(s => s.startsWith(':'))
-            const bIsDynamic = bSegments.some(s => s.startsWith(':'))
-    
-            // Static routes always come before dynamic routes
-            if (aIsDynamic && !bIsDynamic) return 1
-            if (!aIsDynamic && bIsDynamic) return -1
-    
-            // If both routes are dynamic/static, prefer the one with fewer dynamic segments
-            const aDynamicCount = aSegments.filter(s => s.startsWith(':')).length
-            const bDynamicCount = bSegments.filter(s => s.startsWith(':')).length
-    
-            if (aDynamicCount !== bDynamicCount) {
-                return aDynamicCount - bDynamicCount
-            }
-    
-            // Fallback: alphabetically compare the full path strings to ensure consistent ordering
-            return a.path.localeCompare(b.path)
-        })
-        // Find the first route that matches the current URL
-        .find(route => route.match(this.currentRoute))
+            .slice() // Clone the original route list to avoid mutating it during sorting
+            .sort((a, b) => {
+                // Split paths into segments for comparison (e.g., "/admin/modules/:uuid" → ["admin", "modules", ":uuid"])
+                const aSegments = a.path.replace(/^\/|\/$/g, '').split('/')
+                const bSegments = b.path.replace(/^\/|\/$/g, '').split('/')
+
+                // Determine if the route is dynamic (i.e., contains parameters like ":uuid")
+                const aIsDynamic = aSegments.some(s => s.startsWith(':'))
+                const bIsDynamic = bSegments.some(s => s.startsWith(':'))
+
+                // Static routes always come before dynamic routes
+                if (aIsDynamic && !bIsDynamic) return 1
+                if (!aIsDynamic && bIsDynamic) return -1
+
+                // If both routes are dynamic/static, prefer the one with fewer dynamic segments
+                const aDynamicCount = aSegments.filter(s => s.startsWith(':')).length
+                const bDynamicCount = bSegments.filter(s => s.startsWith(':')).length
+
+                if (aDynamicCount !== bDynamicCount) {
+                    return aDynamicCount - bDynamicCount
+                }
+
+                // Fallback: alphabetically compare the full path strings to ensure consistent ordering
+                return a.path.localeCompare(b.path)
+            })
+            // Find the first route that matches the current URL
+            .find(route => route.match(this.currentRoute))
 
         if (!matchedRoute) return this.#render(() => import('@pages/404.js'))
 
