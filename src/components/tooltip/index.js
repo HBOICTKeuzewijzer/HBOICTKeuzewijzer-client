@@ -67,4 +67,20 @@ export class Tooltip extends Popper {
         this.triggerElement?.removeEventListener('focus', this._openHandler)
         this.triggerElement?.removeEventListener('blur', this._closeHandler)
     }
+
+    /**
+     * Shows the tooltip.
+     * @private
+     */
+    #openHandler = () => {
+        this.open = true
+    }
+
+    /**
+     * Hides the tooltip.
+     * @private
+     */
+    #closeHandler = () => {
+        this.open = false
+    }
 }

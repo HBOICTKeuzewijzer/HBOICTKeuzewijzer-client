@@ -99,16 +99,16 @@ button {
     border-radius: var(--rounded-md);
     font-size: 14px;
     font-weight: 600;
-  
-    &[variant="secondary"] {
-      background-color: rgb(var(--color-white));
-      border: 1px solid rgba(var(--color-gray-5), 0.2);
+
+    &[variant='secondary'] {
+        background-color: rgb(var(--color-white));
+        border: 1px solid rgba(var(--color-gray-5), 0.2);
     }
 
     &:hover {
         background-color: rgb(var(--color-orange));
     }
-  }
+}
 
 /* Responsive Header Padding */
 @media (min-width: 640px) {

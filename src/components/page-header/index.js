@@ -9,8 +9,8 @@ _template.innerHTML = `
 `
 
 export class PageHeader extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' }).appendChild(_template.content.cloneNode(true))
-  }
+    constructor() {
+        super()
+        this.attachShadow({ mode: 'open' }).appendChild(_template.content.cloneNode(true))
+    }
 }

@@ -1,4 +1,4 @@
-import '@components/accordion'
+import '@components/save-button'
 
 export default function PlannerPage(params) {
     const selectableContent = /*html*/ `
@@ -11,45 +11,109 @@ export default function PlannerPage(params) {
             </div>
 
             <div style="display: flex; flex-direction: column; padding: 24px;">            
-                <custom-accordion style="--accordion-active-bg-color: #FFF4CE; --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-gold));">
-                    <span slot="title">Software Engineering</span>
-                    <div class="module-item" slot="content">
-                        <p>Webdevelopment</p>
+            <x-accordion type="SE">
+            <span slot="title">Software Engineering</span>
+            <div class="module-item">
+                <span>Webdevelopment</span>
+                <x-tooltip position="right" placement="middle">
+                    <div slot="trigger" data-icon>
+                        <i class="ph ph-info"></i>
                     </div>
-                    <div class="module-item" slot="content">
-                        <p>Software Engineering</p>
-                    </div>      
-                </custom-accordion>
-                <custom-accordion active style="--accordion-active-bg-color: rgb(var(--color-light-blue)); --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-blue));">
-                    <span slot="title">Infrastructure Design & Security</span>
-                    <div class="module-item" slot="content">
-                        <p>Applied IT Security</p>
-                    </div>
-                    <div class="module-item" slot="content">
-                        <p>Cloud Computing</p>
-                    </div>
-                </custom-accordion>
-                <custom-accordion style="--accordion-active-bg-color: rgb(var(--color-apple-green)); --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-dark-green));">
-                    <span slot="title">Business IT & Management</span>
-                    <div class="module-item" slot="content">
-                        <p>Datascience</p>
-                    </div>
-                    <div class="module-item" slot="content">
-                        <p>Management of IT</p>
-                    </div>
-                </custom-accordion>
-                <custom-accordion style="--accordion-active-bg-color: #FEDFE4; --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-dark-pink));">
-                    <span slot="title">Overig</span>
-                    <div class="module-item" slot="content">
-                        <p>Tussen jaar</p>
-                    </div>
-                    <div class="module-item" slot="content">
-                        <p>Minor</p>
-                    </div>
-                    <div class="module-item" slot="content">
-                        <p>Eigen Keuze</p>
-                    </div>
-                </custom-accordion>
+                    <p class="color-black text-sm">
+                        Berichten
+                    </p>
+                </x-tooltip>
+            </div>
+            <div class="module-item">
+                <span>Software Engineering</span>
+                <x-tooltip position="right" placement="middle">
+                <div slot="trigger" data-icon>
+                    <i class="ph ph-info"></i>
+                </div>
+                <p class="color-black text-sm">
+                    Berichten
+                </p>
+            </x-tooltip>
+            </div>      
+        </x-accordion>
+        <x-accordion type="IDS">
+            <span slot="title">Infrastructure Design & Security</span>
+            <div class="module-item">
+                <span>Applied IT Security</span>
+                <x-tooltip position="right" placement="middle">
+                <div slot="trigger" data-icon>
+                    <i class="ph ph-info"></i>
+                </div>
+                <p class="color-black text-sm">
+                    Berichten
+                </p>
+            </x-tooltip>
+            </div>
+            <div class="module-item">
+                <span>Cloud Computing</span>
+                <x-tooltip position="right" placement="middle">
+                <div slot="trigger" data-icon>
+                    <i class="ph ph-info"></i>
+                </div>
+                <p class="color-black text-sm">
+                    Berichten
+                </p>
+            </x-tooltip>
+            </div>
+        </x-accordion>
+        <x-accordion type="BIM">
+            <span slot="title">Business IT & Management</span>
+            <div class="module-item">
+                <span>Datascience</span>
+                <x-tooltip position="right" placement="middle">
+                <div slot="trigger" data-icon>
+                    <i class="ph ph-info"></i>
+                </div>
+                <p class="color-black text-sm">
+                    Berichten
+                </p>
+            </x-tooltip>
+            </div>
+            <div class="module-item">
+                <span>Management of IT</span>
+                <x-tooltip position="right" placement="middle">
+                <div slot="trigger" data-icon>
+                    <i class="ph ph-info"></i>
+                </div>
+                <p class="color-black text-sm">
+                    Berichten
+                </p>
+            </x-tooltip>
+            </div>
+        </x-accordion>
+        <x-accordion type="Overig">
+            <span slot="title">Overig</span>
+            <div class="module-item">
+                <span>Tussen jaar</span>
+                <x-tooltip position="right" placement="middle">
+                <div slot="trigger" data-icon>
+                    <i class="ph ph-info"></i>
+                </div>
+                <p class="color-black text-sm">
+                    Berichten
+                </p>
+            </x-tooltip>
+            </div>
+            <div class="module-item">
+                <span>Minor</span>
+                <x-tooltip position="right" placement="middle">
+                <div slot="trigger" data-icon>
+                    <i class="ph ph-info"></i>
+                </div>
+                <p class="color-black text-sm">
+                    Berichten
+                </p>
+            </x-tooltip>
+            </div>
+            <div class="module-item">
+                <span>Eigen Keuze</span>
+            </div>
+        </x-accordion>
             </div>
         `
 
@@ -61,6 +125,9 @@ export default function PlannerPage(params) {
             <x-drawer class="md:hidden" open>
                 ${selectableContent}
             </x-drawer>
+            <save-share-button>
+                <span slot="icon">Opslaan</span>
+            </save-share-button>
         </div>
   `
 }
