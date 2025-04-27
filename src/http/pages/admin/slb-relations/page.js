@@ -2,7 +2,7 @@
 
 import { DatatableButtons, DatatableColumn, DatatableConfig } from '@/models';
 
-export default function OerPage() {
+export default function SlbRelationsPage() {
     return /*html*/ `
         <style>
             #table-div {
@@ -49,16 +49,15 @@ export default function OerPage() {
     `
 }
 
-OerPage.onPageLoaded = () => {
+SlbRelationsPage.onPageLoaded = () => {
     /** @type {Datatable} */
     const table = (document.querySelector("x-data-table"));
 
     table.dataTable(new DatatableConfig({
-        route: "oer",
+        route: "user",
         columns: [
             new DatatableColumn({ path: "id", title: "Id", sorting: true }),
-            new DatatableColumn({ path: "academicYear", title: "Jaar", sorting: true }),
-            new DatatableColumn({ path: "filePath", title: "File" })
+            new DatatableColumn({ path: "slbApplicationUser.name", title: "SLB'er", sorting: true })
         ],
         searching: true,
         paging: true,

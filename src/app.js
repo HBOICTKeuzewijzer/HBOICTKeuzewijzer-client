@@ -13,7 +13,9 @@ import {
     InputMultiline,
     Input,
     PageHeader,
-    SaveShareButton
+    SaveShareButton,
+    Sidebar,
+    Datatable
 } from '@components'
 customElements.define('x-accordion', Accordion)
 customElements.define('x-dialog', Dialog)

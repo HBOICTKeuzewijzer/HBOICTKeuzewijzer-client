@@ -12,9 +12,9 @@ export const routes = [
         .add('/admin/', () => import('@/http/pages/admin/page.js'))
         .add('/admin/modules', () => import('@/http/pages/admin/modules/page.js'))
         .add('/admin/oer', () => import('@/http/pages/admin/oer/page.js'))
-        .add('/admin/categorien', () => import('@/http/pages/admin/categorien/page.js'))
-        .add('/admin/rollen-toewijzen', () => import('@/http/pages/admin/rollen-toewijzen/page.js'))
-        .add('/admin/slb-relaties', () => import('@/http/pages/admin/slb-relaties/page.js')).routes,
+        .add('/admin/categorien', () => import('@/http/pages/admin/category/page.js'))
+        .add('/admin/rollen-toewijzen', () => import('@/http/pages/admin/role-assignment/page.js'))
+        .add('/admin/slb-relaties', () => import('@/http/pages/admin/slb-relations/page.js')).routes,
 
     ...new RouteGroup([new EnsureCohortIsSet()])
         .add('/', () => import('@/http/pages/page.js'))
