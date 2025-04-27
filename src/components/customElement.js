@@ -1,34 +1,32 @@
 export default class CustomElement extends HTMLElement {
     constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
+        super()
+        this.attachShadow({ mode: 'open' })
     }
 
-    #eventListeners = [];
+    #eventListeners = []
 
     /**
      * Apply a <template> to the shadow root.
      * @param {HTMLTemplateElement} template The template element to clone and set.
      */
     applyTemplate(template) {
-        this.shadowRoot.appendChild(template.content.cloneNode(true));
+        this.shadowRoot.appendChild(template.content.cloneNode(true))
     }
 
- 
     /**
      * Hides <slot> that have not received content.
      */
     hideEmptySlots() {
-        const slots = this.shadowRoot.querySelectorAll('slot');
+        const slots = this.shadowRoot.querySelectorAll('slot')
 
- 
         slots.forEach(slot => {
             if (slot.assignedNodes().length === 0) {
-                slot.style.display = 'none';
+                slot.style.display = 'none'
             } else {
-                slot.style.display = '';
+                slot.style.display = ''
             }
-        });
+        })
     }
 
     /**
@@ -43,25 +41,25 @@ export default class CustomElement extends HTMLElement {
      * @param {(event: Event) => void} handler
      */
     trackListener(element, event, handler) {
-        element.addEventListener(event, handler);
-        this.#eventListeners.push({ element, event, handler });
+        element.addEventListener(event, handler)
+        this.#eventListeners.push({ element, event, handler })
     }
 
- 
+
     /**
      * Clears all tracked listeners
      */
     clearListeners() {
         for (const { element, event, handler } of this.#eventListeners) {
-            element.removeEventListener(event, handler);
+            element.removeEventListener(event, handler)
         }
-        this.#eventListeners = [];
+        this.#eventListeners = []
     }
- 
+
     /**
      * @returns {ShadowRoot} Shadowroot root
      */
     get root() {
-        return this.shadowRoot;
+        return this.shadowRoot
     }
 }

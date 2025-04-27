@@ -1,19 +1,15 @@
-import styling from './style.css?raw'
-import { html } from '@utils/functions'
+import { html } from '@/utils/functions'
 import CustomElement from '@components/customElement'
+import styling from './style.css?raw'
 
 const template = html`
     <style>
         ${styling}
     </style>
-    <div id="container">
-        <slot class="icon-slot" name="prepend"></slot>
-        <input type="text" />
-        <slot class="icon-slot" name="append"></slot>
-    </div>
+    <textarea spellcheck="false"></textarea>
 `
 
-export class Input extends CustomElement {
+export class MultilineInput extends CustomElement {
     static get observedAttributes() {
         return ['placeholder']
     }
@@ -22,27 +18,9 @@ export class Input extends CustomElement {
         super()
     }
 
-    get placeholder() {
-        return this.getAttribute('placeholder')
-    }
-
-    set placeholder(value) {
-        this.setAttribute('placeholder', value)
-    }
-
-    get value() {
-        const input = this.shadowRoot?.querySelector('input')
-        return input?.value || ''
-    }
-
-    set value(val) {
-        const input = this.shadowRoot?.querySelector('input')
-        if (input) input.value = val
-    }
-
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'placeholder' && this.shadowRoot) {
-            const input = this.shadowRoot.querySelector('input')
+            const input = this.shadowRoot.querySelector('textarea')
             if (input) {
                 input.placeholder = newValue
             }
@@ -50,13 +28,13 @@ export class Input extends CustomElement {
     }
 
     disconnectedCallback() {
-        const input = this.shadowRoot.querySelector('input')
+        const input = this.shadowRoot.querySelector('textarea')
         if (input && this._inputHandler) {
             input.removeEventListener('input', this._inputHandler)
         }
     }
 
-    #inputHandler = e => {
+    #inputHandler = event => {
         const value = e.target.value
         this.dispatchEvent(
             new CustomEvent('onValueChanged', {
@@ -69,12 +47,11 @@ export class Input extends CustomElement {
 
     connectedCallback() {
         this.applyTemplate(template)
-        this.hideEmptySlots()
 
-        const input = this.shadowRoot.querySelector('input')
+        const input = this.shadowRoot.querySelector('textarea')
         if (!input) return
 
-        input.placeholder = this.placeholder
+        input.placeholder = this.getAttribute('placeholder') || ''
 
         input.addEventListener('input', this.#inputHandler)
     }

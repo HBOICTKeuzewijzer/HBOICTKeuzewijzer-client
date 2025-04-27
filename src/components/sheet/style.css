@@ -16,16 +16,13 @@
 
     & [data-dialog] {
         display: none;
-        position: fixed;
+        width: 100%;
+        max-inline-size: var(--sheet-width);
+        height: calc(100% - var(--sheet-header-offset) - (var(--sheet-gap) * 2));
         inset-block-start: calc(var(--sheet-header-offset) + var(--sheet-gap));
         inset-block-end: var(--sheet-gap);
         inset-inline-start: var(--sheet-gap);
         inset-inline-end: var(--sheet-gap);
-
-        width: 100%;
-        max-inline-size: var(--sheet-width);
-        height: calc(100% - var(--sheet-header-offset) - (var(--sheet-gap) * 2));
-
         padding: 0;
         background-color: #fff;
         border-radius: var(--rounded-lg, 0.5rem);
@@ -38,6 +35,15 @@
 
         transform: translateX(var(--transform-x, -100%));
     }
+}
+
+:host(:not([floating])) [data-dialog] {
+    display: block;
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 100%;
+    margin-left: -12px;
 }
 
 :host([side='left']) [data-dialog] {
