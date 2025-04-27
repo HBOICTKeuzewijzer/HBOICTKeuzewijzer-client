@@ -1,6 +1,8 @@
 /** @typedef {import('@/components').Datatable} Datatable */
 
+import { router } from '@/http/router';
 import { DatatableButtons, DatatableColumn, DatatableConfig } from '@/models';
+import { fetcher } from '@/utils';
 
 export default function CategoryPage() {
     return /*html*/ `
@@ -46,12 +48,43 @@ export default function CategoryPage() {
                 </x-data-table>
             </div>
         </div>
+
+        <x-dialog id="confirmDeleteDialog">
+            <div>
+                <h2>Weet je zeker dat je dit wil deleten?</h2>
+                <br>
+                <button id="confirmYes">Yes, delete</button>
+                <button id="confirmNo">Cancel</button>
+            </div>
+        </x-dialog>
     `
 }
 
 CategoryPage.onPageLoaded = () => {
     /** @type {Datatable} */
     const table = (document.querySelector("x-data-table"));
+    const dialog = document.querySelector("#confirmDeleteDialog");
+    const yesBtn = dialog.shadowRoot?.host.querySelector("#confirmYes");
+    const noBtn = dialog.shadowRoot?.host.querySelector("#confirmNo");
+
+    let currentRow = null;
+
+    const yesCallback = async () => {
+        if (!currentRow) return;
+
+        dialog.removeAttribute("open");
+        await fetcher(`category/${currentRow.id}`, { method: "delete" });
+
+        currentRow = null;
+    };
+
+    const noCallback = () => {
+        dialog.removeAttribute("open");
+        currentRow = null;
+    };
+
+    yesBtn?.addEventListener("click", yesCallback);
+    noBtn?.addEventListener("click", noCallback);
 
     table.dataTable(new DatatableConfig({
         route: "category",
@@ -63,9 +96,16 @@ CategoryPage.onPageLoaded = () => {
         paging: false,
         pageSize: 10,
         buttons: new DatatableButtons({
-            edit: (row) => console.log("Editing:", row),
-            delete: (row) => console.log("Deleting:", row),
-            inspect: (row) => console.log("Inspecting:", row),
+            edit: (row) => {
+                router.navigate(`/admin/categorien/edit/${row.id}`);
+            },
+            delete: (row) => {
+                currentRow = row;
+                dialog.setAttribute("open", "");
+            },
+            inspect: (row) => {
+                router.navigate(`/admin/categorien/inspect/${row.id}`);
+            },
         })
     }));
 }

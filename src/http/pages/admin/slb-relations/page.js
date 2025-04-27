@@ -1,6 +1,8 @@
 /** @typedef {import('@/components').Datatable} Datatable */
 
 import { DatatableButtons, DatatableColumn, DatatableConfig } from '@/models';
+import { fetcher } from '@/utils';
+import { router } from '@/http/router';
 
 export default function SlbRelationsPage() {
     return /*html*/ `
@@ -46,15 +48,46 @@ export default function SlbRelationsPage() {
                 </x-data-table>
             </div>
         </div>
+
+        <x-dialog id="confirmDeleteDialog">
+            <div>
+                <h2>Weet je zeker dat je dit wil deleten?</h2>
+                <br>
+                <button id="confirmYes">Yes, delete</button>
+                <button id="confirmNo">Cancel</button>
+            </div>
+        </x-dialog>
     `
 }
 
 SlbRelationsPage.onPageLoaded = () => {
     /** @type {Datatable} */
     const table = (document.querySelector("x-data-table"));
+    const dialog = document.querySelector("#confirmDeleteDialog");
+    const yesBtn = dialog.shadowRoot?.host.querySelector("#confirmYes");
+    const noBtn = dialog.shadowRoot?.host.querySelector("#confirmNo");
+
+    let currentRow = null;
+
+    const yesCallback = async () => {
+        if (!currentRow) return;
+
+        dialog.removeAttribute("open");
+        await fetcher(`slb/${currentRow.id}`, { method: "delete" });
+
+        currentRow = null;
+    };
+
+    const noCallback = () => {
+        dialog.removeAttribute("open");
+        currentRow = null;
+    };
+
+    yesBtn?.addEventListener("click", yesCallback);
+    noBtn?.addEventListener("click", noCallback);
 
     table.dataTable(new DatatableConfig({
-        route: "user",
+        route: "slb",
         columns: [
             new DatatableColumn({ path: "id", title: "Id", sorting: true }),
             new DatatableColumn({ path: "slbApplicationUser.name", title: "SLB'er", sorting: true })
@@ -63,9 +96,16 @@ SlbRelationsPage.onPageLoaded = () => {
         paging: true,
         pageSize: 10,
         buttons: new DatatableButtons({
-            edit: (row) => console.log("Editing:", row),
-            delete: (row) => console.log("Deleting:", row),
-            inspect: (row) => console.log("Inspecting:", row),
+            edit: (row) => {
+                router.navigate(`/admin/slb-relaties/edit/${row.id}`);
+            },
+            delete: (row) => {
+                currentRow = row;
+                dialog.setAttribute("open", "");
+            },
+            inspect: (row) => {
+                router.navigate(`/admin/slb-relaties/inspect/${row.id}`);
+            },
         })
     }));
 }
