@@ -1,0 +1,86 @@
+[data-study-card] {
+    display: flex;
+    width: fit-content;
+    flex-direction: column;
+    background-color: white;
+    border: 1px solid rgba(var(--color-gray-4), 0.2);
+    border-radius: var(--rounded-md);
+    padding: 12px;
+}
+
+::slotted([slot=header]) {
+    font-weight: 500;
+    font-size: 16px;
+    color: rgb(var(--color-black));
+    text-align: center;
+}
+
+.title {
+    font-weight: 400;
+    font-size: 12px;
+    color: rgb(var(--color-gray-2));
+    text-align: center;
+    margin: 0;
+}
+
+[data-card-module] {
+    position: relative;
+    display: flex;
+    max-width: 218px;
+    /* TODO: Add shadow */
+}
+
+[data-card-content] {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+::slotted(.card-module-item) {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 120px;
+    width: 218px;
+    padding: 8px !important;
+    gap: 24px;
+    text-align: center;
+    color: rgb(var(--color-black));
+    border-radius: var(--rounded-md);
+    border: 2px dashed rgb(var(--color-black));
+    font-size: 16px;
+    font-weight: 500;
+}
+
+::slotted(.card-module-item[data-status="locked"]) {
+    background-color: rgb(var(--color-gray-4));
+    border: 1px solid rgba(var(--color-gray-3), 0.2);
+}
+
+::slotted(.card-module-item[type="SE"]) {
+    background-color: rgb(var(--color-gold));
+    border: 1px solid rgba(var(--color-orange), 0.2);
+}
+
+
+::slotted(.card-module-item[type="IDS"]) {
+    background-color: rgb(var(--color-apple-green));
+    border: 1px solid rgba(var(--color-green), 0.2);
+    color: white;
+}
+
+::slotted(.card-module-item[type="BIM"]) {
+    background-color: rgb(var(--color-blue));
+    border: 1px solid rgba(var(--color-sky-blue), 0.2);
+    color: white;
+}
+
+::slotted(.card-module-item[type="Overig"]) {
+    background-color: rgb(var(--color-dark-pink));
+    border: 1px solid rgba(var(--color-red), 0.2);
+    color: white;
+}
+
+::slotted(.card-module-item[data-status="unlocked"][selected]) {
+    border: 2px dashed rgb(var(--color-gold))
+}
