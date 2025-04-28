@@ -15,7 +15,7 @@ import { router } from '@http/router'
  */
 export async function fetcher(path, options) {
     /** @type {string} */
-    const url = `${import.meta.env.API_URL}/${path.replace(/^\//, '')}`
+    const url = `${import.meta.env.VITE_API_URL}/${path.replace(/^\//, '')}`
 
     /** @type {string} */
     const method = options.method ?? 'GET'

@@ -1,11 +1,12 @@
 import styles from './accordion.css?inline'
+import { fetcher } from '@/utils'
 
 export class Accordion extends HTMLElement {
-    constructor() {
-        super()
-        this.attachShadow({ mode: 'open' })
+  constructor() {
+    super()
+    this.attachShadow({ mode: 'open' })
 
-        this.shadowRoot.innerHTML = /*html*/ `
+    this.shadowRoot.innerHTML = /*html*/ `
           <style>${styles}</style>
           <button data-accordion tabindex="0" aria-expanded="false">
             <div class="circle"></div>
@@ -22,36 +23,51 @@ export class Accordion extends HTMLElement {
           </div>
         `
 
-        this._onAccordionClick = this._onAccordionClick.bind(this)
+    this._onAccordionClick = this._onAccordionClick.bind(this)
+
+    console.log('API URL:', import.meta.env.VITE_API_URL)
+
+  }
+
+  async connectedCallback() {
+    this.accordionButton = this.shadowRoot.querySelector('[data-accordion]')
+    this.panel = this.shadowRoot.querySelector('[data-content]')
+    if (this.accordionButton) {
+      this.accordionButton.addEventListener('click', this._onAccordionClick)
     }
 
-    connectedCallback() {
-        this.accordionButton = this.shadowRoot.querySelector('[data-accordion]')
-        this.panel = this.shadowRoot.querySelector('[data-content]')
-        if (this.accordionButton) {
-            this.accordionButton.addEventListener('click', this._onAccordionClick)
-        }
+    this.loadModules()
+  }
+
+  disconnectedCallback() {
+    if (this.accordionButton) {
+      this.accordionButton.removeEventListener('click', this._onAccordionClick)
     }
+  }
 
-    disconnectedCallback() {
-        if (this.accordionButton) {
-            this.accordionButton.removeEventListener('click', this._onAccordionClick)
-        }
+  async loadModules() {
+    try {
+      const modules = await fetcher('module', {method: "get"})  
+      console.log('Modules:', modules)
+    } catch (error) {
+      console.error('Error loading modules:', error)
     }
+  }
 
-    _onAccordionClick(event) {
-        const button = event.currentTarget
-        const isExpanded = button.classList.toggle('open')
+  _onAccordionClick(event) {
+    const button = event.currentTarget
+    const isExpanded = button.classList.toggle('open')
 
-        this.toggleAttribute('open', isExpanded)
-        button.setAttribute('aria-expanded', isExpanded)
+    this.toggleAttribute('open', isExpanded)
+    button.setAttribute('aria-expanded', isExpanded)
 
-        if (!this.panel) return
+    if (!this.panel) return
 
-        if (this.panel.style.maxHeight) {
-            this.panel.style.removeProperty('max-height')
-        } else {
-            this.panel.style.maxHeight = this.panel.scrollHeight + 'px'
-        }
+    if (this.panel.style.maxHeight) {
+      this.panel.style.removeProperty('max-height')
+    } else {
+      this.panel.style.maxHeight = this.panel.scrollHeight + 'px'
     }
+  }
+
 }
