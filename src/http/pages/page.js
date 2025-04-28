@@ -1,133 +1,102 @@
-import '@components/save-button'
+import '@components/save-button';
+import { fetcher } from '@/utils';
 
 export default function PlannerPage(params) {
-    const selectableContent = /*html*/ `
-            <div style="display: flex; flex-direction: column; padding: 24px 24px 0; gap: 6px">
-                <h5 style="margin: 0; font-size: 18px;">Modules</h5>
-                <div class="divider" style="background-color: rgb(var(--color-gray-4)); height:1px;"></div>
-                <p style="margin: 0; font-size: 12px;">
-                    Dit zijn alle beschikbare modules waaruit je kunt kiezen. Als je een externe module wilt volgen, kun je deze toevoegen via de 'Anders' optie onder 'Overig'.
-                </p>
-            </div>
+    
+    function groupModulesByCategory(modules) {
+        return modules.reduce((acc, module) => {
+            if (!acc[module.category]) {
+                acc[module.category] = [];
+            }
+            acc[module.category].push(module);
+            return acc;
+        }, {});
+    }
 
-            <div style="display: flex; flex-direction: column; padding: 24px;">            
-            <x-accordion type="SE">
-            <span slot="title">Software Engineering</span>
-            <div class="module-item">
-                <span>Webdevelopment</span>
-                <x-tooltip position="left" placement="middle">
-                    <div slot="trigger" data-icon>
-                        <i class="ph ph-info"></i>
+    async function loadModules() {
+        let modulesData = [];
+        try {
+            modulesData = await fetcher('modules', { method: 'GET' });
+            const groupedModules = groupModulesByCategory(modulesData);
+            renderModules(groupedModules);
+        } catch (error) {
+            console.error('Error fetching modules:', error);
+        }
+    }
+
+    function renderModules(groupedModules) {
+        const categoryTitles = {
+            SE: 'Software Engineering',
+            IDS: 'Infrastructure Design & Security',
+            BIM: 'Business IT & Management',
+            OVERIG: 'Overig',
+        };
+
+        const orderedCategories = ['SE', 'IDS', 'BIM', 'OVERIG'];
+        const moduleItems = orderedCategories
+            .filter(category => groupedModules[category])
+            .map(category => {
+                const categoryModules = groupedModules[category];
+                const moduleItemsHTML = categoryModules.map(module => `
+                    <div class="module-item">
+                        <span>${module.name}</span>
+                        <x-tooltip position="left" placement="middle">
+                            <div slot="trigger" data-icon>
+                                <i class="ph ph-info"></i>
+                            </div>
+                            <p class="color-black text-sm">
+                                ${module.description || 'Geen beschrijving beschikbaar.'}
+                            </p>
+                        </x-tooltip>
                     </div>
-                    <p class="color-black text-sm">
-                        Berichten
-                    </p>
-                </x-tooltip>
-            </div>
-            <div class="module-item">
-                <span>Software Engineering</span>
-                <x-tooltip position="left" placement="middle">
-                <div slot="trigger" data-icon>
-                    <i class="ph ph-info"></i>
-                </div>
-                <p class="color-black text-sm">
-                    Berichten
-                </p>
-            </x-tooltip>
-            </div>      
-        </x-accordion>
-        <x-accordion type="IDS">
-            <span slot="title">Infrastructure Design & Security</span>
-            <div class="module-item">
-                <span>Applied IT Security</span>
-                <x-tooltip position="left" placement="middle">
-                <div slot="trigger" data-icon>
-                    <i class="ph ph-info"></i>
-                </div>
-                <p class="color-black text-sm">
-                    Berichten
-                </p>
-            </x-tooltip>
-            </div>
-            <div class="module-item">
-                <span>Cloud Computing</span>
-                <x-tooltip position="left" placement="middle">
-                <div slot="trigger" data-icon>
-                    <i class="ph ph-info"></i>
-                </div>
-                <p class="color-black text-sm">
-                    Berichten
-                </p>
-            </x-tooltip>
-            </div>
-        </x-accordion>
-        <x-accordion type="BIM">
-            <span slot="title">Business IT & Management</span>
-            <div class="module-item">
-                <span>Datascience</span>
-                <x-tooltip position="left" placement="middle">
-                <div slot="trigger" data-icon>
-                    <i class="ph ph-info"></i>
-                </div>
-                <p class="color-black text-sm">
-                    Berichten
-                </p>
-            </x-tooltip>
-            </div>
-            <div class="module-item">
-                <span>Management of IT</span>
-                <x-tooltip position="left" placement="middle">
-                <div slot="trigger" data-icon>
-                    <i class="ph ph-info"></i>
-                </div>
-                <p class="color-black text-sm">
-                    Berichten
-                </p>
-            </x-tooltip>
-            </div>
-        </x-accordion>
-        <x-accordion type="Overig">
-            <span slot="title">Overig</span>
-            <div class="module-item">
-                <span>Tussen jaar</span>
-                <x-tooltip position="left" placement="middle">
-                <div slot="trigger" data-icon>
-                    <i class="ph ph-info"></i>
-                </div>
-                <p class="color-black text-sm">
-                    Berichten
-                </p>
-            </x-tooltip>
-            </div>
-            <div class="module-item">
-                <span>Minor</span>
-                <x-tooltip position="left" placement="middle">
-                <div slot="trigger" data-icon>
-                    <i class="ph ph-info"></i>
-                </div>
-                <p class="color-black text-sm">
-                    Berichten
-                </p>
-            </x-tooltip>
-            </div>
-            <div class="module-item">
-                <span>Eigen Keuze</span>
-            </div>
-        </x-accordion>
-            </div>
-        `
+                `).join('');
+
+                return `
+                    <x-accordion type="${category}">
+                        <span slot="title">${categoryTitles[category] || category}</span>
+                        ${moduleItemsHTML}
+                    </x-accordion>
+                `;
+            }).join('');
+
+        const lists = document.querySelectorAll('#modules-list');
+        lists.forEach(list => {
+            list.innerHTML = moduleItems;
+        });
+    }
+
+    loadModules();
+
+    const modulesContainerHTML = /*html*/ `
+    <div style="display: flex; flex-direction: column; height: 100%;">
+        
+        <div style="padding: 24px 24px 0; display: flex; flex-direction: column; gap: 6px;">
+            <h5 style="margin: 0; font-size: 18px;">Modules</h5>
+            <div class="divider" style="background-color: rgb(var(--color-gray-4)); height:1px;"></div>
+            <p style="margin: 0; font-size: 12px;">
+                Dit zijn alle beschikbare modules waaruit je kunt kiezen. Als je een externe module wilt volgen, kun je deze toevoegen via de 'Anders' optie onder 'Overig'.
+            </p>
+        </div>
+
+        <div id="modules-list" style="display: flex; flex-direction: column; padding: 24px;">
+        </div>
+        
+    </div>
+`;
 
     return /*html*/ `
         <div class="container">
             <x-sheet class="hidden md:flex" side="left" open floating>
-                ${selectableContent}
+                ${modulesContainerHTML}
             </x-sheet>
+
             <x-drawer class="md:hidden" open>
-                ${selectableContent}
+                ${modulesContainerHTML}
             </x-drawer>
+
             <save-share-button>
                 <span slot="icon">Opslaan</span>
             </save-share-button>
         </div>
-  `
+    `;
 }
