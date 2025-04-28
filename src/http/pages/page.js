@@ -2,13 +2,17 @@ import '@components/save-button';
 import { fetcher } from '@/utils';
 
 export default function PlannerPage(params) {
-    
+
     function groupModulesByCategory(modules) {
         return modules.reduce((acc, module) => {
-            if (!acc[module.category]) {
-                acc[module.category] = [];
+            const category = module.category || 'OVERIG';
+
+            if (!acc[category]) {
+                acc[category] = [];
             }
-            acc[module.category].push(module);
+
+            acc[category].push(module);
+
             return acc;
         }, {});
     }
@@ -16,8 +20,11 @@ export default function PlannerPage(params) {
     async function loadModules() {
         let modulesData = [];
         try {
-            modulesData = await fetcher('modules', { method: 'GET' });
+            const response = await fetcher('module', { method: 'GET' });
+            modulesData = response.items || [];
+
             const groupedModules = groupModulesByCategory(modulesData);
+
             renderModules(groupedModules);
         } catch (error) {
             console.error('Error fetching modules:', error);
