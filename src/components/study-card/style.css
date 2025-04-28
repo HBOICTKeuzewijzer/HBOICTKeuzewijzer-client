@@ -8,7 +8,7 @@
     padding: 12px;
 }
 
-::slotted([slot=header]) {
+::slotted([slot='header']) {
     font-weight: 500;
     font-size: 16px;
     color: rgb(var(--color-black));
@@ -52,35 +52,34 @@
     font-weight: 500;
 }
 
-::slotted(.card-module-item[data-status="locked"]) {
+::slotted(.card-module-item[data-status='locked']) {
     background-color: rgb(var(--color-gray-4));
     border: 1px solid rgba(var(--color-gray-3), 0.2);
 }
 
-::slotted(.card-module-item[type="SE"]) {
+::slotted(.card-module-item[type='SE']) {
     background-color: rgb(var(--color-gold));
     border: 1px solid rgba(var(--color-orange), 0.2);
 }
 
-
-::slotted(.card-module-item[type="IDS"]) {
+::slotted(.card-module-item[type='IDS']) {
     background-color: rgb(var(--color-apple-green));
     border: 1px solid rgba(var(--color-green), 0.2);
     color: white;
 }
 
-::slotted(.card-module-item[type="BIM"]) {
+::slotted(.card-module-item[type='BIM']) {
     background-color: rgb(var(--color-blue));
     border: 1px solid rgba(var(--color-sky-blue), 0.2);
     color: white;
 }
 
-::slotted(.card-module-item[type="Overig"]) {
+::slotted(.card-module-item[type='Overig']) {
     background-color: rgb(var(--color-dark-pink));
     border: 1px solid rgba(var(--color-red), 0.2);
     color: white;
 }
 
-::slotted(.card-module-item[data-status="unlocked"][selected]) {
-    border: 2px dashed rgb(var(--color-gold))
+::slotted(.card-module-item[data-status='unlocked'][selected]) {
+    border: 2px dashed rgb(var(--color-gold));
 }

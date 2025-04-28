@@ -2,42 +2,59 @@ import '@components/save-button'
 
 // --- Modules data
 const moduleData = new Map([
-    ['SE', { title: 'Software Engineering', modules: [
-        { name: 'Webdevelopment', tooltip: 'Berichten' },
-        { name: 'Software Engineering', tooltip: 'Berichten' },
-    ]}],
-    ['IDS', { title: 'Infrastructure Design & Security', modules: [
-        { name: 'Applied IT Security', tooltip: 'Berichten' },
-        { name: 'Cloud Computing', tooltip: 'Berichten' },
-    ]}],
-    ['BIM', { title: 'Business IT & Management', modules: [
-        { name: 'Datascience', tooltip: 'Berichten' },
-        { name: 'Management of IT', tooltip: 'Berichten' },
-    ]}],
-    ['Overig', { title: 'Overig', modules: [
-        { name: 'Tussen jaar', tooltip: 'Berichten' },
-        { name: 'Minor', tooltip: 'Berichten' },
-        { name: 'Eigen Keuze' },
-    ]}],
+    [
+        'SE',
+        {
+            title: 'Software Engineering',
+            modules: [
+                { name: 'Webdevelopment', tooltip: 'Berichten' },
+                { name: 'Software Engineering', tooltip: 'Berichten' },
+            ],
+        },
+    ],
+    [
+        'IDS',
+        {
+            title: 'Infrastructure Design & Security',
+            modules: [
+                { name: 'Applied IT Security', tooltip: 'Berichten' },
+                { name: 'Cloud Computing', tooltip: 'Berichten' },
+            ],
+        },
+    ],
+    [
+        'BIM',
+        {
+            title: 'Business IT & Management',
+            modules: [
+                { name: 'Datascience', tooltip: 'Berichten' },
+                { name: 'Management of IT', tooltip: 'Berichten' },
+            ],
+        },
+    ],
+    [
+        'Overig',
+        {
+            title: 'Overig',
+            modules: [
+                { name: 'Tussen jaar', tooltip: 'Berichten' },
+                { name: 'Minor', tooltip: 'Berichten' },
+                { name: 'Eigen Keuze' },
+            ],
+        },
+    ],
 ])
 
 // --- StudyCards data
 let studyCardData = [
-    [{ status: 'locked', name: 'Basis vaardigheden ICT', description: 'Dit is een beschrijving'}, { status: 'unlocked' }],
+    [
+        { status: 'locked', name: 'Basis vaardigheden ICT', description: 'Dit is een beschrijving' },
+        { status: 'unlocked' },
+    ],
     [{ status: 'unlocked' }, { status: 'unlocked' }],
     [{ status: 'unlocked' }, { status: 'unlocked' }],
     [{ status: 'unlocked' }, { status: 'locked', type: 'Overig', name: 'Afstuderen' }],
-];
-
-function addAccordionEventListeners() {
-    document.removeEventListener('click', delegatedAccordionClickHandler)
-    document.addEventListener('click', delegatedAccordionClickHandler)
-}
-
-function addSemesterEventListeners() {
-    document.removeEventListener('click', delegatedSemesterClickHandler)
-    document.addEventListener('click', delegatedSemesterClickHandler)
-}
+]
 
 function delegatedAccordionClickHandler(event) {
     const moduleItem = event.target.closest('.module-item')
@@ -67,21 +84,20 @@ function handleAccordionItemClick(moduleItem) {
                 const semesterIndex = shadowDiv.dataset.index
 
                 const data = moduleData.get(moduleItem.dataset.type).modules[moduleItem.dataset.index]
-                
+
                 // Update studyCardData
                 studyCardData[studyYear][semesterIndex] = {
                     ...studyCardData[studyYear][semesterIndex],
                     type: moduleItem.dataset.type,
                     name: data.name,
-                    description: data.tooltip
+                    description: data.tooltip,
                 }
 
-                shadowDiv.removeAttribute('selected') // optional: clear selected
+                shadowDiv.removeAttribute('selected')
             }
         })
     })
 
-    // After updating the data, re-render
     renderStudyCards()
 }
 
@@ -106,31 +122,46 @@ function renderStudyCards() {
     const container = document.querySelector('#study-cards-container')
     if (!container) return
 
-    container.innerHTML = studyCardData.map((semesters, yearIndex) => `
+    container.innerHTML = studyCardData
+        .map(
+            (semesters, yearIndex) => `
         <x-study-card data-year="${yearIndex}">
             <span slot="header">Jaar ${yearIndex + 1}</span>
-            ${semesters.map((semester, semesterIndex) => `
+            ${semesters
+                .map(
+                    (semester, semesterIndex) => `
                 <div slot="content-${semesterIndex + 1}" type="${semester.type}" data-card-module data-index="${semesterIndex}" data-status="${semester.status}" class="card-module-item">
                     <div style="display: flex; justify-content: space-between;">
                         <i class="ph ${semester.status === 'locked' ? 'ph-lock-simple' : 'ph-lock-simple-open'}"></i>
-                        ${semester.description ? `
+                        ${
+                            semester.description
+                                ? `
                             <x-tooltip position="bottom" placement="left">
                                 <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
                                 <p style="color: rgb(var(--color-black));">${semester.description}</p>
                             </x-tooltip>
-                        ` : ''}
+                        `
+                                : ''
+                        }
                     </div>
                     ${semester.name || `Optie ${semesterIndex + 1}`}
                 </div>
-            `).join('')}
+            `,
+                )
+                .join('')}
         </x-study-card>
-    `).join('')
+    `,
+        )
+        .join('')
 }
 
 export default function PlannerPage(params) {
     PlannerPage.onPageLoaded = () => {
-        addAccordionEventListeners()
-        addSemesterEventListeners()
+        document.removeEventListener('click', delegatedAccordionClickHandler)
+        document.addEventListener('click', delegatedAccordionClickHandler)
+        document.removeEventListener('click', delegatedSemesterClickHandler)
+        document.addEventListener('click', delegatedSemesterClickHandler)
+
         renderStudyCards()
     }
 
@@ -144,27 +175,39 @@ export default function PlannerPage(params) {
         </div>
 
         <div style="display: flex; flex-direction: column; padding: 24px;">
-            ${Array.from(moduleData.entries()).map(([type, { title, modules }]) => `
+            ${Array.from(moduleData.entries())
+                .map(
+                    ([type, { title, modules }]) => `
                 <x-accordion type="${type}">
                     <span slot="title">${title}</span>
-                    ${modules.map(({ name, tooltip }, moduleIndex) => `
+                    ${modules
+                        .map(
+                            ({ name, tooltip }, moduleIndex) => `
                         <div class="module-item" data-type="${type}" data-index="${moduleIndex}">
                             <span>${name}</span>
-                            ${tooltip ? `
+                            ${
+                                tooltip
+                                    ? `
                                 <x-tooltip position="left" placement="middle">
                                     <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
                                     <p class="color-black text-sm">${tooltip}</p>
                                 </x-tooltip>
-                            ` : ''}
+                            `
+                                    : ''
+                            }
                         </div>
-                    `).join('')}
+                    `,
+                        )
+                        .join('')}
                 </x-accordion>
-            `).join('')}
+            `,
+                )
+                .join('')}
         </div>
-    `;
+    `
 
     return /*html*/ `
-        <div class="container flex" style="position: relative; flex-direction: row;">
+        <div class="container flex" style="position: relative; flex-direction: row; overflow: hidden;">
             <x-sheet class="hidden md:flex" side="left" open>
                 ${selectableContent}
             </x-sheet>
@@ -173,7 +216,7 @@ export default function PlannerPage(params) {
                 ${selectableContent}
             </x-drawer>
 
-            <div style="overflow: hidden; position: relative; flex: 1; display: flex; flex-direction: column; max-height: calc(100% - var(--header-height) - 64px);">
+            <div style="overflow: hidden; position: relative; flex: 1; display: flex; flex-direction: column; max-height: 100%;">
                 <div id="study-cards-container" style="display: flex; width: 100%; height: 100%; max-width: 700px; flex-wrap: wrap; justify-content: space-between; margin: auto;">
                 </div>
             </div>
@@ -194,5 +237,5 @@ export default function PlannerPage(params) {
                 </x-popover>
             </div>
         </div>
-    `;
+    `
 }
