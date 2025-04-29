@@ -137,10 +137,12 @@ async function loadModules() {
 }
 
 function renderModuleAccordion() {
-    const container = document.querySelector('#modules-list');
-    if (!container) return;
+    const containers = [
+        document.querySelector('#modules-list-desktop'),
+        document.querySelector('#modules-list-mobile'),
+    ];
 
-    container.innerHTML = Array.from(moduleData.entries())
+    const accordionHTML = Array.from(moduleData.entries())
         .map(
             ([type, { title, modules }]) => `
             <x-accordion type="${type}">
@@ -150,21 +152,26 @@ function renderModuleAccordion() {
                         (mod, index) => `
                     <div class="module-item" data-type="${type}" data-index="${index}">
                         <span>${mod.name}</span>
-                        ${mod.description
-                            ? `<x-tooltip position="left" placement="middle">
-                                    <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                                    <p class="color-black text-sm">${mod.description}</p>
-                               </x-tooltip>`
-                            : ''}
-                    </div>
-                `
+                        ${
+                            mod.description
+                                ? `<x-tooltip position="left" placement="middle">
+                                       <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
+                                       <p class="color-black text-sm">${mod.description}</p>
+                                   </x-tooltip>`
+                                : ''
+                        }
+                    </div>`
                     )
                     .join('')}
-            </x-accordion>
-        `
+            </x-accordion>`
         )
         .join('');
+
+    containers.forEach(container => {
+        if (container) container.innerHTML = accordionHTML;
+    });
 }
+
 
 export default function PlannerPage() {
     PlannerPage.onPageLoaded = () => {
@@ -187,11 +194,11 @@ export default function PlannerPage() {
                         Dit zijn alle beschikbare modules waaruit je kunt kiezen. Als je een externe module wilt volgen, kun je deze toevoegen via de 'Anders' optie onder 'Overig'.
                     </p>
                 </div>
-                <div id="modules-list" style="display: flex; flex-direction: column; padding: 24px;"></div>
+                <div id="modules-list-desktop" style="display: flex; flex-direction: column; padding: 24px;"></div>
             </x-sheet>
 
             <x-drawer class="md:hidden" open>
-                <div id="modules-list" style="padding: 24px;"></div>
+                <div id="modules-list-mobile" style="padding: 24px;"></div>
             </x-drawer>
 
             <div id="study-cards-container" style="display: flex; width: 100%; height: 100%; max-width: 700px; flex-wrap: wrap; justify-content: space-between; margin: auto;"></div>
