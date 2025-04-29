@@ -14,7 +14,7 @@ let studyCardData = [
 
 function groupModulesByCategory(modules) {
     return modules.reduce((acc, module) => {
-        const category = module.category || 'OVERIG';
+        const category = module.category.value || 'OVERIG';
         if (!acc[category]) acc[category] = [];
         acc[category].push(module);
         return acc;
