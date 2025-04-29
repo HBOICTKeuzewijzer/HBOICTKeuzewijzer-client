@@ -16,6 +16,7 @@
 
     & [data-dialog] {
         display: none;
+        position: fixed;
         width: 100%;
         max-inline-size: var(--sheet-width);
         height: calc(100% - var(--sheet-header-offset) - (var(--sheet-gap) * 2));
