@@ -190,6 +190,7 @@ export default function PlannerPage() {
                 <div id="modules-list" style="display: flex; flex-direction: column; padding: 24px;"></div>
             </x-sheet>
 
+
             <x-drawer class="md:hidden" open>
                 <div id="modules-list" style="padding: 24px;"></div>
             </x-drawer>
@@ -212,5 +213,6 @@ export default function PlannerPage() {
                 </x-popover>
             </div>
         </div>
+    `;
     `;
 }
