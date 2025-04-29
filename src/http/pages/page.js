@@ -12,11 +12,21 @@ let studyCardData = [
     [{ status: 'unlocked' }, { status: 'locked', type: 'Overig', name: 'Afstuderen' }],
 ];
 
+function normalizeCategory(value) {
+    const lower = value.toLowerCase();
+    if (lower.includes('software')) return 'SE';
+    if (lower.includes('infrastructure') || lower.includes('security')) return 'IDS';
+    if (lower.includes('business')) return 'BIM';
+    return 'OVERIG';
+}
+
 function groupModulesByCategory(modules) {
     return modules.reduce((acc, module) => {
-        const category = module.category.value || 'OVERIG';
-        if (!acc[category]) acc[category] = [];
-        acc[category].push(module);
+        const rawValue = module.category?.value || 'OVERIG';
+        const categoryKey = normalizeCategory(rawValue);
+
+        if (!acc[categoryKey]) acc[categoryKey] = [];
+        acc[categoryKey].push(module);
         return acc;
     }, {});
 }
