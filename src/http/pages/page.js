@@ -99,6 +99,7 @@ function handleAccordionItemClick(moduleItem) {
     })
 
     renderStudyCards()
+    drawConnections()
 }
 
 function handleSemesterClick(semester) {
@@ -155,14 +156,80 @@ function renderStudyCards() {
         .join('')
 }
 
+function drawConnections() {
+    const container = document.getElementById('study-cards-container')
+    const svg = document.getElementById('connections-svg')
+    if (!container || !svg) return
+
+    svg.innerHTML = '' // Clear previous drawings
+
+    const cards = container.querySelectorAll('x-study-card')
+    if (cards.length < 2) return
+
+    requestAnimationFrame(() => {
+        const containerRect = container.getBoundingClientRect()
+
+        cards.forEach((card, index) => {
+            if (index === cards.length - 1) return
+
+            const nextCard = cards[index + 1]
+
+            const rect1 = card.getBoundingClientRect()
+            const rect2 = nextCard.getBoundingClientRect()
+
+            const startX = rect1.left + rect1.width / 2 - containerRect.left
+            const startY = rect1.bottom - containerRect.top
+
+            const endX = rect2.left + rect2.width / 2 - containerRect.left
+            const endY = rect2.top - containerRect.top
+
+            // First, vertical line down from card1 center-bottom
+            const verticalMidY = (startY + endY) / 2
+
+            // Create a path for the connection
+            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+            const d = `
+                M ${startX} ${startY}
+                V ${verticalMidY}
+                H ${endX}
+                V ${endY}
+            `
+            path.setAttribute('d', d.trim())
+            path.setAttribute('fill', 'none')
+            path.setAttribute('stroke', 'black')
+            path.setAttribute('stroke-width', '2')
+            path.setAttribute('stroke-dasharray', '6')
+            svg.appendChild(path)
+
+            // Circles on start and end points
+            const circle1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+            circle1.setAttribute('cx', startX)
+            circle1.setAttribute('cy', startY)
+            circle1.setAttribute('r', 4)
+            circle1.setAttribute('fill', 'black')
+            svg.appendChild(circle1)
+
+            const circle2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+            circle2.setAttribute('cx', endX)
+            circle2.setAttribute('cy', endY)
+            circle2.setAttribute('r', 4)
+            circle2.setAttribute('fill', 'black')
+            svg.appendChild(circle2)
+        })
+    })
+}
+
 export default function PlannerPage(params) {
     PlannerPage.onPageLoaded = () => {
+        window.addEventListener('resize', drawConnections)
+        
         document.removeEventListener('click', delegatedAccordionClickHandler)
         document.addEventListener('click', delegatedAccordionClickHandler)
         document.removeEventListener('click', delegatedSemesterClickHandler)
         document.addEventListener('click', delegatedSemesterClickHandler)
 
         renderStudyCards()
+        drawConnections()
     }
 
     const selectableContent = /*html*/ `
@@ -217,6 +284,7 @@ export default function PlannerPage(params) {
             </x-drawer>
 
             <div style="overflow: hidden; position: relative; flex: 1; display: flex; flex-direction: column; max-height: 100%;">
+                <svg id="connections-svg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></svg>
                 <div id="study-cards-container" style="display: flex; width: 100%; height: 100%; max-width: 700px; flex-wrap: wrap; justify-content: space-between; margin: auto;">
                 </div>
             </div>
