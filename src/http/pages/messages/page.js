@@ -1,5 +1,9 @@
+import '../../../components/sidebar/index.js'
+import '@components/sidebar/style.css'
 export default function MessagesPage() {
     return /*html*/ `
-        <div></div>
-    `
+        <div>
+            <chat-sidebar></chat-sidebar>
+        </div>
+    `;
 }
