@@ -111,7 +111,8 @@ function renderStudyCards() {
 
 async function loadModules() {
     try {
-        const modulesData = await fetcher('modules', { method: 'GET' });
+        const response = await fetcher('module', { method: 'GET' });
+        const modulesData = response.items;
         const grouped = groupModulesByCategory(modulesData);
 
         const formatted = new Map(
