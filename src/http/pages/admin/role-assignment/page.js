@@ -36,6 +36,11 @@ export default function RoleAssignmentPage() {
             }
         </style>
 
+        <x-page-header>
+            <h1 slot="title">Rollen beheren</h1>
+            <p slot="subtitle">Bekijk hier een overzicht van alle gebruiker en hun rullen. Hier kan je rollen beheren.</p>
+        </x-page-header>
+
         <div class="page-container">
             <x-sidebar id="sidebar"></x-sidebar>
             <div id="table-div">
@@ -100,14 +105,7 @@ RoleAssignmentPage.onPageLoaded = () => {
         buttons: new DatatableButtons({
             edit: (row) => {
                 router.navigate(`/admin/rollen-toewijzen/edit/${row.id}`);
-            },
-            delete: (row) => {
-                currentRow = row;
-                dialog.setAttribute("open", "");
-            },
-            inspect: (row) => {
-                router.navigate(`/admin/rollen-toewijzen/inspect/${row.id}`);
-            },
+            }
         })
     }));
 }

@@ -36,6 +36,12 @@ export default function CategoryPage() {
             }
         </style>
 
+        <x-page-header>
+            <h1 slot="title">Categorieën beheren</h1>
+            <p slot="subtitle">Bekijk hier een overzicht van alle categorieën. Hier kan je categorieën toevoegen en verwijderen.</p>
+            <button id="add-button">Categorie toevoegen</button>
+        </x-page-header>
+
         <div class="page-container">
             <x-sidebar id="sidebar"></x-sidebar>
             <div id="table-div">
@@ -61,51 +67,66 @@ export default function CategoryPage() {
 }
 
 CategoryPage.onPageLoaded = () => {
-    /** @type {Datatable} */
-    const table = (document.querySelector("x-data-table"));
-    const dialog = document.querySelector("#confirmDeleteDialog");
-    const yesBtn = dialog.shadowRoot?.host.querySelector("#confirmYes");
-    const noBtn = dialog.shadowRoot?.host.querySelector("#confirmNo");
+    document.querySelector('#add-button').addEventListener('click', addOnClick);
 
-    let currentRow = null;
+    try {
+        /** @type {Datatable} */
+        const table = (document.querySelector("x-data-table"));
+        const dialog = document.querySelector("#confirmDeleteDialog");
+        const yesBtn = dialog.shadowRoot?.host.querySelector("#confirmYes");
+        const noBtn = dialog.shadowRoot?.host.querySelector("#confirmNo");
 
-    const yesCallback = async () => {
-        if (!currentRow) return;
+        let currentRow = null;
 
-        dialog.removeAttribute("open");
-        await fetcher(`category/${currentRow.id}`, { method: "delete" });
+        const yesCallback = async () => {
+            if (!currentRow) return;
 
-        currentRow = null;
-    };
+            dialog.removeAttribute("open");
+            await fetcher(`category/${currentRow.id}`, { method: "delete" });
 
-    const noCallback = () => {
-        dialog.removeAttribute("open");
-        currentRow = null;
-    };
+            currentRow = null;
+        };
 
-    yesBtn?.addEventListener("click", yesCallback);
-    noBtn?.addEventListener("click", noCallback);
+        const noCallback = () => {
+            dialog.removeAttribute("open");
+            currentRow = null;
+        };
 
-    table.dataTable(new DatatableConfig({
-        route: "category",
-        columns: [
-            new DatatableColumn({ path: "id", title: "Id", sorting: true }),
-            new DatatableColumn({ path: "value", title: "Waarde", sorting: true })
-        ],
-        searching: false,
-        paging: false,
-        pageSize: 10,
-        buttons: new DatatableButtons({
-            edit: (row) => {
-                router.navigate(`/admin/categorien/edit/${row.id}`);
-            },
-            delete: (row) => {
-                currentRow = row;
-                dialog.setAttribute("open", "");
-            },
-            inspect: (row) => {
-                router.navigate(`/admin/categorien/inspect/${row.id}`);
-            },
-        })
-    }));
+        yesBtn?.addEventListener("click", yesCallback);
+        noBtn?.addEventListener("click", noCallback);
+
+        table.dataTable(new DatatableConfig({
+            route: "category",
+            columns: [
+                new DatatableColumn({ path: "id", title: "Id", sorting: true }),
+                new DatatableColumn({ path: "value", title: "Waarde", sorting: true })
+            ],
+            searching: false,
+            paging: false,
+            pageSize: 10,
+            buttons: new DatatableButtons({
+                edit: (row) => {
+                    router.navigate(`/admin/categorien/edit/${row.id}`);
+                },
+                delete: (row) => {
+                    currentRow = row;
+                    dialog.setAttribute("open", "");
+                },
+                inspect: (row) => {
+                    router.navigate(`/admin/categorien/inspect/${row.id}`);
+                },
+            })
+        }));
+    }
+    catch (error) {
+        console.log(error);
+    }
 }
+
+function addOnClick() {
+    router.navigate('/admin/categorien/create');
+}
+
+CategoryPage.onBeforePageUnloaded = () => {
+    document.querySelector('#add-button').removeEventListener('click', addOnClick);
+};

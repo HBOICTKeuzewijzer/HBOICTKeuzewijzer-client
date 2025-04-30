@@ -36,6 +36,11 @@ export default function SlbRelationsPage() {
             }
         </style>
 
+        <x-page-header>
+            <h1 slot="title">SLB relaties beheren</h1>
+            <p slot="subtitle">Bekijk hier een overzicht van alle SLB'ers. Hier kan je relaties tussen SLB'er en studenten beheren.</p>
+        </x-page-header>
+
         <div class="page-container">
             <x-sidebar id="sidebar"></x-sidebar>
             <div id="table-div">
@@ -98,14 +103,7 @@ SlbRelationsPage.onPageLoaded = () => {
         buttons: new DatatableButtons({
             edit: (row) => {
                 router.navigate(`/admin/slb-relaties/edit/${row.id}`);
-            },
-            delete: (row) => {
-                currentRow = row;
-                dialog.setAttribute("open", "");
-            },
-            inspect: (row) => {
-                router.navigate(`/admin/slb-relaties/inspect/${row.id}`);
-            },
+            }
         })
     }));
 }

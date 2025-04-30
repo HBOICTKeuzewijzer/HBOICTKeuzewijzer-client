@@ -36,6 +36,12 @@ export default function OerPage() {
             }
         </style>
 
+        <x-page-header>
+            <h1 slot="title">Oeren beheren</h1>
+            <p slot="subtitle">Bekijk hier een overzicht van alle oeren. Hier kan je oeren toevoegen en verwijderen</p>
+            <button id="add-button">Oer toevoegen</button>
+        </x-page-header>
+
         <div class="page-container">
             <x-sidebar id="sidebar"></x-sidebar>
             <div id="table-div">
@@ -61,52 +67,67 @@ export default function OerPage() {
 }
 
 OerPage.onPageLoaded = () => {
-    /** @type {Datatable} */
-    const table = (document.querySelector("x-data-table"));
-    const dialog = document.querySelector("#confirmDeleteDialog");
-    const yesBtn = dialog.shadowRoot?.host.querySelector("#confirmYes");
-    const noBtn = dialog.shadowRoot?.host.querySelector("#confirmNo");
+    document.querySelector('#add-button').addEventListener('click', addOnClick);
 
-    let currentRow = null;
+    try {
+        /** @type {Datatable} */
+        const table = (document.querySelector("x-data-table"));
+        const dialog = document.querySelector("#confirmDeleteDialog");
+        const yesBtn = dialog.shadowRoot?.host.querySelector("#confirmYes");
+        const noBtn = dialog.shadowRoot?.host.querySelector("#confirmNo");
 
-    const yesCallback = async () => {
-        if (!currentRow) return;
+        let currentRow = null;
 
-        dialog.removeAttribute("open");
-        await fetcher(`oer/${currentRow.id}`, { method: "delete" });
+        const yesCallback = async () => {
+            if (!currentRow) return;
 
-        currentRow = null;
-    };
+            dialog.removeAttribute("open");
+            await fetcher(`oer/${currentRow.id}`, { method: "delete" });
 
-    const noCallback = () => {
-        dialog.removeAttribute("open");
-        currentRow = null;
-    };
+            currentRow = null;
+        };
 
-    yesBtn?.addEventListener("click", yesCallback);
-    noBtn?.addEventListener("click", noCallback);
+        const noCallback = () => {
+            dialog.removeAttribute("open");
+            currentRow = null;
+        };
 
-    table.dataTable(new DatatableConfig({
-        route: "oer",
-        columns: [
-            new DatatableColumn({ path: "id", title: "Id", sorting: true }),
-            new DatatableColumn({ path: "academicYear", title: "Jaar", sorting: true }),
-            new DatatableColumn({ path: "filePath", title: "File" })
-        ],
-        searching: true,
-        paging: true,
-        pageSize: 10,
-        buttons: new DatatableButtons({
-            edit: (row) => {
-                router.navigate(`/admin/oer/edit/${row.id}`);
-            },
-            delete: (row) => {
-                currentRow = row;
-                dialog.setAttribute("open", "");
-            },
-            inspect: (row) => {
-                router.navigate(`/admin/oer/inspect/${row.id}`);
-            },
-        })
-    }));
+        yesBtn?.addEventListener("click", yesCallback);
+        noBtn?.addEventListener("click", noCallback);
+
+        table.dataTable(new DatatableConfig({
+            route: "oer",
+            columns: [
+                new DatatableColumn({ path: "id", title: "Id", sorting: true }),
+                new DatatableColumn({ path: "academicYear", title: "Jaar", sorting: true }),
+                new DatatableColumn({ path: "filePath", title: "File" })
+            ],
+            searching: true,
+            paging: true,
+            pageSize: 10,
+            buttons: new DatatableButtons({
+                edit: (row) => {
+                    router.navigate(`/admin/oer/edit/${row.id}`);
+                },
+                delete: (row) => {
+                    currentRow = row;
+                    dialog.setAttribute("open", "");
+                },
+                inspect: (row) => {
+                    router.navigate(`/admin/oer/inspect/${row.id}`);
+                },
+            })
+        }));
+    }
+    catch (error) {
+        console.log(error);
+    }
 }
+
+function addOnClick() {
+    router.navigate('/admin/oer/create');
+}
+
+OerPage.onBeforePageUnloaded = () => {
+    document.querySelector('#add-button').removeEventListener('click', addOnClick);
+};

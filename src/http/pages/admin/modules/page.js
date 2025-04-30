@@ -36,6 +36,12 @@ export default function ModulesPage() {
             }
         </style>
 
+        <x-page-header>
+            <h1 slot="title">Modules beheren</h1>
+            <p slot="subtitle">Bekijk hier een overzicht van alle modules. Hier kan je modules toevoegen en verwijderen.</p>
+            <button id="add-button">Module toevoegen</button>
+        </x-page-header>
+
         <div class="page-container">
             <x-sidebar id="sidebar"></x-sidebar>
             <div id="table-div">
@@ -61,59 +67,70 @@ export default function ModulesPage() {
 }
 
 ModulesPage.onPageLoaded = () => {
-    /** @type {Datatable} */
-    const table = document.querySelector("x-data-table");
-    const dialog = document.querySelector("#confirmDeleteDialog");
-    const yesBtn = dialog.shadowRoot?.host.querySelector("#confirmYes");
-    const noBtn = dialog.shadowRoot?.host.querySelector("#confirmNo");
+    document.querySelector('#add-button').addEventListener('click', addOnClick);
 
-    let currentRow = null;
+    try {
+        /** @type {Datatable} */
+        const table = document.querySelector("x-data-table");
+        const dialog = document.querySelector("#confirmDeleteDialog");
+        const yesBtn = dialog.shadowRoot?.host.querySelector("#confirmYes");
+        const noBtn = dialog.shadowRoot?.host.querySelector("#confirmNo");
 
-    const yesCallback = async () => {
-        if (!currentRow) return;
+        let currentRow = null;
 
-        dialog.removeAttribute("open");
-        await fetcher(`modules/${currentRow.id}`, { method: "delete" });
+        const yesCallback = async () => {
+            if (!currentRow) return;
 
-        currentRow = null;
-    };
+            dialog.removeAttribute("open");
+            await fetcher(`modules/${currentRow.id}`, { method: "delete" });
 
-    const noCallback = () => {
-        dialog.removeAttribute("open");
-        currentRow = null;
-    };
+            currentRow = null;
+        };
 
-    yesBtn?.addEventListener("click", yesCallback);
-    noBtn?.addEventListener("click", noCallback);
+        const noCallback = () => {
+            dialog.removeAttribute("open");
+            currentRow = null;
+        };
 
-    table.dataTable(new DatatableConfig({
-        route: "module",
-        columns: [
-            new DatatableColumn({ path: "id", title: "Id", sorting: true }),
-            new DatatableColumn({ path: "name", title: "Naam", sorting: true }),
-            new DatatableColumn({ path: "category.value", title: "Categorie", sorting: true }),
-            new DatatableColumn({ path: "eCs", title: "Credits" }),
-            new DatatableColumn({ path: "level", title: "Niveau", sorting: true }),
-            new DatatableColumn({ path: "oer.academicYear", title: "Jaar", sorting: true })
-        ],
-        searching: true,
-        paging: true,
-        pageSize: 10,
-        buttons: new DatatableButtons({
-            edit: (row) => {
-                router.navigate(`/admin/modules/edit/${row.id}`);
-            },
-            delete: (row) => {
-                currentRow = row;
-                dialog.setAttribute("open", "");
-            },
-            inspect: (row) => {
-                router.navigate(`/admin/modules/inspect/${row.id}`);
-            },
-        })
-    }));
+        yesBtn?.addEventListener("click", yesCallback);
+        noBtn?.addEventListener("click", noCallback);
+
+        table.dataTable(new DatatableConfig({
+            route: "module",
+            columns: [
+                new DatatableColumn({ path: "id", title: "Id", sorting: true }),
+                new DatatableColumn({ path: "name", title: "Naam", sorting: true }),
+                new DatatableColumn({ path: "category.value", title: "Categorie", sorting: true }),
+                new DatatableColumn({ path: "eCs", title: "Credits" }),
+                new DatatableColumn({ path: "level", title: "Niveau", sorting: true }),
+                new DatatableColumn({ path: "oer.academicYear", title: "Jaar", sorting: true })
+            ],
+            searching: true,
+            paging: true,
+            pageSize: 10,
+            buttons: new DatatableButtons({
+                edit: (row) => {
+                    router.navigate(`/admin/modules/edit/${row.id}`);
+                },
+                delete: (row) => {
+                    currentRow = row;
+                    dialog.setAttribute("open", "");
+                },
+                inspect: (row) => {
+                    router.navigate(`/admin/modules/inspect/${row.id}`);
+                },
+            })
+        }));
+    }
+    catch (error) {
+        console.log(error);
+    }
 };
 
+function addOnClick() {
+    router.navigate('/admin/modules/create');
+}
+
 ModulesPage.onBeforePageUnloaded = () => {
-    console.log("page unloaded");
+    document.querySelector('#add-button').removeEventListener('click', addOnClick);
 };
