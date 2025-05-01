@@ -3,7 +3,7 @@
 }
 
 ::slotted(p) {
-    width: 150px;
+    width: fit-content;
     max-width: 150px;
     font-size: 14px !important;
     text-align: initial;
