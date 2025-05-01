@@ -1,7 +1,14 @@
-import '@components/save-button';
-import { fetcher } from '@/utils';
+import '@components/save-button'
+import { fetcher } from '@/utils'
+import { Module } from '@/models'
 
-let moduleData = new Map();
+let moduleData = new Map([
+    ['SE', { title: 'Software Engineering' }],
+    ['IDS', { title: 'Infrastructure Design & Security' }],
+    ['BIM', { title: 'Business IT & Management' }],
+    ['OVERIG', { title: 'Overig' }],
+])
+
 let studyCardData = [
     [
         { status: 'locked', name: 'Basis vaardigheden ICT', description: 'Dit is een beschrijving' },
@@ -10,85 +17,71 @@ let studyCardData = [
     [{ status: 'unlocked' }, { status: 'unlocked' }],
     [{ status: 'unlocked' }, { status: 'unlocked' }],
     [{ status: 'unlocked' }, { status: 'locked', type: 'Overig', name: 'Afstuderen' }],
-];
-
-function normalizeCategory(value) {
-    const lower = value.toLowerCase();
-    if (lower.includes('software')) return 'SE';
-    if (lower.includes('infrastructure') || lower.includes('security')) return 'IDS';
-    if (lower.includes('business')) return 'BIM';
-    return 'OVERIG';
-}
-
-function groupModulesByCategory(modules) {
-    return modules.reduce((acc, module) => {
-        const rawValue = module.category?.value || 'OVERIG';
-        const categoryKey = normalizeCategory(rawValue);
-
-        if (!acc[categoryKey]) acc[categoryKey] = [];
-        acc[categoryKey].push(module);
-        return acc;
-    }, {});
-}
+]
 
 function delegatedAccordionClickHandler(event) {
-    const moduleItem = event.target.closest('.module-item');
-    if (!moduleItem) return;
+    const moduleItem = event.target.closest('.module-item')
+    if (!moduleItem) return
 
-    handleAccordionItemClick(moduleItem);
+    handleAccordionItemClick(moduleItem)
 }
 
 function delegatedSemesterClickHandler(event) {
-    const semester = event.target.closest('[data-card-module]');
-    if (!semester) return;
+    const semester = event.target.closest('[data-card-module]')
+    if (!semester) return
 
-    handleSemesterClick(semester);
+    handleSemesterClick(semester)
 }
 
 function handleAccordionItemClick(moduleItem) {
-    const studyCards = document.querySelectorAll('x-study-card');
+    const studyCards = document.querySelectorAll('x-study-card')
     studyCards.forEach(studyCard => {
-        const studyYear = studyCard.dataset.year;
-        if (!studyCard.shadowRoot) return;
+        const studyYear = studyCard.dataset.year
+        if (!studyCard.shadowRoot) return
 
-        const shadowSemesters = studyCard.querySelectorAll('[data-index]');
+        const shadowSemesters = studyCard.querySelectorAll('[data-index]')
         shadowSemesters.forEach(shadowDiv => {
             if (shadowDiv.hasAttribute('selected')) {
-                const semesterIndex = shadowDiv.dataset.index;
-                const modules = moduleData.get(moduleItem.dataset.type).modules;
-                const data = modules[moduleItem.dataset.index];
+                const semesterIndex = shadowDiv.dataset.index
+                const modules = moduleData.get(moduleItem.dataset.type).modules
+                const data = modules[moduleItem.dataset.index]
 
                 studyCardData[studyYear][semesterIndex] = {
                     ...studyCardData[studyYear][semesterIndex],
                     type: moduleItem.dataset.type,
                     name: data.name,
                     description: data.description || data.tooltip,
-                };
+                }
 
-                shadowDiv.removeAttribute('selected');
+                shadowDiv.removeAttribute('selected')
             }
-        });
-    });
+        })
+    })
 
-    renderStudyCards();
+    renderStudyCards()
 }
 
 function handleSemesterClick(semester) {
-    const studyCards = document.querySelectorAll('x-study-card');
+    const studyCards = document.querySelectorAll('x-study-card')
     studyCards.forEach(card => {
-        if (!card.shadowRoot) return;
-        const semesters = card.querySelectorAll('[data-card-module]');
-        semesters.forEach(sem => sem.removeAttribute('selected'));
-    });
+        if (!card.shadowRoot) return
+        const semesters = card.querySelectorAll('[data-card-module]')
+        semesters.forEach(sem => sem.removeAttribute('selected'))
+    })
 
     if (semester.dataset.status) {
-        semester.setAttribute('selected', '');
+        semester.setAttribute('selected', '')
     }
 }
 
 function renderStudyCards() {
-    const container = document.querySelector('#study-cards-container');
-    if (!container) return;
+    const container = document.querySelector('#study-cards-container')
+    if (!container) return
+
+    const statusIconMap = {
+        locked: 'ph-lock-simple',
+        unlocked: 'ph-lock-simple-open',
+    }
 
     container.innerHTML = studyCardData
         .map(
@@ -100,100 +93,92 @@ function renderStudyCards() {
                         (semester, semesterIndex) => `
                         <div slot="content-${semesterIndex + 1}" type="${semester.type}" data-card-module data-index="${semesterIndex}" data-status="${semester.status}" class="card-module-item">
                             <div style="display: flex; justify-content: space-between;">
-                                <i class="ph ${semester.status === 'locked' ? 'ph-lock-simple' : 'ph-lock-simple-open'}"></i>
-                                ${semester.description
-                                    ? `<x-tooltip position="bottom" placement="left">
-                                            <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                                            <p style="color: rgb(var(--color-black));">${semester.description}</p>
-                                       </x-tooltip>`
-                                    : ''}
+                                <i class="ph ${statusIconMap[semester.status] || 'ph-question'}"></i>
+                                ${
+                                    semester.description
+                                        ? `<x-tooltip position="bottom" placement="left">
+                                                <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
+                                                <p style="color: rgb(var(--color-black));">${semester.description}</p>
+                                           </x-tooltip>`
+                                        : ''
+                                }
                             </div>
                             ${semester.name || `Optie ${semesterIndex + 1}`}
                         </div>
-                    `
+                    `,
                     )
                     .join('')}
             </x-study-card>
-        `
+        `,
         )
-        .join('');
+        .join('')
 }
 
 async function loadModules() {
     try {
-        const response = await fetcher('module', { method: 'GET' });
-        const modulesData = response.items;
-        const grouped = groupModulesByCategory(modulesData);
+        const response = await fetcher('module', { method: 'GET' })
 
-        const formatted = new Map(
-            Object.entries(grouped).map(([key, modules]) => [
-                key,
-                {
-                    title: {
-                        SE: 'Software Engineering',
-                        IDS: 'Infrastructure Design & Security',
-                        BIM: 'Business IT & Management',
-                        OVERIG: 'Overig',
-                    }[key] || key,
-                    modules,
-                },
-            ])
-        );
+        response.items.forEach(item => {
+            const module = new Module(item)
+            const category = module.category
 
-        moduleData = formatted;
-        renderModuleAccordion();
-    } catch (err) {
-        console.error('Modules ophalen mislukt:', err);
+            const existingData = moduleData.get(category) || { modules: [] }
+            moduleData.set(category, {
+                ...existingData,
+                modules: [...existingData.modules, module],
+            })
+        })
+
+        renderModuleAccordion()
+    } catch (error) {
+        console.error('Modules ophalen mislukt:', error)
     }
 }
 
 function renderModuleAccordion() {
-    const containers = [
-        document.querySelector('#modules-list-desktop'),
-        document.querySelector('#modules-list-mobile'),
-    ];
+    const containers = [document.querySelector('#modules-list-desktop'), document.querySelector('#modules-list-mobile')]
 
     const accordionHTML = Array.from(moduleData.entries())
         .map(
-            ([type, { title, modules }]) => `
+            ([type, { title, modules = [] }]) => `
             <x-accordion type="${type}">
                 <span slot="title">${title}</span>
                 ${modules
                     .map(
-                        (mod, index) => `
-                    <div class="module-item" data-type="${type}" data-index="${index}">
-                        <span>${mod.name}</span>
-                        ${
-                            mod.description
-                                ? `<x-tooltip position="left" placement="middle">
-                                       <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                                       <p class="color-black text-sm">${mod.description}</p>
-                                   </x-tooltip>`
-                                : ''
-                        }
-                    </div>`
+                        (module, index) => `
+                        <div class="module-item" data-type="${type}" data-index="${index}">
+                            <span>${module.name}</span>
+                            ${
+                                module.description
+                                    ? `<x-tooltip position="left" placement="middle">
+                                           <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
+                                           <p class="color-black text-sm">${module.description}</p>
+                                       </x-tooltip>`
+                                    : ''
+                            }
+                        </div>`,
                     )
                     .join('')}
-            </x-accordion>`
+            </x-accordion>
+        `,
         )
-        .join('');
+        .join('')
 
     containers.forEach(container => {
-        if (container) container.innerHTML = accordionHTML;
-    });
+        if (container) container.innerHTML = accordionHTML
+    })
 }
-
 
 export default function PlannerPage() {
     PlannerPage.onPageLoaded = () => {
-        document.removeEventListener('click', delegatedAccordionClickHandler);
-        document.addEventListener('click', delegatedAccordionClickHandler);
-        document.removeEventListener('click', delegatedSemesterClickHandler);
-        document.addEventListener('click', delegatedSemesterClickHandler);
+        document.removeEventListener('click', delegatedAccordionClickHandler)
+        document.addEventListener('click', delegatedAccordionClickHandler)
+        document.removeEventListener('click', delegatedSemesterClickHandler)
+        document.addEventListener('click', delegatedSemesterClickHandler)
 
-        loadModules();
-        renderStudyCards();
-    };
+        loadModules().catch(console.error)
+        renderStudyCards()
+    }
 
     return /*html*/ `
         <div class="container flex" style="position: relative; flex-direction: row; overflow: hidden;">
@@ -230,5 +215,5 @@ export default function PlannerPage() {
                 </x-popover>
             </div>
         </div>
-    `;
+    `
 }
