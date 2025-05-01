@@ -1,3 +1,10 @@
 :host {
     --popper-padding: 0.5rem 0.75rem;
 }
+
+::slotted(p) {
+    width: 150px;
+    max-width: 150px;
+    font-size: 14px !important;
+    text-align: initial;
+}

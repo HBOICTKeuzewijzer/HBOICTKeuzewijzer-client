@@ -15,7 +15,6 @@ import {
     InputMultiline,
     Input,
     PageHeader,
-    SaveShareButton,
     Sidebar,
     Datatable,
 } from '@components'
@@ -32,4 +31,3 @@ customElements.define('x-tooltip', Tooltip)
 customElements.define('x-sidebar', Sidebar)
 customElements.define('x-data-table', Datatable)
 customElements.define('x-page-header', PageHeader)
-customElements.define('save-share-button', SaveShareButton)
