@@ -45,7 +45,6 @@ export default class CustomElement extends HTMLElement {
         this.#eventListeners.push({ element, event, handler })
     }
 
- 
     /**
      * Clears all tracked listeners
      */
@@ -55,7 +54,7 @@ export default class CustomElement extends HTMLElement {
         }
         this.#eventListeners = []
     }
- 
+
     /**
      * @returns {ShadowRoot} Shadowroot root
      */

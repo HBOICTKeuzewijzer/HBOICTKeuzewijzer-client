@@ -5,9 +5,9 @@
  * @returns {HTMLTemplateElement}
  */
 export function html(strings, ...values) {
-    const template = document.createElement('template')
-    template.innerHTML = String.raw({ raw: strings }, ...values)
-    return template
+    const template = document.createElement('template');
+    template.innerHTML = String.raw({ raw: strings }, ...values);
+    return template;
 }
 
 /**
@@ -25,5 +25,20 @@ export function html(strings, ...values) {
  * @returns Retrieved data from object at path.
  */
 export function resolvePath(obj, path) {
-    return path.split('.').reduce((acc, part) => acc && acc[part], obj)
+    return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+}
+
+
+/**
+ * Calls a specified function after delay ms
+ * @param {Function} fn To call after delay
+ * @param {number} delay Delay in ms
+ * @returns 
+ */
+export function debounce(fn, delay) {
+    let timeout;
+    return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => fn.apply(this, args), delay);
+    };
 }

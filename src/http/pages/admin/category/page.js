@@ -1,10 +1,10 @@
 /** @typedef {import('@/components').Datatable} Datatable */
 
+import { router } from '@/http/router';
 import { DatatableButtons, DatatableColumn, DatatableConfig } from '@/models';
 import { fetcher } from '@/utils';
-import { router } from '@/http/router';
 
-export default function OerPage() {
+export default function CategoryPage() {
     return /*html*/ `
         <style>
             #table-div {
@@ -37,9 +37,9 @@ export default function OerPage() {
         </style>
 
         <x-page-header>
-            <h1 slot="title">Oeren beheren</h1>
-            <p slot="subtitle">Bekijk hier een overzicht van alle oeren. Hier kan je oeren toevoegen en verwijderen</p>
-            <button id="add-button">Oer toevoegen</button>
+            <h1 slot="title">Categorieën beheren</h1>
+            <p slot="subtitle">Bekijk hier een overzicht van alle categorieën. Hier kan je categorieën toevoegen en verwijderen.</p>
+            <button id="add-button">Categorie toevoegen</button>
         </x-page-header>
 
         <div class="page-container">
@@ -66,7 +66,7 @@ export default function OerPage() {
     `
 }
 
-OerPage.onPageLoaded = () => {
+CategoryPage.onPageLoaded = () => {
     document.querySelector('#add-button').addEventListener('click', addOnClick);
 
     try {
@@ -82,7 +82,7 @@ OerPage.onPageLoaded = () => {
             if (!currentRow) return;
 
             dialog.removeAttribute("open");
-            await fetcher(`oer/${currentRow.id}`, { method: "delete" });
+            await fetcher(`category/${currentRow.id}`, { method: "delete" });
 
             currentRow = null;
         };
@@ -96,25 +96,24 @@ OerPage.onPageLoaded = () => {
         noBtn?.addEventListener("click", noCallback);
 
         table.dataTable(new DatatableConfig({
-            route: "oer",
+            route: "category",
             columns: [
                 new DatatableColumn({ path: "id", title: "Id", sorting: true }),
-                new DatatableColumn({ path: "academicYear", title: "Jaar", sorting: true }),
-                new DatatableColumn({ path: "filePath", title: "File" })
+                new DatatableColumn({ path: "value", title: "Waarde", sorting: true })
             ],
-            searching: true,
-            paging: true,
+            searching: false,
+            paging: false,
             pageSize: 10,
             buttons: new DatatableButtons({
                 edit: (row) => {
-                    router.navigate(`/admin/oer/edit/${row.id}`);
+                    router.navigate(`/admin/categorien/edit/${row.id}`);
                 },
                 delete: (row) => {
                     currentRow = row;
                     dialog.setAttribute("open", "");
                 },
                 inspect: (row) => {
-                    router.navigate(`/admin/oer/inspect/${row.id}`);
+                    router.navigate(`/admin/categorien/inspect/${row.id}`);
                 },
             })
         }));
@@ -125,9 +124,9 @@ OerPage.onPageLoaded = () => {
 }
 
 function addOnClick() {
-    router.navigate('/admin/oer/create');
+    router.navigate('/admin/categorien/create');
 }
 
-OerPage.onBeforePageUnloaded = () => {
+CategoryPage.onBeforePageUnloaded = () => {
     document.querySelector('#add-button').removeEventListener('click', addOnClick);
 };

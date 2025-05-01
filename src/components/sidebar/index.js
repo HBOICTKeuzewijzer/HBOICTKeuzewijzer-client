@@ -34,7 +34,7 @@ export class Sidebar extends CustomElement {
             sidebar.classList.add('collapsed')
         }
 
-        this.trackListener(sidebarWrapper, 'click', (e) => {
+        this.trackListener(sidebarWrapper, 'click', e => {
             e.stopPropagation()
             sidebar.classList.toggle('collapsed')
             localStorage.setItem('sidebarState', sidebar.classList.contains('collapsed') ? 'collapsed' : 'expanded')
