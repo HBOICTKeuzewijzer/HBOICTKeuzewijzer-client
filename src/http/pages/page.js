@@ -48,9 +48,7 @@ function handleAccordionItemClick(moduleItem) {
 
                 studyCardData[studyYear][semesterIndex] = {
                     ...studyCardData[studyYear][semesterIndex],
-                    type: moduleItem.dataset.type,
-                    name: data.name,
-                    description: data.description || data.tooltip,
+                    data,
                 }
 
                 shadowDiv.removeAttribute('selected')
@@ -92,6 +90,7 @@ function renderStudyCards() {
                     .map(
                         (semester, semesterIndex) => `
                         <div slot="content-${semesterIndex + 1}" type="${semester.type}" data-card-module data-index="${semesterIndex}" data-status="${semester.status}" class="card-module-item">
+                            <input name="choice[${yearIndex + 1}][${semesterIndex + 1}]" hidden/>
                             <div style="display: flex; justify-content: space-between;">
                                 <i class="ph ${statusIconMap[semester.status] || 'ph-question'}"></i>
                                 ${
@@ -197,7 +196,7 @@ export default function PlannerPage() {
                 <div id="modules-list-mobile" style="padding: 24px;"></div>
             </x-drawer>
 
-            <div id="study-cards-container" style="display: flex; width: 100%; height: 100%; max-width: 700px; flex-wrap: wrap; justify-content: space-between; margin: auto;"></div>
+            <form id="study-cards-container" style="display: flex; width: 100%; height: 100%; max-width: 700px; flex-wrap: wrap; justify-content: space-between; margin: auto;"></form>
 
             <div style="position: absolute; right: 32px; top: 32px;">
                 <x-popover position="bottom" placement="right">

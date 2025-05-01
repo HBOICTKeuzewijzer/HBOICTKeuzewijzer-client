@@ -6,57 +6,70 @@ import { Module } from '@models'
  * ------------------------------------
  * This suite validates the functionality of the `Module` model by testing:
  * - Initialization with complete and partial input,
- * - Category normalization logic,
+ * - Category normalization via the setter,
  * - Getter/setter behavior,
  * - Default handling of optional properties.
  *
  * Covered test scenarios:
- * - [Should] Initialize a module with all properties,
+ * - [Should] Initialize a module with supported properties,
  * - [Should] Normalize known categories (`software`, `infrastructure`, `security`, `business`),
  * - [Should] Default to `OVERIG` for unknown categories,
  * - [Should] Handle optional description gracefully,
  * - [Should] Allow property updates through setters.
  */
 describe('[Models] Module', () => {
-    it('[Should] Initialize a module with all properties', () => {
+    it('[Should] Initialize a module with supported properties', () => {
         const module = new Module({
             id: 'abc-123',
             name: 'Webdev',
-            category: 'software',
+            code: 'WD101',
+            ec: 5,
             description: 'Covers frontend and backend basics',
         })
 
         expect(module.id).toBe('abc-123')
         expect(module.name).toBe('Webdev')
-        expect(module.category).toBe(Module.CATEGORY_SOFTWARE)
+        expect(module.code).toBe('WD101')
+        expect(module.ec).toBe(5)
         expect(module.description).toBe('Covers frontend and backend basics')
     })
 
-    it('[Should] Normalize category to SE when given "software"', () => {
-        const module = new Module({ category: 'Software' })
+    it('[Should] Normalize category to SE when set to "software"', () => {
+        const module = new Module()
+        module.category = 'Software'
         expect(module.category).toBe(Module.CATEGORY_SOFTWARE)
     })
 
     it('[Should] Normalize category to IDS for "infrastructure" or "security"', () => {
-        const infra = new Module({ category: 'Infrastructure' })
-        const sec = new Module({ category: 'Security' })
-
+        const infra = new Module()
+        infra.category = 'Infrastructure'
         expect(infra.category).toBe(Module.CATEGORY_INFRASTRUCTURE)
+
+        const sec = new Module()
+        sec.category = 'Security'
         expect(sec.category).toBe(Module.CATEGORY_INFRASTRUCTURE)
     })
 
-    it('[Should] Normalize category to BIM when given "business"', () => {
-        const module = new Module({ category: 'business strategies' })
+    it('[Should] Normalize category to BIM when set to "business"', () => {
+        const module = new Module()
+        module.category = 'business strategies'
         expect(module.category).toBe(Module.CATEGORY_BUSINESS)
     })
 
     it('[Should] Default to OVERIG for unknown categories', () => {
-        const module = new Module({ category: 'arts & crafts' })
+        const module = new Module()
+        module.category = 'arts & crafts'
         expect(module.category).toBe(Module.CATEGORY_REMAINDER)
     })
 
     it('[Should] Handle absence of optional description', () => {
-        const module = new Module({ id: 'mod-001', name: 'Design', category: 'business' })
+        const module = new Module({
+            id: 'mod-001',
+            name: 'Design',
+            code: 'DS101',
+            ec: 3,
+        })
+
         expect(module.description).toBeUndefined()
     })
 
@@ -65,12 +78,16 @@ describe('[Models] Module', () => {
 
         module.id = 'mod-xyz'
         module.name = 'Databases'
-        module.category = 'Security'
+        module.code = 'DB200'
+        module.ec = 6
         module.description = 'Covers SQL and NoSQL systems'
+        module.category = 'Security'
 
         expect(module.id).toBe('mod-xyz')
         expect(module.name).toBe('Databases')
-        expect(module.category).toBe(Module.CATEGORY_INFRASTRUCTURE)
+        expect(module.code).toBe('DB200')
+        expect(module.ec).toBe(6)
         expect(module.description).toBe('Covers SQL and NoSQL systems')
+        expect(module.category).toBe(Module.CATEGORY_INFRASTRUCTURE)
     })
 })
