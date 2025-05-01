@@ -1,77 +1,81 @@
-import styling from './style.css?raw';
-import { html } from '@utils/functions';
-import CustomElement from '@components/customElement';
+import styling from './style.css?raw'
+import { html } from '@utils/functions'
+import CustomElement from '@components/customElement'
 
 const template = html`
-<style>${styling}</style>
-<div id="container">          
-    <slot class="icon-slot" name="prepend"></slot>
-    <input type="text" />
-    <slot class="icon-slot" name="append"></slot>
-</div>
-`;
+    <style>
+        ${styling}
+    </style>
+    <div id="container">
+        <slot class="icon-slot" name="prepend"></slot>
+        <input type="text" />
+        <slot class="icon-slot" name="append"></slot>
+    </div>
+`
 
 export class Input extends CustomElement {
     static get observedAttributes() {
-        return ['placeholder'];
+        return ['placeholder']
     }
 
     constructor() {
-        super();
+        super()
     }
 
     get placeholder() {
-        return this.getAttribute('placeholder');
+        return this.getAttribute('placeholder')
     }
 
     set placeholder(value) {
-        this.setAttribute('placeholder', value);
+        this.setAttribute('placeholder', value)
     }
 
     get value() {
-        const input = this.shadowRoot?.querySelector('input');
-        return input?.value || '';
+        const input = this.shadowRoot?.querySelector('input')
+        return input?.value || ''
     }
 
     set value(val) {
-        const input = this.shadowRoot?.querySelector('input');
-        if (input) input.value = val;
+        const input = this.shadowRoot?.querySelector('input')
+        if (input) input.value = val
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'placeholder' && this.shadowRoot) {
-            const input = this.shadowRoot.querySelector('input');
+            const input = this.shadowRoot.querySelector('input')
             if (input) {
-                input.placeholder = newValue;
+                input.placeholder = newValue
             }
         }
     }
 
     disconnectedCallback() {
-        const input = this.shadowRoot.querySelector('input');
+        const input = this.shadowRoot.querySelector('input')
         if (input && this._inputHandler) {
-            input.removeEventListener('input', this._inputHandler);
+            input.removeEventListener('input', this._inputHandler)
         }
     }
 
-    #inputHandler = (e) => {
-        const value = e.target.value;
-        this.dispatchEvent(new CustomEvent('onValueChanged', {
-            detail: { query: value },
-            bubbles: true,
-            composed: true
-        }));
-    };
+    #inputHandler = e => {
+        const value = e.target.value
+        this.dispatchEvent(
+            new CustomEvent('onValueChanged', {
+                detail: { query: value },
+                bubbles: true,
+                composed: true,
+            }),
+        )
+    }
 
     connectedCallback() {
-        this.applyTemplate(template);
-        this.hideEmptySlots();
+        this.applyTemplate(template)
+        this.hideEmptySlots()
 
-        const input = this.shadowRoot.querySelector('input');
-        if (!input) return;
+        const input = this.shadowRoot.querySelector('input')
+        if (!input) return
 
-        input.placeholder = this.placeholder;
+        input.placeholder = this.placeholder
 
-        input.addEventListener('input', this.#inputHandler);
+        input.addEventListener('input', this.#inputHandler)
     }
 }
