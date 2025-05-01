@@ -1,7 +1,7 @@
 export class DatatableButtons {
-    #edit;
-    #delete;
-    #inspect;
+    #edit
+    #delete
+    #inspect
 
     /**
      * @param {Object} [options={}]
@@ -10,28 +10,28 @@ export class DatatableButtons {
      * @param {function(Object): void=} options.inspect Called when inspect button is pressed with row data.
      */
     constructor({ edit, delete: del, inspect } = {}) {
-        this.#edit = edit;
-        this.#delete = del;
-        this.#inspect = inspect;
+        this.#edit = edit
+        this.#delete = del
+        this.#inspect = inspect
     }
 
     get inspect() {
-        return this.#inspect;
+        return this.#inspect
     }
 
     get edit() {
-        return this.#edit;
+        return this.#edit
     }
 
     get delete() {
-        return this.#delete;
+        return this.#delete
     }
 
     toObject() {
-        const result = {};
-        if (this.#edit) result.edit = this.#edit;
-        if (this.#delete) result.delete = this.#delete;
-        if (this.#inspect) result.inspect = this.#inspect;
-        return result;
+        const result = {}
+        if (this.#edit) result.edit = this.#edit
+        if (this.#delete) result.delete = this.#delete
+        if (this.#inspect) result.inspect = this.#inspect
+        return result
     }
 }
