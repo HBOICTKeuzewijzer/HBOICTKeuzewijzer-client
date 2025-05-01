@@ -10,3 +10,6 @@ export * from './input'
 export * from './page-header'
 export * from './inputMultiline'
 export * from './save-button'
+export * from './datatable'
+export * from './sidebar'
+

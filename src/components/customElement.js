@@ -31,6 +31,11 @@ export default class CustomElement extends HTMLElement {
 
     /**
      * Add a listener that will be tracked so that it is easy to remove with clearListeners().
+     * @param {HTMLElement} element 
+     * @param {string} event 
+ 
+    /**
+     * Add a listener that will be tracked so that it is easy to remove with clearListeners().
      * @param {HTMLElement} element
      * @param {string} event
      * @param {(event: Event) => void} handler
@@ -39,6 +44,7 @@ export default class CustomElement extends HTMLElement {
         element.addEventListener(event, handler)
         this.#eventListeners.push({ element, event, handler })
     }
+
 
     /**
      * Clears all tracked listeners
