@@ -17,7 +17,7 @@ import {
     PageHeader,
     SaveShareButton,
     Sidebar,
-    Datatable
+    Datatable,
 } from '@components'
 customElements.define('x-accordion', Accordion)
 customElements.define('x-dialog', Dialog)

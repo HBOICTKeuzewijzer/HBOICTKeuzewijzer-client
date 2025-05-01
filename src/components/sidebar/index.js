@@ -3,7 +3,7 @@ import sidebar from './sidebar.html?raw'
 import styles from './sidebar.css?raw'
 import { html } from '@/utils/functions'
 import { router } from '@/http/router'
-
+import { Tooltip } from '../tooltip'
 
 const template = html`
     <style>
@@ -30,12 +30,18 @@ export class Sidebar extends CustomElement {
         const sidebar = this.shadowRoot.getElementById('sidebar')
         const sidebarWrapper = this.shadowRoot.getElementById('sidebar-wrapper')
 
-        this.trackListener(sidebarWrapper, 'click', () => {
+        if (localStorage.getItem('sidebarState') === 'collapsed') {
+            sidebar.classList.add('collapsed')
+        }
+
+        this.trackListener(sidebarWrapper, 'click', e => {
+            e.stopPropagation()
             sidebar.classList.toggle('collapsed')
+            localStorage.setItem('sidebarState', sidebar.classList.contains('collapsed') ? 'collapsed' : 'expanded')
         })
+
         buttons.forEach(button => {
             const btnElement = this.shadowRoot.getElementById(button.id)
-
             if (btnElement) {
                 this.trackListener(btnElement, 'click', () => {
                     router.navigate(button.route)
