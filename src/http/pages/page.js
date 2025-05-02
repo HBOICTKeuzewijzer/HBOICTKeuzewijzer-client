@@ -179,8 +179,8 @@ export default function PlannerPage() {
     }
 
     return /*html*/ `
-        <div class="container flex" style="position: relative; flex-direction: row; overflow: hidden;">
-            <x-sheet class="hidden md:flex" side="left" open>
+        <div class="container flex" style="position: relative; flex-direction: row; overflow: hidden; max-height: calc(100vh - var(--header-height));">
+            <x-sheet class="hidden lg:flex" side="left" open>
                 <div style="padding: 24px 24px 0; display: flex; flex-direction: column; gap: 6px;">
                     <h5 style="margin: 0; font-size: 18px;">Modules</h5>
                     <div class="divider" style="background-color: rgb(var(--color-gray-4)); height:1px;"></div>
@@ -191,11 +191,11 @@ export default function PlannerPage() {
                 <div id="modules-list-desktop" style="display: flex; flex-direction: column; padding: 24px;"></div>
             </x-sheet>
 
-            <x-drawer class="md:hidden" open>
+            <x-drawer class="lg:hidden" open>
                 <div id="modules-list-mobile" style="padding: 24px;"></div>
             </x-drawer>
 
-            <form id="study-cards-container" style="display: flex; width: 100%; height: 100%; max-width: 700px; flex-wrap: wrap; justify-content: space-between; margin: auto;"></form>
+            <form id="study-cards-container" style="display: flex; overflow-y: auto; max-height: calc(100vh - var(--header-height) - 64px); height: 100vh; max-width: 700px; flex-wrap: wrap; justify-content: center; margin: auto; gap: 100px;"></form>
 
             <div style="position: absolute; right: 32px; top: 32px;">
                 <x-popover position="bottom" placement="right">
