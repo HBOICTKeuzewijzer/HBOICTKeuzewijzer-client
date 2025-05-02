@@ -3,8 +3,7 @@
         <div class="message">
             <div class="message-sender">
                 <div class="titel">Jarne Kompier</div>
-                <div class="message1">
-                </div>
+                <div class="message1"></div>
             </div>
         </div>
         <div class="message2">
@@ -16,8 +15,7 @@
         <div class="message4">
             <div class="content2">
                 <div class="titel"></div>
-                <div class="message5">
-                </div>
+                <div class="message5"></div>
             </div>
         </div>
     </div>
@@ -25,10 +23,36 @@
         <div class="typ-een-brericht-wrapper">
             <div class="typ-een-brericht">Typ een bericht...</div>
         </div>
-        <div class="send">
-            <div class="send-child">
-            </div>
-            <img class="send-icon" alt="" src="send.svg">
+        <div class="send" style="position: relative; width: 30px; height: 30px">
+            <!-- Gele cirkel als achtergrond -->
+            <svg
+                id="rounded-send"
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                viewBox="0 0 30 30"
+                fill="none"
+                style="position: absolute; top: 0; left: 0; z-index: 1"
+            >
+                <circle cx="15" cy="15" r="15" fill="#FFCB05" />
+                <circle cx="15" cy="15" r="14.5" stroke="#F5A61A" stroke-opacity="0.2" />
+            </svg>
+
+            <!-- Pijl erbovenop -->
+            <svg
+                id="sendbutton"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                style="position: absolute; top: 5px; left: 5px; z-index: 2"
+            >
+                <path
+                    d="M2.5 16.6668V3.3335L18.3333 10.0002L2.5 16.6668ZM4.16667 14.1668L14.0417 10.0002L4.16667 5.8335V8.75016L9.16667 10.0002L4.16667 11.2502V14.1668ZM4.16667 14.1668V10.0002V5.8335V8.75016V11.2502V14.1668Z"
+                    fill="#000"
+                />
+            </svg>
         </div>
     </div>
 </div>
