@@ -16,6 +16,7 @@ import {
     Input,
     PageHeader,
     SaveShareButton,
+    Chat,
 } from '@components'
 customElements.define('x-accordion', Accordion)
 customElements.define('x-dialog', Dialog)
@@ -29,3 +30,4 @@ customElements.define('x-study-card', StudyCard)
 customElements.define('x-tooltip', Tooltip)
 customElements.define('x-page-header', PageHeader)
 customElements.define('save-share-button', SaveShareButton)
+customElements.define('x-chat', Chat)
