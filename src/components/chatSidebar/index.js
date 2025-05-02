@@ -6,29 +6,37 @@ export class ChatSidebar extends HTMLElement {
         const shadow = this.attachShadow({ mode: 'open' });
 
         shadow.innerHTML = `
-<style>${styles}</style>
-<div id="chat-sidebar">
-    <div class="sidebar-header">
-        <div class="search-container">
-            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input 
-                type="text" 
-                id="search-bar" 
-                placeholder="Zoek op naam of studentnummer..." 
-                aria-label="Zoek meldingen" />
-        </div>
-        <div class="title-wrapper">
-            <h3>Meldingen</h3>
-        </div>
-    </div>
-    <div id="chat-list" class="sidebar-content"></div>
-</div>
-<button id="toggle-sidebar" class="open-btn" aria-label="Toggle sidebar"></button>
-`;
+<style> ${styles}</style>
 
+        <div class="chat-layout">
+          <!-- Sidebar -->
+          <div id="chat-sidebar">
+            <div class="sidebar-header">
+              <div class="search-container">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="gray" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input
+                  type="text"
+                  id="search-bar"
+                  placeholder="Zoek op naam of studentnummer..."
+                  aria-label="Zoek meldingen"
+                />
+              </div>
+              <div class="title-wrapper">
+                <h3>Meldingen</h3>
+              </div>
+            </div>
+            <div id="chat-list" class="sidebar-content"></div>
+          </div>
+
+          <div id="selected-chat">
+            <button id="toggle-sidebar" class="open-btn" style="display: none;"></button>
+          </div>
+        </div>
+
+        `;
 
         this.isMobile = window.matchMedia('(max-width: 768px)').matches;
     }
@@ -37,20 +45,13 @@ export class ChatSidebar extends HTMLElement {
         const chatData = this.getChatData();
         this.renderChatSidebar(chatData);
 
-        const toggleButton = this.shadowRoot.getElementById('toggle-sidebar');
-        const sidebar = this.shadowRoot.getElementById('chat-sidebar');
-
-        toggleButton.addEventListener('click', () => {
-            sidebar.classList.toggle('open');
-        });
-
         const searchBar = this.shadowRoot.getElementById('search-bar');
         searchBar.addEventListener('input', (event) => {
             const query = event.target.value.toLowerCase();
             this.filterChatList(query);
         });
     }
-    //todo zoekbalk uit deze component halen.
+
     filterChatList(query) {
         const allChats = this.shadowRoot.querySelectorAll('.chat-item');
 
@@ -64,6 +65,7 @@ export class ChatSidebar extends HTMLElement {
             }
         });
     }
+
 
 
     getChatData() {
@@ -241,9 +243,18 @@ export class ChatSidebar extends HTMLElement {
             }
         ];
     }
-
     renderChatSidebar(chatData) {
         const chatListElement = this.shadowRoot.getElementById('chat-list');
+        const selectedChatContainer = this.shadowRoot.getElementById('selected-chat');
+        const toggleButton = this.shadowRoot.getElementById('toggle-sidebar');
+
+        if (!toggleButton.dataset.listenerAdded) {
+            toggleButton.addEventListener('click', () => {
+                const sidebar = this.shadowRoot.getElementById('chat-sidebar');
+                sidebar.classList.toggle('open');
+            });
+            toggleButton.dataset.listenerAdded = "true";
+        }
 
         chatData.forEach((chat) => {
             const chatItem = document.createElement('div');
@@ -258,17 +269,38 @@ export class ChatSidebar extends HTMLElement {
                 <span class="student-id">s${chat.student.code}</span>
             </div>
         `;
+
             chatItem.addEventListener('click', () => {
                 const allItems = this.shadowRoot.querySelectorAll('.chat-item');
                 allItems.forEach((item) => item.classList.remove('selected'));
-
                 chatItem.classList.add('selected');
+
+                selectedChatContainer.innerHTML = '';
+
+                selectedChatContainer.appendChild(toggleButton);
+
+                const selectedChat = document.createElement('div');
+                selectedChat.classList.add('selected-chat-item');
+                selectedChat.innerHTML = `
+                <div class="profile-picture">
+                    <img src="" alt="${chat.student.displayName}" />
+                </div>
+                <div class="chat-details">
+                    <span class="student-name">${chat.student.displayName}</span>
+                    <span class="student-id">s${chat.student.code}</span>
+                </div>
+            `;
+                selectedChatContainer.appendChild(selectedChat);
+
+                toggleButton.style.display = 'block';
+
                 console.log(`Chat geselecteerd: ${chat.student.displayName}`);
             });
 
             chatListElement.appendChild(chatItem);
         });
     }
+
 }
 
 customElements.define('chat-sidebar', ChatSidebar);
