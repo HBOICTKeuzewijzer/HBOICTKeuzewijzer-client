@@ -6,6 +6,7 @@ class Router {
     #DOMContainer
     /** @type {Array} The list of application routes. */
     #routes
+
     #currentPageComponent
 
     constructor() {
