@@ -1,6 +1,6 @@
 import { RouteGroup } from '@/models'
-import { Route } from '@models'
-import { EnsureCohortIsSet, RequireAuthCookie } from '@http/middleware'
+import { EnsureCohortIsSet, RequireAuthCookie, RequireRole } from '@http/middleware'
+import Role from '@models/role'
 
 /**
  * Defines the application routes.
@@ -16,10 +16,10 @@ export const routes = [
         .add('/messages', () => import('@pages/messages/page.js')).routes,
 
     ...new RouteGroup([new RequireAuthCookie()], '/admin')
-        .add('/', () => import('@/http/pages/admin/page.js'))
-        .add('/modules', () => import('@/http/pages/admin/modules/page.js'))
-        .add('/oer', () => import('@/http/pages/admin/oer/page.js'))
-        .add('/categorien', () => import('@/http/pages/admin/category/page.js'))
-        .add('/rollen-toewijzen', () => import('@/http/pages/admin/role-assignment/page.js'))
-        .add('/slb-relaties', () => import('@/http/pages/admin/slb-relations/page.js')).routes,
+        .add('/', () => import('@/http/pages/admin/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
+        .add('/modules', () => import('@/http/pages/admin/modules/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
+        .add('/oer', () => import('@/http/pages/admin/oer/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
+        .add('/categorien', () => import('@/http/pages/admin/category/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
+        .add('/rollen-toewijzen', () => import('@/http/pages/admin/role-assignment/page.js'), [new RequireRole([Role.SystemAdmin])])
+        .add('/slb-relaties', () => import('@/http/pages/admin/slb-relations/page.js'), [new RequireRole([Role.SystemAdmin])]).routes,
 ]
