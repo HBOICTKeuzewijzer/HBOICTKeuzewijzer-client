@@ -114,8 +114,9 @@ function renderStudyCards() {
 
 async function loadModules() {
     try {
-        const response = await fetcher('module', { method: 'GET' })
+        const response = await fetcher('Module', { method: 'GET' })
 
+        console.log(response)
         response.items.forEach(item => {
             const module = new Module(item)
             const category = module.category
