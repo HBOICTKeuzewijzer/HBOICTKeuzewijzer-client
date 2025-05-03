@@ -6,10 +6,10 @@ export class ChatSidebar extends HTMLElement {
         const shadow = this.attachShadow({ mode: 'open' });
 
         shadow.innerHTML = `
-<style> ${styles}</style>
-
-        <div class="chat-layout">
-          <!-- Sidebar -->
+        <style> ${styles}</style>        
+          <div id="selected-chat">
+            <button id="toggle-sidebar" class="open-btn" style="display: none;"></button>
+          </div>
           <div id="chat-sidebar">
             <div class="sidebar-header">
               <div class="search-container">
@@ -31,11 +31,6 @@ export class ChatSidebar extends HTMLElement {
             <div id="chat-list" class="sidebar-content"></div>
           </div>
 
-          <div id="selected-chat">
-            <button id="toggle-sidebar" class="open-btn" style="display: none;"></button>
-          </div>
-        </div>
-
         `;
 
         this.isMobile = window.matchMedia('(max-width: 768px)').matches;
@@ -45,12 +40,27 @@ export class ChatSidebar extends HTMLElement {
         const chatData = this.getChatData();
         this.renderChatSidebar(chatData);
 
+        const sidebar = this.shadowRoot.getElementById('chat-sidebar');
+        const toggleButton = this.shadowRoot.getElementById('toggle-sidebar');
+
+        toggleButton.style.display = 'block';
+
+        let isSidebarOpen = true;
+        toggleButton.textContent = '^';
+
+        toggleButton.addEventListener('click', () => {
+            isSidebarOpen = !isSidebarOpen;
+            sidebar.style.display = isSidebarOpen ? 'flex' : 'none';
+            toggleButton.textContent = isSidebarOpen ? '^' : 'v';
+        });
+
         const searchBar = this.shadowRoot.getElementById('search-bar');
         searchBar.addEventListener('input', (event) => {
             const query = event.target.value.toLowerCase();
             this.filterChatList(query);
         });
     }
+
 
     filterChatList(query) {
         const allChats = this.shadowRoot.querySelectorAll('.chat-item');
