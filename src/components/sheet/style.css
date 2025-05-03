@@ -18,6 +18,7 @@
         display: none;
         position: fixed;
         width: 100%;
+        min-width: var(--sheet-width);
         max-inline-size: var(--sheet-width);
         height: calc(100% - var(--sheet-header-offset) - (var(--sheet-gap) * 2));
         inset-block-start: calc(var(--sheet-header-offset) + var(--sheet-gap));

@@ -88,6 +88,7 @@ header {
     border-radius: var(--rounded-sm) !important;
     color: #fff;
     cursor: pointer;
+    font-size: 12px !important;
 }
 
 button {
