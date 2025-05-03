@@ -1,6 +1,11 @@
 import { fetcher } from '@/utils'
 import { Module } from '@/models'
 
+/**
+ * Stores available module categories with their respective titles.
+ * Module data is populated dynamically via `loadModules`.
+ * @type {Map<string, { title: string, modules?: Module[] }>}
+ */
 let moduleData = new Map([
     ['SE', { title: 'Software Engineering' }],
     ['IDS', { title: 'Infrastructure Design & Security' }],
@@ -8,6 +13,10 @@ let moduleData = new Map([
     ['OVERIG', { title: 'Overig' }],
 ])
 
+/**
+ * Represents initial study card state for each year and semester.
+ * Each item may include status, name, type, and description.
+ */
 let studyCardData = [
     [
         { status: 'locked', name: 'Basis vaardigheden ICT', description: 'Dit is een beschrijving' },
@@ -18,6 +27,10 @@ let studyCardData = [
     [{ status: 'unlocked' }, { status: 'locked', type: 'Overig', name: 'Afstuderen' }],
 ]
 
+/**
+ * Handles click events on accordion module items using event delegation.
+ * @param {MouseEvent} event
+ */
 function delegatedAccordionClickHandler(event) {
     const moduleItem = event.target.closest('.module-item')
     if (!moduleItem) return
@@ -25,6 +38,10 @@ function delegatedAccordionClickHandler(event) {
     handleAccordionItemClick(moduleItem)
 }
 
+/**
+ * Handles click events on semester elements using event delegation.
+ * @param {MouseEvent} event
+ */
 function delegatedSemesterClickHandler(event) {
     const semester = event.target.closest('[data-card-module]')
     if (!semester) return
@@ -32,6 +49,10 @@ function delegatedSemesterClickHandler(event) {
     handleSemesterClick(semester)
 }
 
+/**
+ * Handles click events on semester elements using event delegation.
+ * @param {MouseEvent} event
+ */
 function handleAccordionItemClick(moduleItem) {
     const studyCards = document.querySelectorAll('x-study-card')
     studyCards.forEach(studyCard => {
@@ -58,11 +79,17 @@ function handleAccordionItemClick(moduleItem) {
     renderStudyCards()
 }
 
+/**
+ * Handles selection highlighting for a semester card.
+ * @param {HTMLElement} semester
+ */
 function handleSemesterClick(semester) {
     const studyCards = document.querySelectorAll('x-study-card')
+
     studyCards.forEach(card => {
         if (!card.shadowRoot) return
         const semesters = card.querySelectorAll('[data-card-module]')
+
         semesters.forEach(sem => sem.removeAttribute('selected'))
     })
 
@@ -71,6 +98,9 @@ function handleSemesterClick(semester) {
     }
 }
 
+/**
+ * Renders all study cards based on `studyCardData`.
+ */
 function renderStudyCards() {
     const container = document.querySelector('#study-cards-container')
     if (!container) return
@@ -112,6 +142,10 @@ function renderStudyCards() {
         .join('')
 }
 
+/**
+ * Fetches available modules from the API and populates `moduleData`.
+ * Then triggers rendering of the accordion UI.
+ */
 async function loadModules() {
     try {
         const response = await fetcher('Module', { method: 'GET' })
@@ -134,6 +168,9 @@ async function loadModules() {
     }
 }
 
+/**
+ * Renders the module accordion UI for both desktop and mobile containers.
+ */
 function renderModuleAccordion() {
     const containers = [document.querySelector('#modules-list-desktop'), document.querySelector('#modules-list-mobile')]
 
@@ -168,20 +205,92 @@ function renderModuleAccordion() {
     })
 }
 
+/**
+ * Draws SVG paths between consecutive study cards to visualize progression.
+ */
+function drawConnections() {
+    const container = document.querySelector('#study-cards-container')
+    if (!container) return
+
+    let svg = document.getElementById('connection-svg')
+    if (!svg) {
+        svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+        svg.setAttribute('id', 'connection-svg')
+        svg.style.position = 'absolute'
+        svg.style.top = '0'
+        svg.style.left = '0'
+        svg.style.pointerEvents = 'none'
+        svg.style.zIndex = '0'
+        
+        container.appendChild(svg)
+    }
+
+    svg.innerHTML = ''
+    svg.setAttribute('width', container.scrollWidth)
+    svg.setAttribute('height', container.scrollHeight)
+
+    const cards = Array.from(container.querySelectorAll('x-study-card'))
+    if (cards.length < 2) return
+
+    const isMobile = window.innerWidth <= 768
+
+    for (let i = 0; i < cards.length - 1; i++) {
+        const fromCard = cards[i].getBoundingClientRect()
+        const toCard = cards[i + 1].getBoundingClientRect()
+        const containerRect = container.getBoundingClientRect()
+
+        let startX = fromCard.right - containerRect.left
+        let startY = fromCard.top + fromCard.height / 2 - containerRect.top
+        let endX = toCard.left - containerRect.left
+        let endY = toCard.top + toCard.height / 2 - containerRect.top
+
+        let midX1 = startX + 40
+        let midY = (startY + endY) / 2
+        let midX2 = endX - 40
+
+        if (isMobile) {
+            startX = fromCard.left + fromCard.width / 2 - containerRect.left
+            startY = fromCard.bottom - containerRect.top
+            endX = toCard.left + toCard.width / 2 - containerRect.left
+            endY = toCard.top - containerRect.top
+
+            midX1 = startX
+            midX2 = endX
+        }
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+        path.setAttribute('d', `M ${startX} ${startY} H ${midX1} V ${midY} H ${midX2} V ${endY} H ${endX}`)
+        path.setAttribute('stroke', 'rgba(var(--color-gold), 0.6)')
+        path.setAttribute('fill', 'none')
+        path.setAttribute('stroke-width', '7')
+        svg.appendChild(path)
+
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+        circle.setAttribute('cx', endX)
+        circle.setAttribute('cy', endY)
+        circle.setAttribute('r', 10)
+        circle.setAttribute('fill', 'rgb(var(--color-gold))')
+        svg.appendChild(circle)
+    }
+}
+
 export default function PlannerPage() {
     PlannerPage.onPageLoaded = () => {
-        document.removeEventListener('click', delegatedAccordionClickHandler)
         document.addEventListener('click', delegatedAccordionClickHandler)
-        document.removeEventListener('click', delegatedSemesterClickHandler)
         document.addEventListener('click', delegatedSemesterClickHandler)
+
+        window.addEventListener('resize', () => {
+            requestAnimationFrame(drawConnections)
+        })
 
         loadModules().catch(console.error)
         renderStudyCards()
+        drawConnections()
     }
 
     return /*html*/ `
         <div class="container flex" style="position: relative; flex-direction: row; overflow: hidden; max-height: calc(100vh - var(--header-height));">
-            <x-sheet class="hidden lg:flex" side="left" open>
+            <x-sheet class="hidden xl:flex" side="left" open>
                 <div style="padding: 24px 24px 0; display: flex; flex-direction: column; gap: 6px;">
                     <h5 style="margin: 0; font-size: 18px;">Modules</h5>
                     <div class="divider" style="background-color: rgb(var(--color-gray-4)); height:1px;"></div>
@@ -192,11 +301,11 @@ export default function PlannerPage() {
                 <div id="modules-list-desktop" style="display: flex; flex-direction: column; padding: 24px;"></div>
             </x-sheet>
 
-            <x-drawer class="lg:hidden" open>
+            <x-drawer class="xl:hidden" open>
                 <div id="modules-list-mobile" style="padding: 24px;"></div>
             </x-drawer>
 
-            <form id="study-cards-container" style="display: flex; overflow-y: auto; max-height: calc(100vh - var(--header-height) - 64px); height: 100vh; max-width: 700px; flex-wrap: wrap; justify-content: center; margin: auto; gap: 100px;"></form>
+            <form id="study-cards-container" style></form>
 
             <div style="position: absolute; right: 32px; top: 32px;">
                 <x-popover position="bottom" placement="right">
