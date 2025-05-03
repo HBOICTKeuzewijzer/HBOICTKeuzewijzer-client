@@ -13,16 +13,16 @@ export class SetAuthCookie extends Middleware {
     // eslint-disable-next-line no-unused-vars
     async handle(context) {
         try {
-            let me = await fetcher('api/auth/me')
+            // let me = await fetcher('api/auth/me')
 
-            Cookie.set(
-                'x-session',
-                JSON.stringify({
-                    id: me.id,
-                    name: me.displayName.replace(' (student)', ''),
-                    email: me.email,
-                }),
-            )
+            // Cookie.set(
+            //     'x-session',
+            //     JSON.stringify({
+            //         id: me.id,
+            //         name: me.displayName.replace(' (student)', ''),
+            //         email: me.email,
+            //     }),
+            // )
 
             return true
         } catch {

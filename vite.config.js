@@ -3,7 +3,6 @@ import path from 'path'
 
 export default defineConfig({
     root: 'src',
-    envDir: './',
     server: {
         port: 3000,
         historyApiFallback: true,
