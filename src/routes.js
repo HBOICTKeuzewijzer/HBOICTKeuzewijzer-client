@@ -18,6 +18,8 @@ export const routes = [
     ...new RouteGroup([new RequireAuthCookie()], '/admin')
         .add('/', () => import('@/http/pages/admin/page.js'))
         .add('/modules', () => import('@/http/pages/admin/modules/page.js'))
+        .add('/modules/create', () => import('@/http/pages/admin/modules/modules-create/page.js'))
+        .add('/modules/edit/:uuid', () => import('@/http/pages/admin/modules/modules-edit/page.js'))
         .add('/oer', () => import('@/http/pages/admin/oer/page.js'))
         .add('/categorien', () => import('@/http/pages/admin/category/page.js'))
         .add('/rollen-toewijzen', () => import('@/http/pages/admin/role-assignment/page.js'))
