@@ -9,6 +9,8 @@
     gap: 1rem;
 }
 
+
+
 .table-container {
     max-width: 100%;
     overflow-y: auto;
@@ -28,16 +30,14 @@ thead {
     border-bottom: 2px solid rgba(var(--color-gray-3), 0.2);
 }
 
-td,
-th {
+td, th {
     text-align: left;
-    padding: 0.2rem 0.4rem;
+    padding: .2rem .4rem;
     border-top: 2px solid rgba(var(--color-gray-3), 0.2);
     border-bottom: 2px solid rgba(var(--color-gray-3), 0.2);
 }
 
-td:first-child,
-th:first-child {
+td:first-child, th:first-child {
     padding-left: 1rem;
 }
 
@@ -60,7 +60,7 @@ tr:last-child th {
 /* Header content */
 .th-inner-container {
     display: flex;
-    gap: 0.75rem;
+    gap: .75rem;
     align-items: center;
     width: 100%;
 }
@@ -80,10 +80,7 @@ button {
     box-shadow: none;
     padding: 0;
     cursor: pointer;
-    transition:
-        background-color 0.2s ease,
-        border-color 0.2s ease,
-        transform 0.1s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
 }
 
 button:hover {
@@ -142,11 +139,11 @@ p {
     width: 100%;
 }
 
-th[col-data-direction='asc'] button[data-direction='asc'] {
+th[col-data-direction="asc"] button[data-direction="asc"] {
     visibility: hidden;
 }
 
-th[col-data-direction='desc'] button[data-direction='desc'] {
+th[col-data-direction="desc"] button[data-direction="desc"] {
     visibility: hidden;
 }
 
@@ -160,8 +157,7 @@ th[col-data-direction='desc'] button[data-direction='desc'] {
         padding: 0 1.5rem;
     }
 
-    td,
-    th {
+    td, th {
         padding: 0.75rem 1rem;
     }
 

@@ -18,12 +18,12 @@ export async function fetcher(path, options) {
     const url = `${import.meta.env.VITE_API_URL}/${path.replace(/^\//, '')}`
 
     /** @type {string} */
-    const method = options.method ?? 'GET'
+    const method = options?.method ?? 'GET'
 
     /** @type {HeadersInit} */
     const headers = {
         'Content-Type': 'application/json',
-        ...options.headers,
+        ...options?.headers,
     }
 
     /** @type {RequestInit} */
@@ -31,7 +31,8 @@ export async function fetcher(path, options) {
         ...options,
         method,
         headers,
-        body: options.body && ['POST', 'PUT'].includes(method) ? JSON.stringify(options.body) : undefined,
+        body: options?.body && ['POST', 'PUT'].includes(method) ? JSON.stringify(options.body) : undefined,
+        credentials: 'include',
     }
 
     /** @type {Response} */

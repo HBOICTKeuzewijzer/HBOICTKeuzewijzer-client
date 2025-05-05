@@ -1,8 +1,8 @@
 /** @typedef {import('@/components').Datatable} Datatable */
 
-import { DatatableButtons, DatatableColumn, DatatableConfig } from '@/models'
-import { fetcher } from '@/utils'
-import { router } from '@/http/router'
+import { DatatableButtons, DatatableColumn, DatatableConfig } from '@/models';
+import { fetcher } from '@/utils';
+import { router } from '@/http/router';
 
 export default function SlbRelationsPage() {
     return /*html*/ `
@@ -67,45 +67,43 @@ export default function SlbRelationsPage() {
 
 SlbRelationsPage.onPageLoaded = () => {
     /** @type {Datatable} */
-    const table = document.querySelector('x-data-table')
-    const dialog = document.querySelector('#confirmDeleteDialog')
-    const yesBtn = dialog.shadowRoot?.host.querySelector('#confirmYes')
-    const noBtn = dialog.shadowRoot?.host.querySelector('#confirmNo')
+    const table = (document.querySelector("x-data-table"));
+    const dialog = document.querySelector("#confirmDeleteDialog");
+    const yesBtn = dialog.shadowRoot?.host.querySelector("#confirmYes");
+    const noBtn = dialog.shadowRoot?.host.querySelector("#confirmNo");
 
-    let currentRow = null
+    let currentRow = null;
 
     const yesCallback = async () => {
-        if (!currentRow) return
+        if (!currentRow) return;
 
-        dialog.removeAttribute('open')
-        await fetcher(`slb/${currentRow.id}`, { method: 'delete' })
+        dialog.removeAttribute("open");
+        await fetcher(`slb/${currentRow.id}`, { method: "delete" });
 
-        currentRow = null
-    }
+        currentRow = null;
+    };
 
     const noCallback = () => {
-        dialog.removeAttribute('open')
-        currentRow = null
-    }
+        dialog.removeAttribute("open");
+        currentRow = null;
+    };
 
-    yesBtn?.addEventListener('click', yesCallback)
-    noBtn?.addEventListener('click', noCallback)
+    yesBtn?.addEventListener("click", yesCallback);
+    noBtn?.addEventListener("click", noCallback);
 
-    table.dataTable(
-        new DatatableConfig({
-            route: 'slb',
-            columns: [
-                new DatatableColumn({ path: 'id', title: 'Id', sorting: true }),
-                new DatatableColumn({ path: 'slbApplicationUser.name', title: "SLB'er", sorting: true }),
-            ],
-            searching: true,
-            paging: true,
-            pageSize: 10,
-            buttons: new DatatableButtons({
-                edit: row => {
-                    router.navigate(`/admin/slb-relaties/edit/${row.id}`)
-                },
-            }),
-        }),
-    )
+    table.dataTable(new DatatableConfig({
+        route: "slb",
+        columns: [
+            new DatatableColumn({ path: "id", title: "Id", sorting: true }),
+            new DatatableColumn({ path: "slbApplicationUser.name", title: "SLB'er", sorting: true })
+        ],
+        searching: true,
+        paging: true,
+        pageSize: 10,
+        buttons: new DatatableButtons({
+            edit: (row) => {
+                router.navigate(`/admin/slb-relaties/edit/${row.id}`);
+            }
+        })
+    }));
 }

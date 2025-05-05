@@ -7,11 +7,11 @@ import Role from '@models/role'
  * @type {Route[]}
  */
 export const routes = [
-    ...new RouteGroup([new EnsureCohortIsSet()])
+    ...new RouteGroup([new SetAuthCookie(), new EnsureCohortIsSet()])
         .add('/', () => import('@/http/pages/page.js'))
         .add('/:uuid', () => import('@/http/pages/page.js')).routes,
 
-    ...new RouteGroup([new RequireAuthCookie()])
+    ...new RouteGroup([new SetAuthCookie()])
         .add('/saved-routes', () => import('@pages/saved-routes/page.js'))
         .add('/messages', () => import('@pages/messages/page.js')).routes,
 
