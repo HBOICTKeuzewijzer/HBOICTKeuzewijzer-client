@@ -1,178 +1,325 @@
-import '@components/accordion'
-import '../../../components/study-card/index.js'
-import '@components/studyCard/studyCard.css'
+import { fetcher } from '@/utils'
+import { Module } from '@/models'
 
-function addAccordionEventListeners() {
-    const accordionItems = document.querySelectorAll('.module-item')
+/**
+ * Stores available module categories with their respective titles.
+ * Module data is populated dynamically via `loadModules`.
+ * @type {Map<string, { title: string, modules?: Module[] }>}
+ */
+let moduleData = new Map([
+    ['SE', { title: 'Software Engineering' }],
+    ['IDS', { title: 'Infrastructure Design & Security' }],
+    ['BIM', { title: 'Business IT & Management' }],
+    ['OVERIG', { title: 'Overig' }],
+])
 
-    accordionItems.forEach(item => {
-        item.removeEventListener('click', accordionClickHandler)
+/**
+ * Represents initial study card state for each year and semester.
+ * Each item may include status, name, type, and description.
+ */
+let studyCardData = [
+    [
+        { status: 'locked', name: 'Basis vaardigheden ICT', description: 'Dit is een beschrijving' },
+        { status: 'unlocked' },
+    ],
+    [{ status: 'unlocked' }, { status: 'unlocked' }],
+    [{ status: 'unlocked' }, { status: 'unlocked' }],
+    [{ status: 'unlocked' }, { status: 'locked', type: 'Overig', name: 'Afstuderen' }],
+]
 
-        item.addEventListener('click', accordionClickHandler)
-    })
+/**
+ * Handles click events on accordion module items using event delegation.
+ * @param {MouseEvent} event
+ */
+function delegatedAccordionClickHandler(event) {
+    const moduleItem = event.target.closest('.module-item')
+    if (!moduleItem) return
+
+    handleAccordionItemClick(moduleItem)
 }
 
-function accordionClickHandler(event) {
-    const selectedContent = event.target.textContent.trim()
-    let foundSelectedSemester = false
+/**
+ * Handles click events on semester elements using event delegation.
+ * @param {MouseEvent} event
+ */
+function delegatedSemesterClickHandler(event) {
+    const semester = event.target.closest('[data-card-module]')
+    if (!semester) return
 
-    const studyCards = document.querySelectorAll('study-card')
+    handleSemesterClick(semester)
+}
 
+/**
+ * Handles click events on semester elements using event delegation.
+ * @param {MouseEvent} event
+ */
+function handleAccordionItemClick(moduleItem) {
+    const studyCards = document.querySelectorAll('x-study-card')
     studyCards.forEach(studyCard => {
-        if (studyCard.shadowRoot) {
-            const shadowSemesters = studyCard.shadowRoot.querySelectorAll('.semester')
+        const studyYear = studyCard.dataset.year
+        if (!studyCard.shadowRoot) return
 
-            shadowSemesters.forEach(shadowDiv => {
-                if (shadowDiv.classList.contains('selected-semester')) {
-                    const textWrapper = shadowDiv.querySelector('p')
-                    if (textWrapper) {
-                        textWrapper.textContent = selectedContent
-                    }
+        const shadowSemesters = studyCard.querySelectorAll('[data-index]')
+        shadowSemesters.forEach(shadowDiv => {
+            if (shadowDiv.hasAttribute('selected')) {
+                const semesterIndex = shadowDiv.dataset.index
+                const modules = moduleData.get(moduleItem.dataset.type).modules
+                const data = modules[moduleItem.dataset.index]
 
-                    const accordionColor = window
-                        .getComputedStyle(event.target.parentElement)
-                        .getPropertyValue('--accordion-active-bg-color')
-                        .trim()
-
-                    shadowDiv.style.backgroundColor = accordionColor
-                    shadowDiv.style.borderColor = accordionColor
-
-                    foundSelectedSemester = true
+                studyCardData[studyYear][semesterIndex] = {
+                    ...studyCardData[studyYear][semesterIndex],
+                    data,
                 }
-            })
-        }
+
+                shadowDiv.removeAttribute('selected')
+            }
+        })
     })
 
-    if (!foundSelectedSemester) {
+    renderStudyCards()
+}
+
+/**
+ * Handles selection highlighting for a semester card.
+ * @param {HTMLElement} semester
+ */
+function handleSemesterClick(semester) {
+    const studyCards = document.querySelectorAll('x-study-card')
+
+    studyCards.forEach(card => {
+        if (!card.shadowRoot) return
+        const semesters = card.querySelectorAll('[data-card-module]')
+
+        semesters.forEach(sem => sem.removeAttribute('selected'))
+    })
+
+    if (semester.dataset.status) {
+        semester.setAttribute('selected', '')
     }
 }
 
-function addSemesterEventListeners() {
-    const studyCards = document.querySelectorAll('study-card')
+/**
+ * Renders all study cards based on `studyCardData`.
+ */
+function renderStudyCards() {
+    const container = document.querySelector('#study-cards-container')
+    if (!container) return
 
-    studyCards.forEach(card => {
-        if (card.shadowRoot) {
-            const semesters = card.shadowRoot.querySelectorAll('.semester')
+    const statusIconMap = {
+        locked: 'ph-lock-simple',
+        unlocked: 'ph-lock-simple-open',
+    }
 
-            semesters.forEach(semester => {
-                semester.removeEventListener('click', semesterClickHandler)
-                semester.addEventListener('click', semesterClickHandler)
-            })
-        }
-    })
+    container.innerHTML = studyCardData
+        .map(
+            (semesters, yearIndex) => `
+            <x-study-card data-year="${yearIndex}">
+                <span slot="header">Jaar ${yearIndex + 1}</span>
+                ${semesters
+                    .map(
+                        (semester, semesterIndex) => `
+                        <div slot="content-${semesterIndex + 1}" type="${semester.type}" data-card-module data-index="${semesterIndex}" data-status="${semester.status}" class="card-module-item">
+                            <input name="choice[${yearIndex + 1}][${semesterIndex + 1}]" hidden/>
+                            <div style="display: flex; justify-content: space-between;">
+                                <i class="ph ${statusIconMap[semester.status] || 'ph-question'}"></i>
+                                ${semester.description
+                                ? `<x-tooltip position="bottom" placement="left">
+                                                <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
+                                                <p style="color: rgb(var(--color-black));">${semester.description}</p>
+                                           </x-tooltip>`
+                                : ''
+                            }
+                            </div>
+                            ${semester.name || `Optie ${semesterIndex + 1}`}
+                        </div>
+                    `,
+                    )
+                    .join('')}
+            </x-study-card>
+        `,
+        )
+        .join('')
 }
 
-function semesterClickHandler(event) {
-    const studyCards = document.querySelectorAll('study-card')
+/**
+ * Fetches available modules from the API and populates `moduleData`.
+ * Then triggers rendering of the accordion UI.
+ */
+async function loadModules() {
+    try {
+        const response = await fetcher('Module', { method: 'GET' })
 
-    studyCards.forEach(card => {
-        if (card.shadowRoot) {
-            const semesters = card.shadowRoot.querySelectorAll('.semester')
-            semesters.forEach(semester => {
-                semester.classList.remove('selected-semester') // Reset selectie
+        console.log(response)
+        response.items.forEach(item => {
+            const module = new Module(item)
+            const category = module.category
+
+            const existingData = moduleData.get(category) || { modules: [] }
+            moduleData.set(category, {
+                ...existingData,
+                modules: [...existingData.modules, module],
             })
-        }
-    })
+        })
 
-    const semester = event.target
-    if (semester.classList.contains('unlocked')) {
-        semester.classList.add('selected-semester')
+        renderModuleAccordion()
+    } catch (error) {
+        console.error('Modules ophalen mislukt:', error)
     }
 }
-function observeDOMChanges() {
-    const observer = new MutationObserver(() => {
-        addAccordionEventListeners()
-        addSemesterEventListeners()
+
+/**
+ * Renders the module accordion UI for both desktop and mobile containers.
+ */
+function renderModuleAccordion() {
+    const containers = [document.querySelector('#modules-list-desktop'), document.querySelector('#modules-list-mobile')]
+
+    const accordionHTML = Array.from(moduleData.entries())
+        .map(
+            ([type, { title, modules = [] }]) => `
+            <x-accordion type="${type}">
+                <span slot="title">${title}</span>
+                ${modules
+                    .map(
+                        (module, index) => `
+                        <div class="module-item" data-type="${type}" data-index="${index}">
+                            <span>${module.name}</span>
+                            ${module.description
+                                ? `<x-tooltip position="left" placement="middle">
+                                           <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
+                                           <p class="color-black text-sm">${module.description}</p>
+                                       </x-tooltip>`
+                                : ''
+                            }
+                        </div>`,
+                    )
+                    .join('')}
+            </x-accordion>
+        `,
+        )
+        .join('')
+
+    containers.forEach(container => {
+        if (container) container.innerHTML = accordionHTML
     })
-
-    observer.observe(document.body, { childList: true, subtree: true })
 }
 
-// Initialisatie
-addAccordionEventListeners()
-addSemesterEventListeners()
-observeDOMChanges()
-function addStudyCard(
-    year,
-    semester1Title,
-    semester1Content,
-    semester1Status,
-    semester2Title,
-    semester2Content,
-    semester2Status,
-) {
-    return `
-        <study-card>
-            <span slot="year-header">${year}</span>
-            <span slot="semester-1-title">${semester1Title}</span>
-            <span id="semester-1-content-${year}" slot="semester-1-content" data-status="${semester1Status}">${semester1Content}</span>
-            <span slot="semester-2-title">${semester2Title}</span>
-            <span id="semester-2-content-${year}" slot="semester-2-content" data-status="${semester2Status}">${semester2Content}</span>
-        </study-card>
-    `
+/**
+ * Draws SVG paths between consecutive study cards to visualize progression.
+ */
+function drawConnections() {
+    const container = document.querySelector('#study-cards-container')
+    if (!container) return
+
+    let svg = document.getElementById('connection-svg')
+    if (!svg) {
+        svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+        svg.setAttribute('id', 'connection-svg')
+        svg.style.position = 'absolute'
+        svg.style.top = '0'
+        svg.style.left = '0'
+        svg.style.pointerEvents = 'none'
+        svg.style.zIndex = '0'
+
+        container.appendChild(svg)
+    }
+
+    svg.innerHTML = ''
+    svg.setAttribute('width', container.scrollWidth)
+    svg.setAttribute('height', container.scrollHeight)
+
+    const cards = Array.from(container.querySelectorAll('x-study-card'))
+    if (cards.length < 2) return
+
+    const isMobile = window.innerWidth <= 768
+
+    for (let i = 0; i < cards.length - 1; i++) {
+        const fromCard = cards[i].getBoundingClientRect()
+        const toCard = cards[i + 1].getBoundingClientRect()
+        const containerRect = container.getBoundingClientRect()
+
+        let startX = fromCard.right - containerRect.left
+        let startY = fromCard.top + fromCard.height / 2 - containerRect.top
+        let endX = toCard.left - containerRect.left
+        let endY = toCard.top + toCard.height / 2 - containerRect.top
+
+        let midX1 = startX + 40
+        let midY = (startY + endY) / 2
+        let midX2 = endX - 40
+
+        if (isMobile) {
+            startX = fromCard.left + fromCard.width / 2 - containerRect.left
+            startY = fromCard.bottom - containerRect.top
+            endX = toCard.left + toCard.width / 2 - containerRect.left
+            endY = toCard.top - containerRect.top
+
+            midX1 = startX
+            midX2 = endX
+        }
+
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+        path.setAttribute('d', `M ${startX} ${startY} H ${midX1} V ${midY} H ${midX2} V ${endY} H ${endX}`)
+        path.setAttribute('stroke', 'rgba(var(--color-gold), 0.6)')
+        path.setAttribute('fill', 'none')
+        path.setAttribute('stroke-width', '7')
+        svg.appendChild(path)
+
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+        circle.setAttribute('cx', endX)
+        circle.setAttribute('cy', endY)
+        circle.setAttribute('r', 10)
+        circle.setAttribute('fill', 'rgb(var(--color-gold))')
+        svg.appendChild(circle)
+    }
 }
-export default function PlannerPage(params) {
-    setTimeout(() => {
-        addAccordionEventListeners()
-        addSemesterEventListeners()
-        observeDOMChanges()
-    }, 0)
+
+export default function PlannerPage() {
+    PlannerPage.onPageLoaded = () => {
+        document.addEventListener('click', delegatedAccordionClickHandler)
+        document.addEventListener('click', delegatedSemesterClickHandler)
+
+        window.addEventListener('resize', () => {
+            requestAnimationFrame(drawConnections)
+        })
+
+        loadModules().catch(console.error)
+        renderStudyCards()
+        drawConnections()
+    }
 
     return /*html*/ `
-    <x-sheet id="modulesSelector" open>
-        <span style="display: flex; flex-direction: column; gap: 4px;">
-            <h5 style="margin: 0; font-size: 18px;">Modules</h5>
-            <div class="divider" style="background-color: rgb(var(--color-gray-4)); height:1px;"></div>
-            <p style="margin: 0; font-size: 12px;">
-                Dit zijn alle beschikbare modules waaruit je kunt kiezen. Als je een externe module wilt volgen, kun je deze toevoegen via de 'Anders' optie onder 'Overig'.
-            </p>
-            <custom-accordion style="--accordion-active-bg-color: #FFF4CE; --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-gold));">
-                <span slot="title">Software Engineering</span>
-                <div class="module-item" slot="content">
-                    <p>Webdevelopment</p>
+        <div class="container flex" style="position: relative; flex-direction: row; overflow: hidden; max-height: calc(100vh - var(--header-height));">
+            <x-sheet class="hidden xl:flex" side="left" open>
+                <div style="padding: 24px 24px 0; display: flex; flex-direction: column; gap: 6px;">
+                    <h5 style="margin: 0; font-size: 18px;">Modules</h5>
+                    <div class="divider" style="background-color: rgb(var(--color-gray-4)); height:1px;"></div>
+                    <p style="margin: 0; font-size: 12px;">
+                        Dit zijn alle beschikbare modules waaruit je kunt kiezen. Als je een externe module wilt volgen, kun je deze toevoegen via de 'Anders' optie onder 'Overig'.
+                    </p>
                 </div>
-                <div class="module-item" slot="content">
-                    <p>Software Engineering</p>
-                </div>
-            </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: rgb(var(--color-light-blue)); --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-sky-blue));">
-                <span slot="title">Infrastructure Design & Security</span>
-                <div class="module-item" slot="content">
-                    <p>Applied IT Security</p>
-                </div>
-                <div class="module-item" slot="content">
-                    <p>Cloud Computing</p>
-                </div>
-            </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: rgb(var(--color-apple-green)); --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-dark-green));">
-                <span slot="title">Business IT & Management</span>
-                <div class="module-item" slot="content">
-                    <p>Datascience</p>
-                </div>
-                <div class="module-item" slot="content">
-                    <p>Management of IT</p>
-                </div>
-            </custom-accordion>
-            <custom-accordion style="--accordion-active-bg-color: #FEDFE4; --accordion-bg-color: #f1f1f1; --circle-color: rgb(var(--color-dark-pink));">
-                <span slot="title">Overig</span>
-                <div class="module-item" slot="content">
-                    <p>Tussen jaar</p>
-                </div>
-                <div class="module-item" slot="content">
-                    <p>Minor</p>
-                </div>
-                <div class="module-item" slot="content">
-                    <p>Eigen Keuze</p>
-                </div>
-            </custom-accordion>
-        </span>
-    </x-sheet>
+                <div id="modules-list-desktop" style="display: flex; flex-direction: column; padding: 24px;"></div>
+            </x-sheet>
 
-    <div class="study-cards-container">
-        ${addStudyCard('Jaar 1', 'Semester 1', 'Basisconcepten ICT 1', 'locked', 'Semester 2', 'Basisconcepten ICT 2', 'locked')}
-        ${addStudyCard('Jaar 2', 'Semester 1', 'Keuze 1', 'unlocked', 'Semester 2', 'Keuze 2', 'unlocked')}
-        ${addStudyCard('Jaar 3', 'Semester 1', 'Keuze 1', 'unlocked', 'Semester 2', 'Keuze 2', 'unlocked')}
-        ${addStudyCard('Jaar 4', 'Semester 1', 'Keuze 1', 'unlocked', 'Semester 2', 'Keuze 2', 'unlocked')}
-    </div>
+            <x-drawer class="xl:hidden" open>
+                <div id="modules-list-mobile" style="padding: 24px;"></div>
+            </x-drawer>
+
+            <form id="study-cards-container" style></form>
+
+            <div style="position: absolute; right: 32px; top: 32px;">
+                <x-popover position="bottom" placement="right">
+                    <button slot="trigger" style="cursor: pointer; align-items: center; display: flex; gap: 8px; background: white; border: 1px solid rgba(var(--color-gray-4), 0.2);">
+                        <i class="ph-duotone ph-share-network"></i>Delen
+                    </button>
+
+                    <button popover-action type="button" class="text-sm">
+                        <i class="ph-duotone ph-download"></i>Save as PDF
+                    </button>
+
+                    <button popover-action type="button" class="text-sm">
+                        <i class="ph-duotone ph-link"></i>Copy link
+                    </button>
+                </x-popover>
+            </div>
+        </div>
     `
 }

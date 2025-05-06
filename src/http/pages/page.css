@@ -1,0 +1,83 @@
+h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem; /* adds space between the title and the cards */
+    color: #111827;
+}
+
+/* Base layout */
+body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background-color: #f3f4f6;
+}
+
+/* Container styling */
+.container {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Card styling */
+.card {
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem 1.75rem;
+    flex: 1 1 300px;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 280px;
+    max-height: 300px;
+}
+
+/* Typography */
+.card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.card p {
+    color: #374151;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+/* Buttons */
+button {
+    text-decoration: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--rounded-sm);
+    text-align: center;
+    display: inline-block;
+    font-weight: bold;
+    transition: background-color 0.2s ease-in-out;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+button.secondary {
+    background-color: #4b5563;
+    color: white;
+}
+
+button.secondary:hover {
+    background-color: #374151;
+}
+
+/* Responsive stacking */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
