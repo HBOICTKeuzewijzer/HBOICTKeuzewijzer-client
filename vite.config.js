@@ -1,12 +1,9 @@
 import { defineConfig } from 'vite'
 import path from 'path'
-import basicSsl from "@vitejs/plugin-basic-ssl"
 
 export default defineConfig({
     root: 'src',
-    plugins: [basicSsl()],
     server: {
-        https: true,
         port: 3000,
         historyApiFallback: true,
         cachedChecks: false,

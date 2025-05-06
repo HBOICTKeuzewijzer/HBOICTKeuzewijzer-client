@@ -1,3 +1,4 @@
+
 let currentUser = null;
 let currentUserPromise = null;
 
@@ -5,33 +6,30 @@ let currentUserPromise = null;
  * Returns the current user info, cached after first fetch.
  * @returns {Promise<Object>}
  */
-export async function getCurrentUser() {
-    if (currentUser) return currentUser;
+export function getCurrentUser() {
+    if (currentUser) return Promise.resolve(currentUser);
 
     if (!currentUserPromise) {
-        currentUserPromise = (async () => {
-            try {
-                const response = await fetch('https://localhost:8081/auth/me', {
-                    method: 'GET',
-                    credentials: 'include'
-                });
-
+        currentUserPromise = fetch(`${import.meta.env.VITE_API_URL}/auth/me`, {
+            method: 'GET',
+            credentials: 'include'
+        })
+            .then(response => {
                 if (!response.ok) {
                     console.error(`Fetch failed: ${response.status} ${response.statusText}`);
                     currentUserPromise = null;
                     return null;
                 }
-
-                const data = await response.json();
+                return response.json();
+            })
+            .then(data => {
                 currentUser = data;
                 return data;
-
-            } catch (err) {
-                console.error('Fetch error:', err);
+            })
+            .catch(() => {
                 currentUserPromise = null;
-                throw err;
-            }
-        })();
+                return null;
+            });
     }
 
     return currentUserPromise;

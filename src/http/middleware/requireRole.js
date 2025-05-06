@@ -20,7 +20,6 @@ export class RequireRole extends Middleware {
         super();
 
         this.#acceptedRoles = [...this.#acceptedRoles, ...acceptedRoles];
-        console.log(this.#acceptedRoles)
     }
 
 

@@ -286,11 +286,9 @@ export class Datatable extends CustomElement {
 
             tbody.innerHTML = '';
 
-            this.#totalAmountOfRecords = Number(data.totalCount);
+            const count = Number(data.totalCount);
+            this.#totalAmountOfRecords = isNaN(count) ? 0 : count;
             this.#pageCount = Math.ceil(this.#totalAmountOfRecords / this.#config.pageSize);
-
-
-            // <p>Pagina <span id="current-page"></span> van <span id="total-pages"></span></p>
 
             const curPageEl = this.root.querySelector("#current-page");
             curPageEl.innerHTML = this.#queryState.page;
@@ -298,6 +296,8 @@ export class Datatable extends CustomElement {
             totalPageEl.innerHTML = this.#pageCount;
 
             this.root.querySelector("#amount-of-records").innerHTML = this.#totalAmountOfRecords;
+
+            if (data.length === 0) return;
 
             data.items.forEach(record => {
                 const tr = document.createElement("tr");
@@ -394,6 +394,10 @@ export class Datatable extends CustomElement {
         this.#queryState.sortDirection = direction;
 
         this.#updateQueryParams();
+        this.#loadTable();
+    }
+
+    reload() {
         this.#loadTable();
     }
 }
