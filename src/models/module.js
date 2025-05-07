@@ -1,3 +1,5 @@
+import { Category } from "@models"
+
 /**
  * @typedef {Object} ModuleParams
  * @property {string} id - Unique identifier (GUID) of the module.
@@ -13,15 +15,6 @@
  * Represents an educational module with metadata and category normalization.
  */
 export class Module {
-    /** @constant {string} CATEGORY_SOFTWARE */
-    static CATEGORY_SOFTWARE = 'SE'
-    /** @constant {string} CATEGORY_INFRASTRUCTURE */
-    static CATEGORY_INFRASTRUCTURE = 'IDS'
-    /** @constant {string} CATEGORY_BUSINESS */
-    static CATEGORY_BUSINESS = 'BIM'
-    /** @constant {string} CATEGORY_REMAINDER */
-    static CATEGORY_REMAINDER = 'OVERIG'
-
     /** @type {string} */
     _id
     /** @type {string} */
@@ -47,7 +40,7 @@ export class Module {
         if (params.code) this.code = params.code
         if (params.ec) this.ec = params.ec
         if (params.description) this.description = params.description
-        //if (params.category) this.category = params.category
+        if (params.category) this.category = new Category(params.category)
         //if (params.oer) this.oer = params.oer
         //TODO: Uncomment above when these models have been made
     }
@@ -109,7 +102,7 @@ export class Module {
 
     /** @param {Category} value */
     set category(value) {
-        this._category = this._normalizeCategory(value)
+        this._category = value
     }
 
     /** @returns {Oer} */
@@ -120,22 +113,5 @@ export class Module {
     /** @param {Oer} value */
     set oer(value) {
         this._oer = value
-    }
-
-    /**
-     * Converts a free-form category string into a normalized category constant.
-     * @private
-     * @param {string} value
-     * @returns {string}
-     */
-    _normalizeCategory(value = '') {
-        const normalized = value.trim().toLowerCase()
-
-        if (normalized.includes('software')) return Module.CATEGORY_SOFTWARE
-        if (normalized.includes('infrastructure') || normalized.includes('security'))
-            return Module.CATEGORY_INFRASTRUCTURE
-        if (normalized.includes('business')) return Module.CATEGORY_BUSINESS
-
-        return Module.CATEGORY_REMAINDER
     }
 }

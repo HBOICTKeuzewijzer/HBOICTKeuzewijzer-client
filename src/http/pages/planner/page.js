@@ -1,17 +1,5 @@
 import { fetcher } from '@/utils'
-import { Module } from '@/models'
-
-/**
- * Stores available module categories with their respective titles.
- * Module data is populated dynamically via `loadModules`.
- * @type {Map<string, { title: string, modules?: Module[] }>}
- */
-let moduleData = new Map([
-    ['SE', { title: 'Software Engineering' }],
-    ['IDS', { title: 'Infrastructure Design & Security' }],
-    ['BIM', { title: 'Business IT & Management' }],
-    ['OVERIG', { title: 'Overig' }],
-])
+import { Module, Category } from '@/models'
 
 /**
  * Represents initial study card state for each year and semester.
@@ -26,6 +14,8 @@ let studyCardData = [
     [{ status: 'unlocked' }, { status: 'unlocked' }],
     [{ status: 'unlocked' }, { status: 'locked', type: 'Overig', name: 'Afstuderen' }],
 ]
+
+let studyRouteId = null
 
 /**
  * Handles click events on accordion module items using event delegation.
@@ -142,29 +132,51 @@ function renderStudyCards() {
 }
 
 /**
- * Fetches available modules from the API and populates `moduleData`.
- * Then triggers rendering of the accordion UI.
+ * Stores available module categories with their respective titles.
+ * Module data is populated dynamically via `loadModules`.
+ * @type {Map<string, { title: Category, modules?: Module[] }>}
  */
+let moduleData = new Map()
+
 async function loadModules() {
     try {
-        const response = await fetcher('Module', { method: 'GET' })
+        let [categories, modules] = await Promise.all([
+            (async () => {
+                const data = await fetcher('category', { method: 'GET' })
+                return data.map(element => new Category(element))
+            })(),
+            (async () => {
+                const data = await fetcher('module', { method: 'GET' })
+                return data.map(element => new Module(element))
+            })()
+        ])
 
-        console.log(response)
-        response.items.forEach(item => {
-            const module = new Module(item)
-            const category = module.category
+        categories.forEach(category => {
+            moduleData.set(category, [])
+        })
 
-            const existingData = moduleData.get(category) || { modules: [] }
-            moduleData.set(category, {
-                ...existingData,
-                modules: [...existingData.modules, module],
-            })
+        modules.forEach(module => {
+            const category = categories.find(c => c.id === module.category.id)
+            if (category) {
+                moduleData.get(category).push(module)
+            } else {
+                console.warn(`Module '${module.name}' has unknown categoryId: ${module.category.id}`)
+            }
         })
 
         renderModuleAccordion()
     } catch (error) {
         console.error('Modules ophalen mislukt:', error)
     }
+}
+
+async function loadStudyRoute() {
+    if (studyRouteId === null) return
+
+    //TODO Lets go with some statefull approach, can't be changing this wacky study card setup @tomorrows-jko
+    const data = await fetcher(`studyRoute/${studyRouteId}`, { method: 'GET' })
+
+    console.log(data)
 }
 
 /**
@@ -175,26 +187,24 @@ function renderModuleAccordion() {
 
     const accordionHTML = Array.from(moduleData.entries())
         .map(
-            ([type, { title, modules = [] }]) => `
-            <x-accordion type="${type}">
-                <span slot="title">${title}</span>
-                ${modules
-                    .map(
-                        (module, index) => `
-                        <div class="module-item" data-type="${type}" data-index="${index}">
+            ([category, modules]) => `
+            <x-accordion type="${category.id}">
+                <span slot="title">${category.value}</span>
+                ${modules.map(
+                (module, index) => `
+                        <div class="module-item" data-type="${category.id}" data-index="${index}">
                             <span>${module.name}</span>
                             ${module.description
-                                ? `<x-tooltip position="left" placement="middle">
-                                           <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                                           <p class="color-black text-sm">${module.description}</p>
-                                       </x-tooltip>`
-                                : ''
-                            }
-                        </div>`,
-                    )
-                    .join('')}
+                        ? `<x-tooltip position="left" placement="middle">
+                                       <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
+                                       <p class="color-black text-sm">${module.description}</p>
+                                   </x-tooltip>`
+                        : ''
+                    }
+                        </div>`
+            ).join('')}
             </x-accordion>
-        `,
+        `
         )
         .join('')
 
@@ -202,6 +212,7 @@ function renderModuleAccordion() {
         if (container) container.innerHTML = accordionHTML
     })
 }
+
 
 /**
  * Draws SVG paths between consecutive study cards to visualize progression.
@@ -272,19 +283,8 @@ function drawConnections() {
     }
 }
 
-export default function PlannerPage() {
-    PlannerPage.onPageLoaded = () => {
-        document.addEventListener('click', delegatedAccordionClickHandler)
-        document.addEventListener('click', delegatedSemesterClickHandler)
-
-        window.addEventListener('resize', () => {
-            requestAnimationFrame(drawConnections)
-        })
-
-        loadModules().catch(console.error)
-        renderStudyCards()
-        drawConnections()
-    }
+export default function PlannerPage({ params }) {
+    studyRouteId = params?.uuid ?? null
 
     return /*html*/ `
         <div class="container flex" style="position: relative; flex-direction: row; overflow: hidden; max-height: calc(100vh - var(--header-height));">
@@ -322,4 +322,18 @@ export default function PlannerPage() {
             </div>
         </div>
     `
+}
+
+PlannerPage.onPageLoaded = () => {
+    document.addEventListener('click', delegatedAccordionClickHandler)
+    document.addEventListener('click', delegatedSemesterClickHandler)
+
+    window.addEventListener('resize', () => {
+        requestAnimationFrame(drawConnections)
+    })
+
+    loadModules().catch(console.error)
+    renderStudyCards()
+    drawConnections()
+    loadStudyRoute()
 }

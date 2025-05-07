@@ -16,7 +16,7 @@ const template = html`
 
 export class Input extends CustomElement {
     static get observedAttributes() {
-        return ['placeholder']
+        return ['placeholder', 'submitenter']
     }
 
     constructor() {
@@ -75,8 +75,9 @@ export class Input extends CustomElement {
 
     disconnectedCallback() {
         const input = this.shadowRoot.querySelector('input')
-        if (input && this._inputHandler) {
+        if (input) {
             input.removeEventListener('input', this._inputHandler)
+            input.removeEventListener('keydown', this.#keyDownHandler)
         }
     }
 
@@ -100,6 +101,7 @@ export class Input extends CustomElement {
 
         input.placeholder = this.placeholder
         input.addEventListener('input', this.#inputHandler)
+        input.addEventListener('keydown', this.#keyDownHandler)
     }
 
     clear() {
@@ -117,5 +119,17 @@ export class Input extends CustomElement {
                 composed: true,
             })
         )
+    }
+
+    #keyDownHandler = e => {
+        if (e.key === 'Enter' && this.hasAttribute('submitenter')) {
+            this.dispatchEvent(
+                new CustomEvent('onSubmitEnter', {
+                    detail: { value: this.value },
+                    bubbles: true,
+                    composed: true,
+                })
+            )
+        }
     }
 }
