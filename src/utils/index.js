@@ -1,3 +1,5 @@
 export * from './compose-traits'
+export * from './auth'
 export * from './fetcher'
 export * from './cookie'
+export * from './functions'
