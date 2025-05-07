@@ -47,12 +47,11 @@ export class Chat extends CustomElement {
 
             // ✅ Sorteer op sentAt
             const sortedMessages = [...this.chat.messages].sort((a, b) => {
-                const dateA = Date.parse(a.sentAt)
-                const dateB = Date.parse(b.sentAt)
-                return dateA - dateB // oudste eerst
-              })
+              const dateDiff = new Date(a.sentAt) - new Date(b.sentAt)
+              if (dateDiff !== 0) return dateDiff
+              return a.id.localeCompare(b.id) // fallback als tijden gelijk zijn
+            })
               
-
             sortedMessages.forEach(message => {
                 const isFromMe = message.senderApplicationUserId === this.currentUser.id
                 const senderId = message.senderApplicationUserId
@@ -76,29 +75,28 @@ export class Chat extends CustomElement {
     }
 
     async sendMessage(messageText) {
-        if (!this.chat || !this.currentUser) return;
-      
-        const message = {
-          messageText,
-          sentAt: new Date().toISOString(),
-          chatId: this.chat.id,
-          senderApplicationUserId: this.currentUser.id
-        };
-      
-        try {
-          await fetcher(`chat/${this.chat.id}/message`, {
-            method: 'POST',
-            body: message
-          });
-      
-          // ⏳ tijdelijke vertraging om database commit af te wachten
-          await new Promise(res => setTimeout(res, 200))
-      
-          await this.loadChats();
-        } catch (err) {
-          console.error('Verzenden mislukt:', err);
-        }
+      if (!this.chat || !this.currentUser) return;
+    
+      const message = {
+        messageText,
+        chatId: this.chat.id,
+        senderApplicationUserId: this.currentUser.id
+        // geen sentAt!
       }
+    
+      try {
+        await fetcher(`chat/${this.chat.id}/message`, {
+          method: 'POST',
+          body: message
+        })
+    
+        await new Promise(res => setTimeout(res, 200))
+        await this.loadChats()
+      } catch (err) {
+        console.error('Verzenden mislukt:', err)
+      }
+    }
+    
       
 
 
