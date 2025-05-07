@@ -11,6 +11,7 @@ const template = html`
         <input type="text" />
         <slot class="icon-slot" name="append"></slot>
     </div>
+    <div id="error-message" hidden></div>
 `
 
 export class Input extends CustomElement {
@@ -20,6 +21,7 @@ export class Input extends CustomElement {
 
     constructor() {
         super()
+        this._error = ''
     }
 
     get placeholder() {
@@ -38,6 +40,28 @@ export class Input extends CustomElement {
     set value(val) {
         const input = this.shadowRoot?.querySelector('input')
         if (input) input.value = val
+    }
+
+    get error() {
+        return this._error
+    }
+
+    set error(message) {
+        this._error = message
+        const container = this.shadowRoot?.getElementById('container')
+        const errorMessage = this.shadowRoot?.getElementById('error-message')
+
+        if (container && errorMessage) {
+            if (message) {
+                container.classList.add('error')
+                errorMessage.textContent = message
+                errorMessage.hidden = false
+            } else {
+                container.classList.remove('error')
+                errorMessage.textContent = ''
+                errorMessage.hidden = true
+            }
+        }
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -75,7 +99,23 @@ export class Input extends CustomElement {
         if (!input) return
 
         input.placeholder = this.placeholder
-
         input.addEventListener('input', this.#inputHandler)
+    }
+
+    clear() {
+        const input = this.shadowRoot?.querySelector('input')
+        if (input) {
+            input.value = ''
+        }
+
+        this.error = ''
+
+        this.dispatchEvent(
+            new CustomEvent('onValueChanged', {
+                detail: { query: '' },
+                bubbles: true,
+                composed: true,
+            })
+        )
     }
 }

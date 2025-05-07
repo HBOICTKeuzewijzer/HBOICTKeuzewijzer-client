@@ -398,6 +398,7 @@ export class Datatable extends CustomElement {
     }
 
     reload() {
+        console.log("Reload")
         this.#loadTable();
     }
 }

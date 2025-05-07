@@ -66,6 +66,7 @@ export default function StudyRoutes() {
         <x-dialog id="newStudyRouteDialog" closable>
             <div>
                 <h2>Geef je nieuwe route een naam.</h2>
+                <br>
                 <x-input id="newRouteName" placeholder="Naam"></x-input>
                 <br>
                 <button id="newRouteConfirmYes">Toevoegen</button>
@@ -90,8 +91,11 @@ StudyRoutes.onPageLoaded = () => {
         const deleteYesCallback = async () => {
             if (!currentRow) return
 
-            dialog.removeAttribute("open")
             await fetcher(`studyroute/${currentRow.id}`, { method: "delete" })
+
+            dialog.removeAttribute("open")
+
+            table.reload()
 
             currentRow = null
         }
@@ -126,14 +130,42 @@ StudyRoutes.onPageLoaded = () => {
         const addStudyRouteDialog = document.querySelector("#newStudyRouteDialog")
 
         const saveRouteYesCallback = async () => {
-            const routeName = addStudyRouteDialog.querySelector("x-input").value;
+            const xInput = addStudyRouteDialog.querySelector("x-input");
+            const routeName = xInput.value.trim();
 
-            await fetcher(`studyroute?displayName=${routeName}`, { method: "POST" });
+            xInput.error = "";
 
-            table.reload()
+            if (!routeName) {
+                xInput.error = "Naam mag niet leeg zijn.";
+                return;
+            }
 
-            addStudyRouteDialog.removeAttribute("open")
-        }
+            try {
+                await fetcher(`studyroute?displayName=${encodeURIComponent(routeName)}`, {
+                    method: "POST",
+                });
+
+                table.reload();
+                addStudyRouteDialog.removeAttribute("open");
+            } catch (err) {
+                try {
+                    const parsed = JSON.parse(err.message.replace("Failed to fetch data: ", ""));
+                    const displayNameErrors = parsed.errors?.displayName;
+
+                    if (displayNameErrors?.length) {
+                        xInput.error = displayNameErrors[0];
+                    } else {
+                        xInput.error = "Onbekende fout bij opslaan.";
+                    }
+                } catch (parseError) {
+                    xInput.error = "Onbekende fout bij opslaan.";
+                    console.error("Parsing error response failed:", parseError);
+                }
+
+                console.error(err);
+            }
+        };
+
 
         const newRouteNoCallback = () => {
             addStudyRouteDialog.removeAttribute("open")
@@ -152,6 +184,7 @@ StudyRoutes.onPageLoaded = () => {
 
 function addOnClick() {
     document.querySelector("#newStudyRouteDialog").setAttribute("open", "")
+    document.querySelector("x-input").clear();
 }
 
 StudyRoutes.onBeforePageUnloaded = () => {
