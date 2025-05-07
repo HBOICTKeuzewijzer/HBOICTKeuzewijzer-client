@@ -70,6 +70,7 @@
     color: rgb(var(--color-black));
     font-size: 12px;
     font-weight: 700;
+    text-align: left;
 }
 
 :host([open]) [data-content] {
@@ -115,4 +116,5 @@
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
+    text-align: left;
 }

@@ -88,6 +88,7 @@ header {
     border-radius: var(--rounded-sm) !important;
     color: #fff;
     cursor: pointer;
+    font-size: 12px !important;
 }
 
 button {
@@ -117,6 +118,38 @@ button {
     }
 }
 
+#study-cards-container {
+    position: relative; 
+    display: flex; 
+    height: auto;
+    max-height: calc(100vh - var(--header-height) - 64px); 
+    margin: auto; 
+    gap: 100px;
+    justify-content: center; 
+    flex-direction: row;
+    flex-wrap: wrap; 
+    overflow-y: auto; 
+
+    & x-study-card {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (min-width: 768px) {
+    #study-cards-container {
+        max-width: 800px; 
+        flex-direction: unset;
+
+        & x-study-card {
+            display: block;
+            width: fit-content;
+            justify-content: unset;
+        }
+    }
+}
+
 /*=========================*/
 /*        Utilities        */
 /*=========================*/
@@ -130,7 +163,7 @@ button {
 
 /* Display Helpers */
 .hidden {
-    display: none;
+    display: none !important;
 }
 .flex {
     display: flex;
