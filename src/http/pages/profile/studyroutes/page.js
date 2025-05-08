@@ -66,7 +66,8 @@ export default function StudyRoutes() {
         <x-dialog id="newStudyRouteDialog" closable>
             <div>
                 <h2>Geef je nieuwe route een naam.</h2>
-                <x-input id="newRouteName" placeholder="Naam"></x-input>
+                <br>
+                <x-input id="newRouteName" placeholder="Naam" submitenter></x-input>
                 <br>
                 <button id="newRouteConfirmYes">Toevoegen</button>
                 <button id="newRouteConfirmNo">Annuleren</button>
@@ -75,34 +76,83 @@ export default function StudyRoutes() {
     `
 }
 
-StudyRoutes.onPageLoaded = () => {
-    document.querySelector('#add-button').addEventListener('click', addOnClick)
+let table, dialog, currentRow, addStudyRouteDialog, addStudyRouteDialogYesBtn, addStudyRouteDialogNoBtn, xInput, addButton, yesBtn, noBtn;
+
+const deleteYesCallback = async () => {
+    if (!currentRow) return
+
+    await fetcher(`studyroute/${currentRow.id}`, { method: "delete" })
+
+    dialog.removeAttribute("open")
+
+    table.reload()
+
+    currentRow = null
+}
+
+const deleteNoCallback = () => {
+    dialog.removeAttribute("open")
+    currentRow = null
+}
+
+const saveRouteYesCallback = async () => {
+    const xInput = addStudyRouteDialog.querySelector("x-input");
+    const routeName = xInput.value.trim();
+
+    xInput.error = "";
+
+    if (!routeName) {
+        xInput.error = "Naam mag niet leeg zijn.";
+        return;
+    }
 
     try {
+        await fetcher(`studyroute?displayName=${encodeURIComponent(routeName)}`, {
+            method: "POST",
+        });
+
+        table.reload();
+        addStudyRouteDialog.removeAttribute("open");
+    } catch (err) {
+        try {
+            const parsed = JSON.parse(err.message.replace("Failed to fetch data: ", ""));
+            const displayNameErrors = parsed.errors?.displayName;
+
+            if (displayNameErrors?.length) {
+                xInput.error = displayNameErrors[0];
+            } else {
+                xInput.error = "Onbekende fout bij opslaan.";
+            }
+        } catch (parseError) {
+            xInput.error = "Onbekende fout bij opslaan.";
+            console.error("Parsing error response failed:", parseError);
+        }
+
+        console.error(err);
+    }
+};
+
+const newRouteNoCallback = () => {
+    addStudyRouteDialog.removeAttribute("open")
+}
+
+
+StudyRoutes.onPageLoaded = () => {
+    try {
         /** @type {Datatable} */
-        const table = document.querySelector("x-data-table")
-        const dialog = document.querySelector("#confirmDeleteDialog")
-        const yesBtn = dialog.shadowRoot?.host.querySelector("#confirmYes")
-        const noBtn = dialog.shadowRoot?.host.querySelector("#confirmNo")
-
-        let currentRow = null
-
-        const deleteYesCallback = async () => {
-            if (!currentRow) return
-
-            dialog.removeAttribute("open")
-            await fetcher(`studyroute/${currentRow.id}`, { method: "delete" })
-
-            currentRow = null
-        }
-
-        const deleteNoCallback = () => {
-            dialog.removeAttribute("open")
-            currentRow = null
-        }
+        table = document.querySelector("x-data-table")
+        dialog = document.querySelector("#confirmDeleteDialog")
+        addStudyRouteDialog = document.querySelector("#newStudyRouteDialog")
+        addStudyRouteDialogYesBtn = document.querySelector("#newRouteConfirmYes")
+        addStudyRouteDialogNoBtn = document.querySelector("#newRouteConfirmNo")
+        xInput = document.querySelector("#newRouteName")
+        addButton = document.querySelector('#add-button')
+        yesBtn = dialog.shadowRoot?.host.querySelector("#confirmYes")
+        noBtn = dialog.shadowRoot?.host.querySelector("#confirmNo")
 
         yesBtn?.addEventListener("click", deleteYesCallback)
         noBtn?.addEventListener("click", deleteNoCallback)
+        addButton.addEventListener('click', addOnClick)
 
         table.dataTable(new DatatableConfig({
             route: "studyroute/mine",
@@ -122,26 +172,7 @@ StudyRoutes.onPageLoaded = () => {
             })
         }))
 
-
-        const addStudyRouteDialog = document.querySelector("#newStudyRouteDialog")
-
-        const saveRouteYesCallback = async () => {
-            const routeName = addStudyRouteDialog.querySelector("x-input").value;
-
-            await fetcher(`studyroute?displayName=${routeName}`, { method: "POST" });
-
-            table.reload()
-
-            addStudyRouteDialog.removeAttribute("open")
-        }
-
-        const newRouteNoCallback = () => {
-            addStudyRouteDialog.removeAttribute("open")
-        }
-
-        const addStudyRouteDialogYesBtn = document.querySelector("#newRouteConfirmYes")
-        const addStudyRouteDialogNoBtn = document.querySelector("#newRouteConfirmNo")
-
+        xInput.addEventListener("onSubmitEnter", saveRouteYesCallback)
         addStudyRouteDialogYesBtn.addEventListener("click", saveRouteYesCallback);
         addStudyRouteDialogNoBtn.addEventListener("click", newRouteNoCallback);
     }
@@ -152,8 +183,15 @@ StudyRoutes.onPageLoaded = () => {
 
 function addOnClick() {
     document.querySelector("#newStudyRouteDialog").setAttribute("open", "")
+    document.querySelector("x-input").clear();
 }
 
 StudyRoutes.onBeforePageUnloaded = () => {
-    document.querySelector('#add-button').removeEventListener('click', addOnClick)
+    addButton.removeEventListener('click', addOnClick)
+    addStudyRouteDialogYesBtn.removeEventListener("click", saveRouteYesCallback);
+    addStudyRouteDialogNoBtn.removeEventListener("click", newRouteNoCallback);
+    xInput.removeEventListener("onSubmitEnter", saveRouteYesCallback)
+    yesBtn?.removeEventListener("click", deleteYesCallback)
+    noBtn?.removeEventListener("click", deleteNoCallback)
+    addButton.addEventListener('click', addOnClick)
 }

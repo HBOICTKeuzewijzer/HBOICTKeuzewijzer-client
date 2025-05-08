@@ -14,19 +14,14 @@ import { router } from '@http/router'
  * @throws {Error} If the request fails or returns a non-OK status.
  */
 export async function fetcher(path, options) {
-    /** @type {string} */
     const url = `${import.meta.env.VITE_API_URL}/${path.replace(/^\//, '')}`
-
-    /** @type {string} */
     const method = options?.method ?? 'GET'
 
-    /** @type {HeadersInit} */
     const headers = {
         'Content-Type': 'application/json',
         ...options?.headers,
     }
 
-    /** @type {RequestInit} */
     const fetchOptions = {
         ...options,
         method,
@@ -35,7 +30,6 @@ export async function fetcher(path, options) {
         credentials: 'include',
     }
 
-    /** @type {Response} */
     const response = await fetch(url, fetchOptions)
 
     if (!response.ok) {
@@ -45,6 +39,12 @@ export async function fetcher(path, options) {
 
         const errorText = await response.text()
         throw new Error(`Failed to fetch data: ${errorText}`)
+    }
+
+    // Return JSON only if response has content
+    const contentType = response.headers.get('content-type')
+    if (response.status === 204 || !contentType || !contentType.includes('application/json')) {
+        return null
     }
 
     return response.json()

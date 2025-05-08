@@ -163,7 +163,7 @@ button {
 
 /* Display Helpers */
 .hidden {
-    display: none !important;
+    display: none;
 }
 .flex {
     display: flex;

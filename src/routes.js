@@ -8,7 +8,7 @@ import Role from '@models/role'
  */
 export const routes = [
     new Route('/', () => import('@pages/page.js'), new SetAuthCookie()),
-    new Route('/test', () => import('@pages/planner/page.js'), new SetAuthCookie()),
+    new Route('/guest', () => import('@pages/guest/planner/page.js'), new SetAuthCookie()),
 
     ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet(), new EnsureCohortIsSet()])
         .add('/studieroute', () => import('@pages/planner/page.js'))

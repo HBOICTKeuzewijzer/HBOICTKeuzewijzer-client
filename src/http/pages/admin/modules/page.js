@@ -96,9 +96,8 @@ ModulesPage.onPageLoaded = () => {
         noBtn?.addEventListener("click", noCallback);
 
         table.dataTable(new DatatableConfig({
-            route: "module",
+            route: "module/paged",
             columns: [
-                new DatatableColumn({ path: "id", title: "Id", sorting: true }),
                 new DatatableColumn({ path: "name", title: "Naam", sorting: true }),
                 new DatatableColumn({ path: "category.value", title: "Categorie", sorting: true }),
                 new DatatableColumn({ path: "eCs", title: "Credits" }),
