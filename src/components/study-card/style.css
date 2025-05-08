@@ -1,3 +1,8 @@
+:host {
+    --primary-color: 255, 255, 255;
+    --accent-color: 255, 255, 255;
+}
+
 [data-study-card] {
     display: flex;
     width: fit-content;
@@ -47,9 +52,10 @@
     text-align: center;
     color: rgb(var(--color-black));
     border-radius: var(--rounded-md);
-    border: 2px dashed rgb(var(--color-black));
     font-size: 16px;
     font-weight: 500;
+    background-color: rgba(var(--primary-color), 0.2);
+    border: 2px solid rgba(var(--accent-color), 0.2);
 }
 
 ::slotted(.card-module-item[data-status='locked']) {
@@ -57,29 +63,10 @@
     border: 1px solid rgba(var(--color-gray-3), 0.2);
 }
 
-::slotted(.card-module-item[type='SE']) {
-    background-color: rgb(var(--color-gold));
-    border: 1px solid rgba(var(--color-orange), 0.2);
-}
-
-::slotted(.card-module-item[type='IDS']) {
-    background-color: rgb(var(--color-apple-green));
-    border: 1px solid rgba(var(--color-green), 0.2);
-    color: white;
-}
-
-::slotted(.card-module-item[type='BIM']) {
-    background-color: rgb(var(--color-blue));
-    border: 1px solid rgba(var(--color-sky-blue), 0.2);
-    color: white;
-}
-
-::slotted(.card-module-item[type='Overig']) {
-    background-color: rgb(var(--color-dark-pink));
-    border: 1px solid rgba(var(--color-red), 0.2);
-    color: white;
-}
-
 ::slotted(.card-module-item[data-status='unlocked'][selected]) {
     border: 2px dashed rgb(var(--color-gold));
+}
+
+::slotted(.card-module-item[type='empty']) {
+    border: 2px dashed rgb(var(--color-black));
 }

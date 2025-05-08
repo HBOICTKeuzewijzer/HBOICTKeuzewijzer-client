@@ -29,6 +29,10 @@ export class Module {
     _category
     /** @type {Oer} */
     _oer
+    /** @type {boolean} */
+    _required
+    /** @type {number} */
+    _requiredSemester
 
     /**
      * Constructs a Module instance.
@@ -41,6 +45,8 @@ export class Module {
         if (params.ec) this.ec = params.ec
         if (params.description) this.description = params.description
         if (params.category) this.category = new Category(params.category)
+        if (params.required) this.required = Boolean(params.required)
+        if (params.requiredSemester) this.requiredSemester = Number(params.requiredSemester)
         //if (params.oer) this.oer = params.oer
         //TODO: Uncomment above when these models have been made
     }
@@ -113,5 +119,25 @@ export class Module {
     /** @param {Oer} value */
     set oer(value) {
         this._oer = value
+    }
+
+    /** @returns {boolean} */
+    get required() {
+        return this._required
+    }
+
+    /** @param {boolean} value */
+    set required(value) {
+        this._required = value
+    }
+
+    /** @returns {number} */
+    get requiredSemester() {
+        return this._requiredSemester
+    }
+
+    /** @param {number} value */
+    set requiredSemester(value) {
+        this._requiredSemester = value
     }
 }

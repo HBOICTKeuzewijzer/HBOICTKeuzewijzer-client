@@ -6,7 +6,7 @@ export class Semester {
     _id
     /** @type {string} */
     _index
-    /** @type {string} */
+    /** @type {number} */
     _acquiredEcs
     /** @type {string} */
     _moduleId
@@ -21,13 +21,13 @@ export class Semester {
      * @param {Object} params
      */
     constructor(params = {}) {
-        if (params.id) this._id = params.id
-        if (params.index) this._index = params.index
-        if (params.acquiredEcs) this._acquiredEcs = params.acquiredEcs
-        if (params.moduleId) this._moduleId = params.moduleId
-        if (params.module) this._module = new Module(params.module)
-        if (params.studyRouteId) this._studyRouteId = params.studyRouteId
-        if (params.studyRoute) this._studyRoute = new StudyRoute(params.studyRoute)
+        if (params.id) this.id = params.id
+        if (params.index || params.index === 0) this.index = params.index
+        if (params.acquiredEcs) this.acquiredEcs = params.acquiredEcs
+        if (params.moduleId) this.moduleId = params.moduleId
+        if (params.module) this.module = new Module(params.module)
+        if (params.studyRouteId) this.studyRouteId = params.studyRouteId
+        if (params.studyRoute) this.studyRoute = new StudyRoute(params.studyRoute)
     }
 
     /** @returns {string} */
@@ -40,12 +40,12 @@ export class Semester {
         this._id = value
     }
 
-    /** @returns {string} */
+    /** @returns {number} */
     get index() {
         return this._index
     }
 
-    /** @param {string} value */
+    /** @param {number} value */
     set index(value) {
         this._index = value
     }

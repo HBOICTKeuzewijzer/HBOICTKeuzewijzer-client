@@ -1,25 +1,6 @@
-/*SE*/
-:host([type='5FEA0113-0F2F-4CA7-91A1-C9A854239666']) {
-    --primary-color: var(--color-gold);
-    --accent-color: var(--color-orange);
-}
-
-/*IDS*/
-:host([type='51B9D124-AF17-4D8A-934C-A8A35BC0CC1A']) { 
-    --primary-color: var(--color-apple-green);
-    --accent-color: var(--color-green);
-}
-
-/*BIM*/
-:host([type='932172FF-166D-496C-9753-961A663A67AB']) {
-    --primary-color: var(--color-blue);
-    --accent-color: var(--color-sky-blue);
-}
-
-/*Overing*/
-:host([type='9E6EDD59-EB6E-4DBC-8947-C0AA61B0CE2E']) {
-    --primary-color: var(--color-dark-pink);
-    --accent-color: var(--color-red);
+:host {
+    --primary-color: 255, 255, 255;
+    --accent-color: 255, 255, 255;
 }
 
 :host {

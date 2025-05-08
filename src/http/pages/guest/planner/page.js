@@ -1,7 +1,31 @@
 import { fetcher } from '@/utils'
-import { Module, Category, Semester } from '@/models'
+import { Module } from '@/models'
 
-let studyRouteId = null
+/**
+ * Stores available module categories with their respective titles.
+ * Module data is populated dynamically via `loadModules`.
+ * @type {Map<string, { title: string, modules?: Module[] }>}
+ */
+let moduleData = new Map([
+    ['SE', { title: 'Software Engineering' }],
+    ['IDS', { title: 'Infrastructure Design & Security' }],
+    ['BIM', { title: 'Business IT & Management' }],
+    ['OVERIG', { title: 'Overig' }],
+])
+
+/**
+ * Represents initial study card state for each year and semester.
+ * Each item may include status, name, type, and description.
+ */
+let studyCardData = [
+    [
+        { status: 'locked', name: 'Basis vaardigheden ICT', description: 'Dit is een beschrijving' },
+        { status: 'unlocked' },
+    ],
+    [{ status: 'unlocked' }, { status: 'unlocked' }],
+    [{ status: 'unlocked' }, { status: 'unlocked' }],
+    [{ status: 'unlocked' }, { status: 'locked', type: 'Overig', name: 'Afstuderen' }],
+]
 
 /**
  * Handles click events on accordion module items using event delegation.
@@ -42,6 +66,11 @@ function handleAccordionItemClick(moduleItem) {
                 const modules = moduleData.get(moduleItem.dataset.type).modules
                 const data = modules[moduleItem.dataset.index]
 
+                studyCardData[studyYear][semesterIndex] = {
+                    ...studyCardData[studyYear][semesterIndex],
+                    data,
+                }
+
                 shadowDiv.removeAttribute('selected')
             }
         })
@@ -69,22 +98,6 @@ function handleSemesterClick(semester) {
     }
 }
 
-/** @type {Semester[]} */
-let studyRouteSemesters = []
-
-async function loadStudyRoute() {
-    if (studyRouteId === null) return
-
-    //TODO Lets go with some statefull approach, can't be changing this wacky study card setup @tomorrows-jko
-    const data = await fetcher(`studyRoute/${studyRouteId}`, { method: 'GET' })
-
-    if (!data.semesters) return
-
-    data.semesters.forEach(semester => {
-        studyRouteSemesters.push(new Semester(semester))
-    })
-}
-
 /**
  * Renders all study cards based on `studyCardData`.
  */
@@ -97,102 +110,60 @@ function renderStudyCards() {
         unlocked: 'ph-lock-simple-open',
     }
 
-    const yearCount = Math.ceil(studyRouteSemesters.length / 2)
-
-    let semesterModelIndex = 0
-
-    for (let yearIndex = 0; yearIndex < yearCount; yearIndex++) {
-        let semesterOne = studyRouteSemesters[semesterModelIndex++]
-        let semesterTwo = studyRouteSemesters[semesterModelIndex++]
-        let semesterOneLockStatus = semesterOne.module?.required ?? false ? "locked" : "unlocked"
-        let semesterTwoLockStatus = semesterTwo.module?.required ?? false ? "locked" : "unlocked"
-
-        container.innerHTML += /*html*/`
+    container.innerHTML = studyCardData
+        .map(
+            (semesters, yearIndex) => `
             <x-study-card data-year="${yearIndex}">
                 <span slot="header">Jaar ${yearIndex + 1}</span>
-                <div slot="content-1" data-card-module data-index="0" data-status="${semesterOneLockStatus}"  class="card-module-item"
-                    ${semesterOne.module ? `style="--primary-color: ${hexToRGB(semesterOne.module.category?.primaryColor)}; --accent-color: ${hexToRGB(semesterOne.module.category?.accentColor)};"` : 'type="empty"'}>
-                    <input name="choice[${yearIndex + 1}][1]" hidden/>
-                    <div style="display: flex; justify-content: space-between;">
-                        <i class="ph ${statusIconMap[semesterOneLockStatus]}"></i>
-                        ${semesterOne.module && semesterOne.module.description ? /*html*/`
-                        <x-tooltip>
-                            <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                            <p style="color: rgb(var(--color-black));">${semesterOne.module.description}</p>
-                        </x-tooltip>    
-                        ` : ''}
-                    </div>
-                    ${semesterOne.module ? semesterOne.module.name : `Optie 1`}
-                </div>
-
-                
-                <div slot="content-2" data-card-module data-index="1" data-status="${semesterTwoLockStatus}"  class="card-module-item"
-                    ${semesterTwo.module ? `style="--primary-color: ${hexToRGB(semesterTwo.module.category?.primaryColor)}; --accent-color: ${hexToRGB(semesterTwo.module.category?.accentColor)};"` : 'type="empty"'}>
-                    <input name="choice[${yearIndex + 1}][2]" hidden/>
-                    <div style="display: flex; justify-content: space-between;">
-                        <i class="ph ${statusIconMap[semesterTwoLockStatus]}"></i>
-                        ${semesterTwo.module && semesterTwo.module.description ? /*html*/`
-                        <x-tooltip>
-                            <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                            <p style="color: rgb(var(--color-black));">${semesterTwo.module.description}</p>
-                        </x-tooltip>    
-                        ` : ''}
-                    </div>
-                    ${semesterTwo.module ? semesterTwo.module.name : `Optie 2`}
-                </div>
+                ${semesters
+                    .map(
+                        (semester, semesterIndex) => `
+                        <div slot="content-${semesterIndex + 1}" type="${semester.type}" data-card-module data-index="${semesterIndex}" data-status="${semester.status}" class="card-module-item">
+                            <input name="choice[${yearIndex + 1}][${semesterIndex + 1}]" hidden/>
+                            <div style="display: flex; justify-content: space-between;">
+                                <i class="ph ${statusIconMap[semester.status] || 'ph-question'}"></i>
+                                ${semester.description
+                                ? `<x-tooltip position="bottom" placement="left">
+                                                <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
+                                                <p style="color: rgb(var(--color-black));">${semester.description}</p>
+                                           </x-tooltip>`
+                                : ''
+                            }
+                            </div>
+                            ${semester.name || `Optie ${semesterIndex + 1}`}
+                        </div>
+                    `,
+                    )
+                    .join('')}
             </x-study-card>
-        `
-    }
+        `,
+        )
+        .join('')
 }
 
 /**
- * Stores available module categories with their respective titles.
- * Module data is populated dynamically via `loadModules`.
- * @type {Map<string, { title: Category, modules?: Module[] }>}
+ * Fetches available modules from the API and populates `moduleData`.
+ * Then triggers rendering of the accordion UI.
  */
-let moduleData = new Map()
-
 async function loadModules() {
     try {
-        let [categories, modules] = await Promise.all([
-            (async () => {
-                const data = await fetcher('category', { method: 'GET' })
-                return data.map(element => new Category(element))
-            })(),
-            (async () => {
-                const data = await fetcher('module', { method: 'GET' })
-                return data.map(element => new Module(element))
-            })()
-        ])
+        const response = await fetcher('Module', { method: 'GET' })
 
-        categories.forEach(category => {
-            moduleData.set(category, [])
-        })
+        console.log(response)
+        response.items.forEach(item => {
+            const module = new Module(item)
+            const category = module.category
 
-        modules.forEach(module => {
-            const category = categories.find(c => c.id === module.category.id)
-            if (category) {
-                moduleData.get(category).push(module)
-            } else {
-                console.warn(`Module '${module.name}' has unknown categoryId: ${module.category.id}`)
-            }
+            const existingData = moduleData.get(category) || { modules: [] }
+            moduleData.set(category, {
+                ...existingData,
+                modules: [...existingData.modules, module],
+            })
         })
 
         renderModuleAccordion()
     } catch (error) {
         console.error('Modules ophalen mislukt:', error)
-    }
-}
-
-function hexToRGB(hex, alpha) {
-    var r = parseInt(hex.slice(1, 3), 16),
-        g = parseInt(hex.slice(3, 5), 16),
-        b = parseInt(hex.slice(5, 7), 16);
-
-    if (alpha) {
-        return "" + r + ", " + g + ", " + b + ", " + alpha;
-    } else {
-        return "" + r + ", " + g + ", " + b;
     }
 }
 
@@ -204,26 +175,26 @@ function renderModuleAccordion() {
 
     const accordionHTML = Array.from(moduleData.entries())
         .map(
-            ([category, modules]) => `
-                <x-accordion
-                    style="--primary-color: ${hexToRGB(category.primaryColor)}; --accent-color: ${hexToRGB(category.accentColor)};"
-                >
-                <span slot="title">${category.value}</span>
-                ${modules.map(
-                (module, index) => `
-                    <div class="module-item data-index="${index}">
-                        <span>${module.name}</span>
-                        ${module.description
-                        ? `<x-tooltip position="left" placement="middle">
-                            <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                            <p class="color-black text-sm">${module.description}</p>
-                            </x-tooltip>`
-                        : ''
-                    }
-                    </div>`
-            ).join('')}
-                </x-accordion>
-            `
+            ([type, { title, modules = [] }]) => `
+            <x-accordion type="${type}">
+                <span slot="title">${title}</span>
+                ${modules
+                    .map(
+                        (module, index) => `
+                        <div class="module-item" data-type="${type}" data-index="${index}">
+                            <span>${module.name}</span>
+                            ${module.description
+                                ? `<x-tooltip position="left" placement="middle">
+                                           <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
+                                           <p class="color-black text-sm">${module.description}</p>
+                                       </x-tooltip>`
+                                : ''
+                            }
+                        </div>`,
+                    )
+                    .join('')}
+            </x-accordion>
+        `,
         )
         .join('')
 
@@ -231,7 +202,6 @@ function renderModuleAccordion() {
         if (container) container.innerHTML = accordionHTML
     })
 }
-
 
 /**
  * Draws SVG paths between consecutive study cards to visualize progression.
@@ -302,8 +272,19 @@ function drawConnections() {
     }
 }
 
-export default function PlannerPage({ params }) {
-    studyRouteId = params?.uuid ?? null
+export default function GuestPlannerPage() {
+    GuestPlannerPage.onPageLoaded = () => {
+        document.addEventListener('click', delegatedAccordionClickHandler)
+        document.addEventListener('click', delegatedSemesterClickHandler)
+
+        window.addEventListener('resize', () => {
+            requestAnimationFrame(drawConnections)
+        })
+
+        loadModules().catch(console.error)
+        renderStudyCards()
+        drawConnections()
+    }
 
     return /*html*/ `
         <div class="container flex" style="position: relative; flex-direction: row; overflow: hidden; max-height: calc(100vh - var(--header-height));">
@@ -341,18 +322,4 @@ export default function PlannerPage({ params }) {
             </div>
         </div>
     `
-}
-
-PlannerPage.onPageLoaded = async () => {
-    document.addEventListener('click', delegatedAccordionClickHandler)
-    document.addEventListener('click', delegatedSemesterClickHandler)
-
-    window.addEventListener('resize', () => {
-        requestAnimationFrame(drawConnections)
-    })
-
-    loadModules().catch(console.error)
-    await loadStudyRoute()
-    renderStudyCards()
-    drawConnections()
 }
