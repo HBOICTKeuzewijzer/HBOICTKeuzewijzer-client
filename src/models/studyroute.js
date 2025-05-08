@@ -46,4 +46,13 @@ export class StudyRoute {
     set semesters(value) {
         this._semesters = value
     }
+
+    /** @type {string} json string */
+    toJson() {
+        return {
+            id: this.id,
+            displayName: this.displayName,
+            semesters: this.semesters ? this.semesters.map(s => s.toJson()) : []
+        }
+    }
 }

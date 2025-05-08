@@ -1,5 +1,5 @@
 import { fetcher } from '@/utils'
-import { Module, Category, Semester } from '@/models'
+import { Module, Category, Semester, StudyRoute } from '@/models'
 
 let studyRouteId = null
 
@@ -26,29 +26,40 @@ function delegatedSemesterClickHandler(event) {
 }
 
 /**
+ * Finds a Module by its ID.
+ * @param {string} id - The GUID of the module to find.
+ * @returns {Module | undefined} The matched module, or undefined if not found.
+ */
+function getModuleById(id) {
+    for (const [, modules] of moduleData.entries()) {
+        const found = modules.find(module => module.id === id)
+        if (found) return found
+    }
+    return undefined
+}
+
+/**
  * Handles click events on semester elements using event delegation.
  * @param {MouseEvent} event
  */
-function handleAccordionItemClick(moduleItem) {
-    const studyCards = document.querySelectorAll('x-study-card')
-    studyCards.forEach(studyCard => {
-        const studyYear = studyCard.dataset.year
-        if (!studyCard.shadowRoot) return
+async function handleAccordionItemClick(moduleItem) {
+    if (studyRoute === null) return
+    if (selectedSemester === undefined || selectedSemester === null) return
 
-        const shadowSemesters = studyCard.querySelectorAll('[data-index]')
-        shadowSemesters.forEach(shadowDiv => {
-            if (shadowDiv.hasAttribute('selected')) {
-                const semesterIndex = shadowDiv.dataset.index
-                const modules = moduleData.get(moduleItem.dataset.type).modules
-                const data = modules[moduleItem.dataset.index]
+    const semesterIndex = selectedSemester.dataset.semesterindex
 
-                shadowDiv.removeAttribute('selected')
-            }
-        })
-    })
+    studyRoute.semesters[semesterIndex].moduleId = moduleItem.dataset.guid
+    studyRoute.semesters[semesterIndex].module = getModuleById(moduleItem.dataset.guid)
 
     renderStudyCards()
+    drawConnections()
+
+    console.log(studyRoute.toJson())
+
+    await fetcher(`studyRoute/${studyRouteId}`, { method: 'PUT', body: studyRoute.toJson() })
 }
+
+let selectedSemester
 
 /**
  * Handles selection highlighting for a semester card.
@@ -67,30 +78,31 @@ function handleSemesterClick(semester) {
     if (semester.dataset.status) {
         semester.setAttribute('selected', '')
     }
+
+    selectedSemester = semester
 }
 
-/** @type {Semester[]} */
-let studyRouteSemesters = []
+let studyRoute
 
 async function loadStudyRoute() {
     if (studyRouteId === null) return
 
-    //TODO Lets go with some statefull approach, can't be changing this wacky study card setup @tomorrows-jko
     const data = await fetcher(`studyRoute/${studyRouteId}`, { method: 'GET' })
 
     if (!data.semesters) return
 
-    data.semesters.forEach(semester => {
-        studyRouteSemesters.push(new Semester(semester))
-    })
+    studyRoute = new StudyRoute(data)
 }
 
 /**
  * Renders all study cards based on `studyCardData`.
  */
 function renderStudyCards() {
+    const studyRouteSemesters = studyRoute?.semesters
     const container = document.querySelector('#study-cards-container')
     if (!container) return
+
+    container.innerHTML = ""
 
     const statusIconMap = {
         locked: 'ph-lock-simple',
@@ -102,15 +114,17 @@ function renderStudyCards() {
     let semesterModelIndex = 0
 
     for (let yearIndex = 0; yearIndex < yearCount; yearIndex++) {
-        let semesterOne = studyRouteSemesters[semesterModelIndex++]
-        let semesterTwo = studyRouteSemesters[semesterModelIndex++]
+        let semesterOneIndex = semesterModelIndex++
+        let semesterTwoIndex = semesterModelIndex++
+        let semesterOne = studyRouteSemesters[semesterOneIndex]
+        let semesterTwo = studyRouteSemesters[semesterTwoIndex]
         let semesterOneLockStatus = semesterOne.module?.required ?? false ? "locked" : "unlocked"
         let semesterTwoLockStatus = semesterTwo.module?.required ?? false ? "locked" : "unlocked"
 
         container.innerHTML += /*html*/`
             <x-study-card data-year="${yearIndex}">
                 <span slot="header">Jaar ${yearIndex + 1}</span>
-                <div slot="content-1" data-card-module data-index="0" data-status="${semesterOneLockStatus}"  class="card-module-item"
+                <div slot="content-1" data-card-module data-index="0" data-status="${semesterOneLockStatus}" data-semesterindex="${semesterOneIndex}" class="card-module-item"
                     ${semesterOne.module ? `style="--primary-color: ${hexToRGB(semesterOne.module.category?.primaryColor)}; --accent-color: ${hexToRGB(semesterOne.module.category?.accentColor)};"` : 'type="empty"'}>
                     <input name="choice[${yearIndex + 1}][1]" hidden/>
                     <div style="display: flex; justify-content: space-between;">
@@ -126,7 +140,7 @@ function renderStudyCards() {
                 </div>
 
                 
-                <div slot="content-2" data-card-module data-index="1" data-status="${semesterTwoLockStatus}"  class="card-module-item"
+                <div slot="content-2" data-card-module data-index="1" data-status="${semesterTwoLockStatus}" data-semesterindex="${semesterTwoIndex}" class="card-module-item"
                     ${semesterTwo.module ? `style="--primary-color: ${hexToRGB(semesterTwo.module.category?.primaryColor)}; --accent-color: ${hexToRGB(semesterTwo.module.category?.accentColor)};"` : 'type="empty"'}>
                     <input name="choice[${yearIndex + 1}][2]" hidden/>
                     <div style="display: flex; justify-content: space-between;">
@@ -211,16 +225,16 @@ function renderModuleAccordion() {
                 <span slot="title">${category.value}</span>
                 ${modules.map(
                 (module, index) => `
-                    <div class="module-item data-index="${index}">
-                        <span>${module.name}</span>
-                        ${module.description
+                        <div class="module-item" data-index="${index}" data-guid="${module.id}">
+                            <span>${module.name}</span>
+                            ${module.description
                         ? `<x-tooltip position="left" placement="middle">
-                            <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                            <p class="color-black text-sm">${module.description}</p>
-                            </x-tooltip>`
+                                    <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
+                                    <p class="color-black text-sm">${module.description}</p>
+                                   </x-tooltip>`
                         : ''
                     }
-                    </div>`
+                        </div>`
             ).join('')}
                 </x-accordion>
             `

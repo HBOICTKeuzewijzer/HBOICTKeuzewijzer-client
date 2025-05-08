@@ -99,4 +99,15 @@ export class Semester {
     set studyRoute(value) {
         this._studyRoute = value
     }
+
+    /** @returns {string} JSON string */
+    toJson() {
+        return {
+            id: this.id,
+            index: this.index,
+            acquiredEcs: this.acquiredEcs,
+            moduleId: this.moduleId,
+            studyRouteId: this.studyRouteId,
+        }
+    }
 }
