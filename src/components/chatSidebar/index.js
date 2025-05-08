@@ -1,5 +1,6 @@
 import styles from './style.css?inline';
 import { fetcher } from '@/utils'
+import { router } from '@/http/router';
 
 export class ChatSidebar extends HTMLElement {
     constructor() {
@@ -161,8 +162,9 @@ export class ChatSidebar extends HTMLElement {
 
                 selectedChatContainer.appendChild(selectedChat);
                 toggleButton.style.display = 'block';
-                const chatId = chat.id;
-                history.pushState({}, '', `/messages/${chatId}`);
+                const chatId = chat.id
+
+                router.navigate(`/messages/${chatId}`);
                 // hier kan je een functie aanroepen om de chat te laden anders kan je window.location.href = `/messages/${chatId}` proberen dit refreshed wel de pagina;
             });
 
@@ -171,4 +173,3 @@ export class ChatSidebar extends HTMLElement {
     }
 }
 
-customElements.define('chat-sidebar', ChatSidebar);

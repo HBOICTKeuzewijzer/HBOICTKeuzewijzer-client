@@ -1,14 +1,14 @@
-import CustomElement from "../customElement"
+import CustomElement from '../customElement'
 import chat from './chat.html?raw'
 import styles from './chat.css?raw'
 import { html } from '@/utils/functions'
 import { fetcher } from '@utils/fetcher'
 
 const template = html`
-  <style>
-    ${styles}
-  </style>
-  ${chat}
+    <style>
+        ${styles}
+    </style>
+    ${chat}
 `
 
 export class Chat extends CustomElement {
@@ -31,6 +31,17 @@ export class Chat extends CustomElement {
             }
         })
 
+        input?.addEventListener('keydown', event => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault()
+                const message = input.value.trim()
+                if (message) {
+                    this.sendMessage(message)
+                    input.value = ''
+                }
+            }
+        })
+
         this.loadChats()
     }
 
@@ -39,19 +50,27 @@ export class Chat extends CustomElement {
             const container = this.shadowRoot.querySelector('.chat-messages')
             container.innerHTML = ''
 
+            const urlParts = window.location.pathname.split('/')
+            const chatId = urlParts.findLast(part => part.length === 36)
+
             this.currentUser = await fetcher('auth/me', { method: 'GET' })
-            const chats = await fetcher('chat', { method: 'GET' })
-            this.chat = chats.items?.[0] ?? null
 
-            if (!this.chat || !Array.isArray(this.chat.messages)) return
+            const allChats = await fetcher('chat', { method: 'GET' })
 
-            // ✅ Sorteer op sentAt
+            const selectedChat = allChats.items.find(chat => chat.id === chatId)
+
+            if (!selectedChat) {
+                console.warn('Geen chat gevonden met dit ID:', chatId)
+                return
+            }
+
+            this.chat = selectedChat
+
             const sortedMessages = [...this.chat.messages].sort((a, b) => {
-              const dateDiff = new Date(a.sentAt) - new Date(b.sentAt)
-              if (dateDiff !== 0) return dateDiff
-              return a.id.localeCompare(b.id) // fallback als tijden gelijk zijn
+                const dateDiff = new Date(a.sentAt) - new Date(b.sentAt)
+                return dateDiff !== 0 ? dateDiff : a.id.localeCompare(b.id)
             })
-              
+
             sortedMessages.forEach(message => {
                 const isFromMe = message.senderApplicationUserId === this.currentUser.id
                 const senderId = message.senderApplicationUserId
@@ -75,30 +94,26 @@ export class Chat extends CustomElement {
     }
 
     async sendMessage(messageText) {
-      if (!this.chat || !this.currentUser) return;
-    
-      const message = {
-        messageText,
-        chatId: this.chat.id,
-        senderApplicationUserId: this.currentUser.id
-        // geen sentAt!
-      }
-    
-      try {
-        await fetcher(`chat/${this.chat.id}/message`, {
-          method: 'POST',
-          body: message
-        })
-    
-        await new Promise(res => setTimeout(res, 200))
-        await this.loadChats()
-      } catch (err) {
-        console.error('Verzenden mislukt:', err)
-      }
-    }
-    
-      
+        if (!this.chat || !this.currentUser) return
 
+        const message = {
+            messageText,
+            chatId: this.chat.id,
+            senderApplicationUserId: this.currentUser.id,
+        }
+
+        try {
+            await fetcher(`chat/${this.chat.id}/message`, {
+                method: 'POST',
+                body: message,
+            })
+
+            await new Promise(res => setTimeout(res, 200))
+            await this.loadChats()
+        } catch (err) {
+            console.error('Verzenden mislukt:', err)
+        }
+    }
 
     addMessage(sender, message, isFromMe = false) {
         const container = this.shadowRoot.querySelector('.chat-messages')

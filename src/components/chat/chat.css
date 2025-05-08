@@ -1,32 +1,30 @@
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     height: 100%;
     width: 100%;
-  }
-  
-  .chat {
-    position: absolute;
-    top: 64px; /* hoogte van je header */
-    left: 0;
-    right: 0;
-    bottom: 0;
+}
+
+.chat {
+    flex: 1;
     display: flex;
     flex-direction: column;
     background-color: #f6f7f8;
     font-family: Roboto;
-  }
-  
-  .chat-messages {
+    height: 100%;
+}
+
+.chat-messages {
     flex: 1;
     overflow-y: auto;
     padding: 24px;
     display: flex;
     flex-direction: column;
     gap: 12px;
-  }
-  
-  .chat-input {
+}
+
+.chat-input {
     background-color: #fff;
     border-top: 1px solid rgba(166, 168, 171, 0.2);
     height: 72px;
@@ -34,9 +32,9 @@ html, body {
     display: flex;
     align-items: center;
     gap: 10px;
-  }
-  
-  .input-wrapper {
+}
+
+.input-wrapper {
     flex: 1;
     height: 48px;
     border-radius: 8px;
@@ -45,55 +43,77 @@ html, body {
     display: flex;
     align-items: center;
     padding: 0 12px;
-  }
-  
-  .input-field {
+}
+
+.input-field {
     border: none;
     background: none;
     width: 100%;
     font-size: 14px;
     outline: none;
-  }
-  
-  /* Bubbels */
-  .message2, .message4 {
+}
+
+
+.message2,
+.message4 {
     display: flex;
-  }
-  
-  .message2 {
+}
+
+.message2 {
     justify-content: flex-start;
-  }
-  
-  .message4 {
+}
+
+.message4 {
     justify-content: flex-end;
-  }
-  
-  .content, .content2 {
+}
+
+.content2,
+.content {
     border-radius: 12px;
     padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
     max-width: 400px;
-  }
-  
-  .content {
+    font-family: Roboto;
+}
+
+.content {
     background-color: #fff;
     border: 1px solid rgba(208, 210, 211, 0.2);
-  }
-  
-  .content2 {
+}
+
+.content2 {
     background-color: rgba(255, 203, 5, 0.2);
     border: 1px solid rgba(245, 166, 26, 0.2);
-  }
-  
-  .message3, .message5 {
+}
+
+.message3,
+.message5 {
+    color: #231f20;
     font-size: 12px;
+    font-weight: 400;
     text-align: left;
-    overflow-wrap: break-word;
-  }
-  
-  .titel, .titel1 {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.titel,
+.titel1 {
+    color: #231f20;
+    font-size: 14px;
     font-weight: 500;
-  }
-  
+    margin-left: auto;
+}
+
+.chat-container {
+    display: flex;
+    height: calc(100vh - 64px);
+    overflow: hidden;
+}
+
+chat-sidebar {
+    flex-shrink: 0;
+    width: 300px;
+    height: 100%;
+}

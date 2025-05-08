@@ -13,7 +13,7 @@
     border-radius: var(--rounded-md);
     overflow: hidden;
     box-sizing: border-box;
-    position: fixed;
+    /* border: 2px solid red !important; */
 }
 
 .sidebar-header {

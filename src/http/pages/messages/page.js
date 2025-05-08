@@ -1,10 +1,11 @@
 import '@components/chatSidebar'
+import '@components/chat'
 
 export default function MessagesPage() {
 
-    return /*html*/ `
-        <div>
-            <chat-sidebar></chat-sidebar>
-        </div>
-    `;
+    return /*html*/`
+    <x-chat></x-chat>
+    `
 }
+
+

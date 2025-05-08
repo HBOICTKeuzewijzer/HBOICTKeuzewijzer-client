@@ -3,7 +3,6 @@ import sidebar from './sidebar.html?raw'
 import styles from './sidebar.css?raw'
 import { html } from '@/utils/functions'
 import { router } from '@/http/router'
-// import { Tooltip } from '../tooltip'
 
 const template = html`
     <style>
