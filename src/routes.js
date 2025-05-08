@@ -21,6 +21,9 @@ export const routes = [
         .add('/messages', () => import('@pages/messages/page.js'))
         .add('/messages/:uuid', () => import('@pages/messages/page.js')).routes,
 
+    ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet({ silent: true }), new RequireRole([Role.SLB])], '/slb')
+        .add('/review/:uuid', () => import('@pages/slb/review/page.js')).routes,
+
     ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet({ silent: true })], '/admin')
         .add('/', () => import('@pages/admin/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
         .add('/modules', () => import('@pages/admin/modules/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])

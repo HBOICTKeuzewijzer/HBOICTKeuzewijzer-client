@@ -115,6 +115,14 @@ export class Chat extends CustomElement {
         }
     }
 
+    linkify(text) {
+        const urlRegex = /((https?:\/\/|www\.)[^\s<]+)/g
+        return text.replace(urlRegex, url => {
+            const href = url.startsWith('http') ? url : `https://${url}`
+            return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`
+        })
+    }
+
     addMessage(sender, message, isFromMe = false) {
         const container = this.shadowRoot.querySelector('.chat-messages')
         const msgEl = document.createElement('div')
@@ -124,13 +132,13 @@ export class Chat extends CustomElement {
             ? `
         <div class="content2">
           <div class="titel">${sender}</div>
-          <div class="message5">${message}</div>
+          <div class="message5">${this.linkify(message)}</div>
         </div>
       `
             : `
         <div class="content">
           <div class="titel1">${sender}</div>
-          <div class="message3">${message}</div>
+          <div class="message5">${this.linkify(message)}</div>
         </div>
       `
 
