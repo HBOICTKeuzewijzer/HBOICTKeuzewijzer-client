@@ -18,8 +18,8 @@ export const routes = [
         .add('/mijn-routes', () => import('@pages/profile/studyroutes/page')).routes,
 
     ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet()])
-        .add('/messages/:uuid', () => import('@pages/messages/page.js'))
-        .add('/messages', () => import('@pages/messages/page.js')).routes,
+        .add('/messages', () => import('@pages/messages/page.js'))
+        .add('/messages/:uuid', () => import('@pages/messages/page.js')).routes,
 
     ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet({ silent: true })], '/admin')
         .add('/', () => import('@pages/admin/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
