@@ -11,15 +11,17 @@ const template = html`
         <input type="text" />
         <slot class="icon-slot" name="append"></slot>
     </div>
+    <div id="error-message" hidden></div>
 `
 
 export class Input extends CustomElement {
     static get observedAttributes() {
-        return ['placeholder']
+        return ['placeholder', 'submitenter']
     }
 
     constructor() {
         super()
+        this._error = ''
     }
 
     get placeholder() {
@@ -40,6 +42,28 @@ export class Input extends CustomElement {
         if (input) input.value = val
     }
 
+    get error() {
+        return this._error
+    }
+
+    set error(message) {
+        this._error = message
+        const container = this.shadowRoot?.getElementById('container')
+        const errorMessage = this.shadowRoot?.getElementById('error-message')
+
+        if (container && errorMessage) {
+            if (message) {
+                container.classList.add('error')
+                errorMessage.textContent = message
+                errorMessage.hidden = false
+            } else {
+                container.classList.remove('error')
+                errorMessage.textContent = ''
+                errorMessage.hidden = true
+            }
+        }
+    }
+
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'placeholder' && this.shadowRoot) {
             const input = this.shadowRoot.querySelector('input')
@@ -51,8 +75,9 @@ export class Input extends CustomElement {
 
     disconnectedCallback() {
         const input = this.shadowRoot.querySelector('input')
-        if (input && this._inputHandler) {
+        if (input) {
             input.removeEventListener('input', this._inputHandler)
+            input.removeEventListener('keydown', this.#keyDownHandler)
         }
     }
 
@@ -75,7 +100,36 @@ export class Input extends CustomElement {
         if (!input) return
 
         input.placeholder = this.placeholder
-
         input.addEventListener('input', this.#inputHandler)
+        input.addEventListener('keydown', this.#keyDownHandler)
+    }
+
+    clear() {
+        const input = this.shadowRoot?.querySelector('input')
+        if (input) {
+            input.value = ''
+        }
+
+        this.error = ''
+
+        this.dispatchEvent(
+            new CustomEvent('onValueChanged', {
+                detail: { query: '' },
+                bubbles: true,
+                composed: true,
+            })
+        )
+    }
+
+    #keyDownHandler = e => {
+        if (e.key === 'Enter' && this.hasAttribute('submitenter')) {
+            this.dispatchEvent(
+                new CustomEvent('onSubmitEnter', {
+                    detail: { value: this.value },
+                    bubbles: true,
+                    composed: true,
+                })
+            )
+        }
     }
 }

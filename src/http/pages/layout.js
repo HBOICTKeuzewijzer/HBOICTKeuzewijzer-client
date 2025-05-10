@@ -1,8 +1,23 @@
-import { Cookie } from '@utils'
+import { Auth } from '@utils'
 
 export default function Layout(children) {
     const imageURL = new URL('@assets/images/windesheim-logo.png', import.meta.url).href
-    const hasSession = Cookie.get('x-session') == null ? false : true
+    const user = Auth.getUser()
+
+    function getInitials(name) {
+        if (!name) return ''
+
+        const parts = name.trim().split(/\s+/)
+
+        if (parts.length === 1) {
+            return parts[0][0].toUpperCase()
+        }
+
+        const first = parts[0][0].toUpperCase()
+        const last = parts[parts.length - 1][0].toUpperCase()
+
+        return first + last
+    }
 
     return /*html*/ `
         <div>
@@ -12,7 +27,7 @@ export default function Layout(children) {
                 </a>
                 <div class="headerActions">
                     ${
-                        hasSession || true
+                        Auth.isLoggedIn
                             ? /*html*/ `
                                 <x-tooltip position="left" placement="middle">
                                     <a slot="trigger" href="/messages" data-icon>
@@ -32,13 +47,13 @@ export default function Layout(children) {
                                 </x-tooltip>
 
                                 <x-popover position="bottom" placement="right">
-                                    <button slot="trigger" id="profile">JK</button>
+                                    <button slot="trigger" id="profile">${getInitials(user?.name)}</button>
                                     
                                     <button popover-action type="button" href="/saved-routes" class="text-sm">
                                         <i class="ph-duotone ph-bookmarks-simple"></i>
                                         Opgeslagen Routes
                                     </button>
-                                    <button popover-action danger type="button" href="https://api.hboictkeuzewijzer.nl/api/auth/logout" class="text-sm">
+                                    <button popover-action danger type="button" href="${import.meta.env.VITE_API_URL}/auth/logout?returnURL=${import.meta.env.VITE_APP_URL}" class="text-sm">
                                         <i class="ph-duotone ph-sign-out"></i>
                                         Uitloggen
                                     </button>
@@ -46,7 +61,7 @@ export default function Layout(children) {
                             `
                             : /*html*/ `
                                 <x-tooltip position="left" placement="middle" class="hidden md:block">
-                                    <a slot="trigger" href="https://api.hboictkeuzewijzer.nl/api/auth/login" data-icon>
+                                    <a slot="trigger" href="${import.meta.env.VITE_API_URL}/auth/login?returnURL=${import.meta.env.VITE_APP_URL}" data-icon>
                                         <i class="ph ph-sign-in"></i>
                                     </a>
                                     <p class="color-black text-sm">

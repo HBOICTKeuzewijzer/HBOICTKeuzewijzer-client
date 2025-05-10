@@ -53,10 +53,6 @@ async function handleAccordionItemClick(moduleItem) {
 
     renderStudyCards()
     drawConnections()
-
-    console.log(studyRoute.toJson())
-
-    await fetcher(`studyRoute/${studyRouteId}`, { method: 'PUT', body: studyRoute.toJson() })
 }
 
 let selectedSemester
@@ -85,14 +81,74 @@ function handleSemesterClick(semester) {
 let studyRoute
 
 async function loadStudyRoute() {
-    if (studyRouteId === null) return
+    console.log(moduleData)
 
-    const data = await fetcher(`studyRoute/${studyRouteId}`, { method: 'GET' })
+    const requiredModules = []
 
-    if (!data.semesters) return
+    for (const [category, modules] of moduleData.entries()) {
+        if (Array.isArray(modules)) {
+            const required = modules.filter(module => module.required === true)
+            requiredModules.push(...required)
+        }
+    }
 
-    studyRoute = new StudyRoute(data)
+    studyRoute = new StudyRoute()
+    studyRoute.semesters = [
+        new Semester({
+            id: "5B59BE13-0F24-4F3E-8C5A-C3A99D08E7F6",
+            index: 0,
+            acquiredEcs: 0,
+        }),
+        new Semester({
+            id: "8F7FED8A-6A8A-454E-BE05-D6B1C66F9C3E",
+            index: 1,
+            acquiredEcs: 0,
+        }),
+        new Semester({
+            id: "2CF53F55-7896-488D-9C3C-CCA726093379",
+            index: 2,
+            acquiredEcs: 0,
+        }),
+        new Semester({
+            id: "3F1F4470-AF74-4092-9412-E2B264C7E763",
+            index: 3,
+            acquiredEcs: 0,
+        }),
+        new Semester({
+            id: "40690D5D-33CE-4FA6-9FF1-AEE5193DB326",
+            index: 4,
+            acquiredEcs: 0,
+        }),
+        new Semester({
+            id: "14906BED-FBE4-4CEF-86E3-37F664586FE7",
+            index: 5,
+            acquiredEcs: 0,
+        }),
+        new Semester({
+            id: "4CB71888-38EB-4BAB-8B6A-9D248933B4DE",
+            index: 6,
+            acquiredEcs: 0,
+        }),
+        new Semester({
+            id: "6A0865C5-69F7-4402-8C52-973F6997A79C",
+            index: 7,
+            acquiredEcs: 0,
+        }),
+    ]
+
+    requiredModules.forEach(module => {
+        var semesterIndex = module.requiredSemester ? module.requiredSemester : 0
+
+        var relevantSemester = studyRoute.semesters[semesterIndex]
+
+        relevantSemester.module = module
+        relevantSemester.moduleId = module.id
+    })
+
+    renderStudyCards()
 }
+
+
 
 /**
  * Renders all study cards based on `studyCardData`.
@@ -365,7 +421,7 @@ PlannerPage.onPageLoaded = async () => {
         requestAnimationFrame(drawConnections)
     })
 
-    loadModules().catch(console.error)
+    await loadModules().catch(console.error)
     await loadStudyRoute()
     renderStudyCards()
     drawConnections()

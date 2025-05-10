@@ -4,6 +4,7 @@ import { router } from '@/http/router'
 import { DatatableButtons, DatatableColumn, DatatableConfig } from '@/models'
 import { fetcher } from '@/utils'
 
+
 export default function ModulesPage() {
     return /*html*/ `
         <style>

@@ -3,85 +3,6 @@ import { Module, Category, Semester, StudyRoute } from '@/models'
 
 let studyRouteId = null
 
-/**
- * Handles click events on accordion module items using event delegation.
- * @param {MouseEvent} event
- */
-function delegatedAccordionClickHandler(event) {
-    const moduleItem = event.target.closest('.module-item')
-    if (!moduleItem) return
-
-    handleAccordionItemClick(moduleItem)
-}
-
-/**
- * Handles click events on semester elements using event delegation.
- * @param {MouseEvent} event
- */
-function delegatedSemesterClickHandler(event) {
-    const semester = event.target.closest('[data-card-module]')
-    if (!semester) return
-
-    handleSemesterClick(semester)
-}
-
-/**
- * Finds a Module by its ID.
- * @param {string} id - The GUID of the module to find.
- * @returns {Module | undefined} The matched module, or undefined if not found.
- */
-function getModuleById(id) {
-    for (const [, modules] of moduleData.entries()) {
-        const found = modules.find(module => module.id === id)
-        if (found) return found
-    }
-    return undefined
-}
-
-/**
- * Handles click events on semester elements using event delegation.
- * @param {MouseEvent} event
- */
-async function handleAccordionItemClick(moduleItem) {
-    if (studyRoute === null) return
-    if (selectedSemester === undefined || selectedSemester === null) return
-
-    const semesterIndex = selectedSemester.dataset.semesterindex
-
-    studyRoute.semesters[semesterIndex].moduleId = moduleItem.dataset.guid
-    studyRoute.semesters[semesterIndex].module = getModuleById(moduleItem.dataset.guid)
-
-    renderStudyCards()
-    drawConnections()
-
-    console.log(studyRoute.toJson())
-
-    await fetcher(`studyRoute/${studyRouteId}`, { method: 'PUT', body: studyRoute.toJson() })
-}
-
-let selectedSemester
-
-/**
- * Handles selection highlighting for a semester card.
- * @param {HTMLElement} semester
- */
-function handleSemesterClick(semester) {
-    const studyCards = document.querySelectorAll('x-study-card')
-
-    studyCards.forEach(card => {
-        if (!card.shadowRoot) return
-        const semesters = card.querySelectorAll('[data-card-module]')
-
-        semesters.forEach(sem => sem.removeAttribute('selected'))
-    })
-
-    if (semester.dataset.status) {
-        semester.setAttribute('selected', '')
-    }
-
-    selectedSemester = semester
-}
-
 let studyRoute
 
 async function loadStudyRoute() {
@@ -159,45 +80,6 @@ function renderStudyCards() {
     }
 }
 
-/**
- * Stores available module categories with their respective titles.
- * Module data is populated dynamically via `loadModules`.
- * @type {Map<string, { title: Category, modules?: Module[] }>}
- */
-let moduleData = new Map()
-
-async function loadModules() {
-    try {
-        let [categories, modules] = await Promise.all([
-            (async () => {
-                const data = await fetcher('category', { method: 'GET' })
-                return data.map(element => new Category(element))
-            })(),
-            (async () => {
-                const data = await fetcher('module', { method: 'GET' })
-                return data.map(element => new Module(element))
-            })()
-        ])
-
-        categories.forEach(category => {
-            moduleData.set(category, [])
-        })
-
-        modules.forEach(module => {
-            const category = categories.find(c => c.id === module.category.id)
-            if (category) {
-                moduleData.get(category).push(module)
-            } else {
-                console.warn(`Module '${module.name}' has unknown categoryId: ${module.category.id}`)
-            }
-        })
-
-        renderModuleAccordion()
-    } catch (error) {
-        console.error('Modules ophalen mislukt:', error)
-    }
-}
-
 function hexToRGB(hex, alpha) {
     var r = parseInt(hex.slice(1, 3), 16),
         g = parseInt(hex.slice(3, 5), 16),
@@ -209,43 +91,6 @@ function hexToRGB(hex, alpha) {
         return "" + r + ", " + g + ", " + b;
     }
 }
-
-/**
- * Renders the module accordion UI for both desktop and mobile containers.
- */
-function renderModuleAccordion() {
-    const containers = [document.querySelector('#modules-list-desktop'), document.querySelector('#modules-list-mobile')]
-
-    const accordionHTML = Array.from(moduleData.entries())
-        .map(
-            ([category, modules]) => `
-                <x-accordion
-                    style="--primary-color: ${hexToRGB(category.primaryColor)}; --accent-color: ${hexToRGB(category.accentColor)};"
-                >
-                <span slot="title">${category.value}</span>
-                ${modules.map(
-                (module, index) => `
-                        <div class="module-item" data-index="${index}" data-guid="${module.id}">
-                            <span>${module.name}</span>
-                            ${module.description
-                        ? `<x-tooltip position="left" placement="middle">
-                                    <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                                    <p class="color-black text-sm">${module.description}</p>
-                                   </x-tooltip>`
-                        : ''
-                    }
-                        </div>`
-            ).join('')}
-                </x-accordion>
-            `
-        )
-        .join('')
-
-    containers.forEach(container => {
-        if (container) container.innerHTML = accordionHTML
-    })
-}
-
 
 /**
  * Draws SVG paths between consecutive study cards to visualize progression.
@@ -321,21 +166,6 @@ export default function PlannerPage({ params }) {
 
     return /*html*/ `
         <div class="container flex" style="position: relative; flex-direction: row; overflow: hidden; max-height: calc(100vh - var(--header-height));">
-            <x-sheet class="hidden xl:flex" side="left" open>
-                <div style="padding: 24px 24px 0; display: flex; flex-direction: column; gap: 6px;">
-                    <h5 style="margin: 0; font-size: 18px;">Modules</h5>
-                    <div class="divider" style="background-color: rgb(var(--color-gray-4)); height:1px;"></div>
-                    <p style="margin: 0; font-size: 12px;">
-                        Dit zijn alle beschikbare modules waaruit je kunt kiezen. Als je een externe module wilt volgen, kun je deze toevoegen via de 'Anders' optie onder 'Overig'.
-                    </p>
-                </div>
-                <div id="modules-list-desktop" style="display: flex; flex-direction: column; padding: 24px;"></div>
-            </x-sheet>
-
-            <x-drawer class="xl:hidden" open>
-                <div id="modules-list-mobile" style="padding: 24px;"></div>
-            </x-drawer>
-
             <form id="study-cards-container" style></form>
 
             <div style="position: absolute; right: 32px; top: 32px;">
@@ -358,14 +188,10 @@ export default function PlannerPage({ params }) {
 }
 
 PlannerPage.onPageLoaded = async () => {
-    document.addEventListener('click', delegatedAccordionClickHandler)
-    document.addEventListener('click', delegatedSemesterClickHandler)
-
     window.addEventListener('resize', () => {
         requestAnimationFrame(drawConnections)
     })
 
-    loadModules().catch(console.error)
     await loadStudyRoute()
     renderStudyCards()
     drawConnections()

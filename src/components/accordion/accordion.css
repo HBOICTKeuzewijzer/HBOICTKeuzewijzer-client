@@ -1,21 +1,6 @@
-:host([type='SE']) {
-    --primary-color: var(--color-gold);
-    --accent-color: var(--color-orange);
-}
-
-:host([type='IDS']) {
-    --primary-color: var(--color-apple-green);
-    --accent-color: var(--color-green);
-}
-
-:host([type='BIM']) {
-    --primary-color: var(--color-blue);
-    --accent-color: var(--color-sky-blue);
-}
-
-:host([type='Overig']) {
-    --primary-color: var(--color-dark-pink);
-    --accent-color: var(--color-red);
+:host {
+    --primary-color: 255, 255, 255;
+    --accent-color: 255, 255, 255;
 }
 
 :host {
@@ -70,6 +55,7 @@
     color: rgb(var(--color-black));
     font-size: 12px;
     font-weight: 700;
+    text-align: left;
 }
 
 :host([open]) [data-content] {
@@ -115,4 +101,5 @@
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
+    text-align: left;
 }
