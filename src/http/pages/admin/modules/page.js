@@ -89,7 +89,7 @@ export default function ModulesPage() {
             dialog.removeAttribute('open')
             await fetcher(`module/${currentRow.id}`, { method: 'delete' })
             currentRow = null
-            location.reload()
+            table.reload()
         }
 
         const noCallback = () => {
@@ -109,8 +109,8 @@ export default function ModulesPage() {
                     new DatatableColumn({ path: 'eCs', title: 'ECs', sorting: true }),
                     new DatatableColumn({ path: 'level', title: 'Niveau', sorting: true }),
                 ],
-                searching: false,
-                paging: false,
+                searching: true,
+                paging: true,
                 pageSize: 10,
                 buttons: new DatatableButtons({
                     edit: row => router.navigate(`/admin/modules/edit/${row.id}`),
