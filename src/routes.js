@@ -26,7 +26,9 @@ export const routes = [
 
     ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet({ silent: true })], '/admin')
         .add('/', () => import('@pages/admin/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
-        .add('/modules', () => import('@pages/admin/modules/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
+        .add('/modules', () => import('@/http/pages/admin/modules/page.js'))
+        .add('/modules/create', () => import('@/http/pages/admin/modules/modules-create/page.js'))
+        .add('/modules/edit/:uuid', () => import('@/http/pages/admin/modules/modules-edit/page.js'))
         .add('/oer', () => import('@pages/admin/oer/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
         .add('/categorien', () => import('@pages/admin/category/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
         .add('/rollen-toewijzen', () => import('@pages/admin/role-assignment/page.js'), [new RequireRole([Role.SystemAdmin])])
