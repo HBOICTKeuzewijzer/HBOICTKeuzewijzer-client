@@ -16,23 +16,13 @@ export class SetAuthCookie extends Middleware {
             if (Cookie.get('x-session') === null) {
                 const me = await getCurrentUser();
 
-                const sessionExpiresAt = new Date(me.sessionExpiresAt);
-                const now = new Date();
-
-                // Convert the expiration time to number of *days* for Cookie.set
-                const expiresInMs = sessionExpiresAt - now;
-                const expiresInDays = expiresInMs / 86400000;
-
                 Cookie.set(
                     'x-session',
                     JSON.stringify({
                         id: me.id,
                         name: me.displayName.replace(' (student)', ''),
                         email: me.email,
-                    }),
-                    {
-                        expires: expiresInDays,
-                    }
+                    })
                 );
             }
 
