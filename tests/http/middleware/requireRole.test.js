@@ -9,7 +9,7 @@ import { routes } from '@/routes'
 import Role from '@/models/role'
 import { RequireRole } from '@/http/middleware'
 import { getCurrentUser } from '@/utils/getCurrentUser'
-import MiddlewareStatus from '@/models/routing/middlewareStatus'
+import MiddlewareStatus from '@models/routing/middlewareStatus'
 
 describe('RequireRole', () => {
     beforeEach(() => {

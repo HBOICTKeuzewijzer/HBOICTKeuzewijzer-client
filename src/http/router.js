@@ -1,4 +1,5 @@
-import { MiddlewarePipeline, MiddlewareStatus } from '@http/middlewarePipeline'
+import { MiddlewarePipeline } from '@http/middlewarePipeline'
+import MiddlewareStatus from '@models/routing/middlewareStatus'
 import { routes } from '@/routes'
 
 class Router {
@@ -103,7 +104,7 @@ class Router {
 
         // Execute middleware before rendering the page.
         const middlewareResult = await MiddlewarePipeline.run(matchedRoute.middlewares, context)
-
+        console.log({ "pipelineResult": middlewareResult })
         switch (middlewareResult.status) {
             case MiddlewareStatus.Success:
                 return this.#render(matchedRoute.component, params)

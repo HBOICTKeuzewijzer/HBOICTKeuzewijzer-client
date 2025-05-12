@@ -1,6 +1,6 @@
 import { Middleware } from '@http/middleware'
 import { MiddlewareResult } from '@/models'
-import MiddlewareStatus from '@/models/routing/middlewareStatus'
+import MiddlewareStatus from '@models/routing/middlewareStatus'
 
 /**
  * Class representing a middleware pipeline for processing requests.
@@ -29,7 +29,7 @@ export class MiddlewarePipeline {
                 if (result.status === MiddlewareStatus.Success) continue
                 return result
             }
-            return MiddlewareResult.builder.success()
+            return MiddlewareResult.success()
         } catch (error) {
             console.error('[MiddlewarePipeline] Error in middleware:', error)
             return false

@@ -1,7 +1,7 @@
 import { getCurrentUser } from '@/utils/getCurrentUser'
 import { Middleware } from '@http/middleware'
 import { Cookie } from '@utils'
-import { MiddlewareResult } from '@models';
+import { MiddlewareResult } from '@/models';
 
 /**
  * Inherits from the base `Middleware` class.
@@ -9,7 +9,7 @@ import { MiddlewareResult } from '@models';
 export class SetAuthCookie extends Middleware {
     /**
      * @param {Object} context - The context object containing route and request details.
-     * @returns {Promise<boolean>} Resolves to `true` if the middleware passes, `false` otherwise.
+     * @returns {Promise<MiddlewareResult>} Resolves to `true` if the middleware passes, `false` otherwise.
      */
     // eslint-disable-next-line no-unused-vars
     async handle(context) {
