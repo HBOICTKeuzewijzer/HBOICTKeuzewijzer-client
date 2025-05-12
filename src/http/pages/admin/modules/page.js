@@ -1,8 +1,9 @@
 /** @typedef {import('@/components').Datatable} Datatable */
 
-import { router } from '@/http/router';
-import { DatatableButtons, DatatableColumn, DatatableConfig } from '@/models';
-import { fetcher } from '@/utils';
+import { router } from '@/http/router'
+import { DatatableButtons, DatatableColumn, DatatableConfig } from '@/models'
+import { fetcher } from '@/utils'
+
 
 export default function ModulesPage() {
     return /*html*/ `
@@ -33,6 +34,9 @@ export default function ModulesPage() {
                 #sidebar {
                     display: unset;
                 }
+            }
+            label {
+                margin-top: 10px;
             }
         </style>
 
@@ -66,70 +70,58 @@ export default function ModulesPage() {
     `
 }
 
-ModulesPage.onPageLoaded = () => {
-    document.querySelector('#add-button').addEventListener('click', addOnClick);
+    ModulesPage.onPageLoaded = () => {
+    document.querySelector('#add-button').addEventListener('click', () => {
+        router.navigate('/admin/modules/create');
+    });
+    
+    let currentRow = null
 
     try {
         /** @type {Datatable} */
-        const table = document.querySelector("x-data-table");
-        const dialog = document.querySelector("#confirmDeleteDialog");
-        const yesBtn = dialog.shadowRoot?.host.querySelector("#confirmYes");
-        const noBtn = dialog.shadowRoot?.host.querySelector("#confirmNo");
-
-        let currentRow = null;
+        const table = document.querySelector('x-data-table')
+        const dialog = document.querySelector('#confirmDeleteDialog')
+        const yesBtn = dialog.shadowRoot?.host.querySelector('#confirmYes')
+        const noBtn = dialog.shadowRoot?.host.querySelector('#confirmNo')
 
         const yesCallback = async () => {
-            if (!currentRow) return;
-
-            dialog.removeAttribute("open");
-            await fetcher(`modules/${currentRow.id}`, { method: "delete" });
-
-            currentRow = null;
-        };
+            if (!currentRow) return
+            dialog.removeAttribute('open')
+            await fetcher(`module/${currentRow.id}`, { method: 'delete' })
+            currentRow = null
+            table.reload()
+        }
 
         const noCallback = () => {
-            dialog.removeAttribute("open");
-            currentRow = null;
-        };
+            dialog.removeAttribute('open')
+            currentRow = null
+        }
 
-        yesBtn?.addEventListener("click", yesCallback);
-        noBtn?.addEventListener("click", noCallback);
+        yesBtn?.addEventListener('click', yesCallback)
+        noBtn?.addEventListener('click', noCallback)
 
-        table.dataTable(new DatatableConfig({
-            route: "module/paged",
-            columns: [
-                new DatatableColumn({ path: "name", title: "Naam", sorting: true }),
-                new DatatableColumn({ path: "category.value", title: "Categorie", sorting: true }),
-                new DatatableColumn({ path: "eCs", title: "Credits" }),
-                new DatatableColumn({ path: "level", title: "Niveau", sorting: true }),
-                new DatatableColumn({ path: "oer.academicYear", title: "Jaar", sorting: true })
-            ],
-            searching: true,
-            paging: true,
-            pageSize: 10,
-            buttons: new DatatableButtons({
-                edit: (row) => {
-                    router.navigate(`/admin/modules/edit/${row.id}`);
-                },
-                delete: (row) => {
-                    currentRow = row;
-                    dialog.setAttribute("open", "");
-                },
-                inspect: (row) => {
-                    router.navigate(`/admin/modules/inspect/${row.id}`);
-                },
+        table.dataTable(
+            new DatatableConfig({
+                route: 'module',
+                columns: [
+                    new DatatableColumn({ path: 'name', title: 'Naam', sorting: true }),
+                    new DatatableColumn({ path: 'code', title: 'Code', sorting: true }),
+                    new DatatableColumn({ path: 'eCs', title: 'ECs', sorting: true }),
+                    new DatatableColumn({ path: 'level', title: 'Niveau', sorting: true }),
+                ],
+                searching: true,
+                paging: true,
+                pageSize: 10,
+                buttons: new DatatableButtons({
+                    edit: row => router.navigate(`/admin/modules/edit/${row.id}`),
+                    delete: row => {
+                        currentRow = row
+                        dialog.setAttribute('open', '')
+                    },
+                }),
             })
-        }));
+        )
+    } catch (error) {
+        console.log(error)
     }
-    catch (error) {
-        console.log(error);
-    }
-};
-
-function addOnClick() {
-    router.navigate('/admin/modules/create');
 }
-
-ModulesPage.onBeforePageUnloaded = () => {
-    document.querySelector('#add-button').removeEventListener('click', addOnClick);
-};
