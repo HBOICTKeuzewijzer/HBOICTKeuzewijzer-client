@@ -19,15 +19,15 @@ export class MiddlewareResult {
         return this.#redirectLocation;
     }
 
-    static builder = {
-        success() {
-            return new MiddlewareResult(MiddlewareStatus.Success);
-        },
-        failure() {
-            return new MiddlewareResult(MiddlewareStatus.NotFound);
-        },
-        redirect(location) {
-            return new MiddlewareResult(MiddlewareStatus.Redirect, location);
-        }
-    };
+    static success() {
+        return new MiddlewareResult(MiddlewareStatus.Success);
+    }
+
+    static notFound() {
+        return new MiddlewareResult(MiddlewareStatus.NotFound);
+    }
+
+    static redirect(location) {
+        return new MiddlewareResult(MiddlewareStatus.Redirect, location);
+    }
 }

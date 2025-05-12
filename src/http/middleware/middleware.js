@@ -15,6 +15,6 @@ export class Middleware {
     async handle(context) {
         // Logic for the middleware goes here
         // Return MiddlewareResult.builder.failed() or MiddlewareResult.builder.redirect(url) if the middleware fails or does not allow continuation
-        return MiddlewareResult.builder.success();
+        return MiddlewareResult.success();
     }
 }

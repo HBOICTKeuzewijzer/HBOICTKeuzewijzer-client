@@ -27,9 +27,9 @@ export class SetAuthCookie extends Middleware {
                 );
             }
 
-            return MiddlewareResult.builder.success();
+            return MiddlewareResult.success();
         } catch {
-            return MiddlewareResult.builder.success();
+            return MiddlewareResult.success();
         }
     }
 }

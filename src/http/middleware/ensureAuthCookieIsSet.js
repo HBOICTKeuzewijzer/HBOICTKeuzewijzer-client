@@ -30,15 +30,15 @@ export class EnsureAuthCookieIsSet extends Middleware {
 
             if (sessionCookie === null) {
                 if (this.#silent) {
-                    return MiddlewareResult.builder.redirect('/')
+                    return MiddlewareResult.redirect('/')
                 } else {
-                    return MiddlewareResult.builder.redirect(`/login?returnUrl=${context.fullRoute}`)
+                    return MiddlewareResult.redirect(`/login?returnUrl=${context.fullRoute}`)
                 }
             }
 
-            return MiddlewareResult.builder.success();
+            return MiddlewareResult.success();
         } catch {
-            return MiddlewareResult.builder.failure();
+            return MiddlewareResult.notFound();
         }
     }
 }

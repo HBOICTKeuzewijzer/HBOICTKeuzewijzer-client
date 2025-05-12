@@ -32,7 +32,7 @@ export class RequireRole extends Middleware {
         const currentUser = await getCurrentUser();
 
         if (!currentUser?.applicationUserRoles) {
-            return MiddlewareResult.builder.failure()
+            return MiddlewareResult.notFound()
         }
 
         const hasRequiredRole = currentUser.applicationUserRoles.some(roleEntry =>
@@ -40,9 +40,9 @@ export class RequireRole extends Middleware {
         );
 
         if (!hasRequiredRole) {
-            return MiddlewareResult.builder.failure();
+            return MiddlewareResult.notFound();
         }
 
-        return MiddlewareResult.builder.success();
+        return MiddlewareResult.success();
     }
 }
