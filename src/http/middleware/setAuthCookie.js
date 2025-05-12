@@ -1,6 +1,7 @@
 import { getCurrentUser } from '@/utils/getCurrentUser'
 import { Middleware } from '@http/middleware'
 import { Cookie } from '@utils'
+import { MiddlewareResult } from '@models';
 
 /**
  * Inherits from the base `Middleware` class.
@@ -26,9 +27,9 @@ export class SetAuthCookie extends Middleware {
                 );
             }
 
-            return true;
+            return MiddlewareResult.builder.success();
         } catch {
-            return true;
+            return MiddlewareResult.builder.success();
         }
     }
 }

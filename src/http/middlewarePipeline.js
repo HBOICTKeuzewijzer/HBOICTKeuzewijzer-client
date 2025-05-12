@@ -1,4 +1,6 @@
 import { Middleware } from '@http/middleware'
+import { MiddlewareResult } from '@/models'
+import MiddlewareStatus from '@/models/routing/middlewareStatus'
 
 /**
  * Class representing a middleware pipeline for processing requests.
@@ -10,7 +12,7 @@ export class MiddlewarePipeline {
      *
      * @param {Middleware[]} middlewares - An array of middleware functions.
      * @param {Object} context - The context passed to each middleware.
-     * @returns {Promise<boolean>} - Resolves to `true` if all middlewares pass, otherwise `false`.
+     * @returns {Promise<MiddlewareResult>} - Resolves to MiddlewareResult.
      */
     static async run(middlewares, context) {
         if (!Array.isArray(middlewares)) {
@@ -21,10 +23,13 @@ export class MiddlewarePipeline {
             for (const middleware of middlewares) {
                 if (!(middleware instanceof Middleware)) continue
 
+                /** @type {MiddlewareResult} */
                 const result = await middleware.handle(context)
-                if (!result) return false // Stop the pipeline if a middleware fails and returns falsy
+
+                if (result.status === MiddlewareStatus.Success) continue
+                return result
             }
-            return true
+            return MiddlewareResult.builder.success()
         } catch (error) {
             console.error('[MiddlewarePipeline] Error in middleware:', error)
             return false
