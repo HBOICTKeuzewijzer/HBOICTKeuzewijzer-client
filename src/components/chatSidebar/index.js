@@ -42,14 +42,18 @@ export class ChatSidebar extends HTMLElement {
         Promise.all([
             fetcher('auth/me', { method: 'GET' }),
             this.getChatData(),
+            this.getHasUnreadMessages() // Haal de lijst met ongelezen berichtstatussen op
         ])
-            .then(([currentUser, chatData]) => {
+            .then(([currentUser, chatData, unreadStatuses]) => {
                 this.currentUser = currentUser;
                 console.log("Ingelogde gebruiker:", this.currentUser);
-                this.renderChatSidebar(chatData.items);
+                console.log("Chatgegevens:", chatData);
+                console.log("Ongelezen berichten:", unreadStatuses);
+
+                this.renderChatSidebar(chatData.items, unreadStatuses);
             })
             .catch((error) => {
-                console.error("Fout bij ophalen van gegevens:", error);
+                console.error("Fout bij ophalen van gegevens:", error); // Laat de fout zien
             });
 
         const sidebar = this.shadowRoot.getElementById('chat-sidebar');
@@ -97,8 +101,18 @@ export class ChatSidebar extends HTMLElement {
             }
         });
     }
-
-    renderChatSidebar(chatData) {
+    getHasUnreadMessages() {
+        return fetcher('chat/has-unread', { method: 'GET' })
+            .then((response) => {
+                console.log("Chats met ongelezen berichten:", response);
+                return response; // Lijst met ongelezen status per chat
+            })
+            .catch((error) => {
+                console.error("Fout bij ophalen van ongelezen berichten:", error);
+                throw error;
+            });
+    }
+    renderChatSidebar(chatData, unreadStatuses) {
         const chatListElement = this.shadowRoot.getElementById('chat-list');
         const selectedChatContainer = this.shadowRoot.getElementById('selected-chat');
         const toggleButton = this.shadowRoot.getElementById('toggle-sidebar');
@@ -127,6 +141,9 @@ export class ChatSidebar extends HTMLElement {
             const displayName = person.displayName || 'Onbekende naam';
             const displayId = person.email || 'Onbekende ID';
 
+            const unreadStatus = unreadStatuses.find((status) => status.chatId === chat.id);
+            const hasUnreadMessages = unreadStatus ? unreadStatus.hasUnread : false;
+
             const chatItem = document.createElement('div');
             chatItem.classList.add('chat-item');
 
@@ -138,6 +155,7 @@ export class ChatSidebar extends HTMLElement {
                 <span class="student-name">${displayName}</span>
                 <span class="student-id">${displayId}</span>
             </div>
+            ${hasUnreadMessages ? `<span class="unread-indicator">•</span>` : ''}
         `;
 
             chatItem.addEventListener('click', () => {
@@ -151,21 +169,33 @@ export class ChatSidebar extends HTMLElement {
                 const selectedChat = document.createElement('div');
                 selectedChat.classList.add('selected-chat-item');
                 selectedChat.innerHTML = `
-        <div class="profile-picture">
-            <img src="" alt="${displayName}" />
-        </div>
-        <div class="chat-details">
-            <span class="student-name">${displayName}</span>
-            <span class="student-id">${displayId}</span>
-        </div>
-    `;
+                <div class="profile-picture">
+                    <img src="" alt="${displayName}" />
+                </div>
+                <div class="chat-details">
+                    <span class="student-name">${displayName}</span>
+                    <span class="student-id">${displayId}</span>
+                </div>
+            `;
 
                 selectedChatContainer.appendChild(selectedChat);
                 toggleButton.style.display = 'block';
-                const chatId = chat.id
+                const chatId = chat.id;
+
+                fetcher(`chat/mark-as-read/${chatId}`, { method: 'PUT' })
+                    .then((response) => {
+                        console.log(`Chat ${chatId} is gemarkeerd als gelezen.`);
+
+                        const unreadIndicator = chatItem.querySelector('.unread-indicator');
+                        if (unreadIndicator) {
+                            unreadIndicator.remove();
+                        }
+                    })
+                    .catch((error) => {
+                        console.error(`Fout bij het markeren van de chat als gelezen:`, error);
+                    });
 
                 router.navigate(`/messages/${chatId}`);
-                // hier kan je een functie aanroepen om de chat te laden anders kan je window.location.href = `/messages/${chatId}` proberen dit refreshed wel de pagina;
             });
 
             chatListElement.appendChild(chatItem);

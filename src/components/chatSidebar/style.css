@@ -57,13 +57,33 @@
     outline: none;
 }
 
-    #search-bar::placeholder {
-        color: rgba(0, 0, 0, 0.5);
-    }
+.chat-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
 
-    #search-bar:focus {
-        border-color: rgba(0, 0, 0, 0.5);
-    }
+.unread-indicator {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 10px;
+    width: 10px;
+    background-color: red;
+    border-radius: 50%;
+}
+
+#search-bar::placeholder {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+#search-bar:focus {
+    border-color: rgba(0, 0, 0, 0.5);
+}
 
 .title-wrapper {
     position: relative;
