@@ -1,6 +1,7 @@
-import { getCurrentUser } from '@/utils/getCurrentUser';
-import { Middleware } from '@http/middleware';
-import { MiddlewareResult } from '@/models';
+import { getCurrentUser } from '@/utils/getCurrentUser'
+import { Middleware } from '@http/middleware'
+import { MiddlewareResult, User } from '@/models'
+import { Auth } from '@/utils'
 
 /**
  * @typedef {'User' | 'Student' | 'SLB' | 'ModuleAdmin' | 'SystemAdmin'} Role
@@ -18,9 +19,9 @@ export class RequireRole extends Middleware {
      * @param {Role[]} acceptedRoles 
      */
     constructor(acceptedRoles) {
-        super();
+        super()
 
-        this.#acceptedRoles = [...this.#acceptedRoles, ...acceptedRoles];
+        this.#acceptedRoles = [...this.#acceptedRoles, ...acceptedRoles]
     }
 
 
@@ -29,20 +30,20 @@ export class RequireRole extends Middleware {
      * @returns {Promise<boolean>} Resolves to `true` if the middleware passes, `false` otherwise.
      */
     async handle() {
-        const currentUser = await getCurrentUser();
+        // const currentUser = await getCurrentUser();
+        /** @type {User} */
+        const currentUser = Auth.getUser()
 
-        if (!currentUser?.applicationUserRoles) {
+        if (!currentUser?.roles) {
             return MiddlewareResult.notFound()
         }
 
-        const hasRequiredRole = currentUser.applicationUserRoles.some(roleEntry =>
-            this.#acceptedRoles.includes(roleEntry.role)
-        );
+        const hasRequiredRole = this.#acceptedRoles.some(role => currentUser.hasRole(role))
 
         if (!hasRequiredRole) {
-            return MiddlewareResult.notFound();
+            return MiddlewareResult.notFound()
         }
 
-        return MiddlewareResult.success();
+        return MiddlewareResult.success()
     }
 }

@@ -17,14 +17,10 @@ export class SetAuthCookie extends Middleware {
             if (Cookie.get('x-session') === null) {
                 const me = await getCurrentUser();
 
-                if (me !== null) {
+                if (me !== null && me !== undefined) {
                     Cookie.set(
                         'x-session',
-                        JSON.stringify({
-                            id: me.id,
-                            name: me.displayName.replace(' (student)', ''),
-                            email: me.email,
-                        })
+                        JSON.stringify(me.asJson())
                     );
                 }
             }

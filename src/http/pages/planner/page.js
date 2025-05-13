@@ -54,8 +54,6 @@ async function handleAccordionItemClick(moduleItem) {
     renderStudyCards()
     drawConnections()
 
-    console.log(studyRoute.toJson())
-
     await fetcher(`studyRoute/${studyRouteId}`, { method: 'PUT', body: studyRoute.toJson() })
 }
 

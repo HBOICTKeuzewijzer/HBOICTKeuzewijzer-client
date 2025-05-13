@@ -1,6 +1,7 @@
 import styling from './page.css?raw'
 import { router } from '../router'
-import { Cookie } from '@/utils'
+import { Auth, Cookie } from '@/utils'
+import Role from '@/models/role';
 
 export default function IndexPage() {
     // check if user is logged in, if so redirect to profile/studyroutes
@@ -39,8 +40,19 @@ function onClickGuest() {
 }
 
 IndexPage.onPageLoaded = () => {
-    if (Cookie.get('x-session') !== null) {
-        router.navigate('/profile/mijn-routes');
+    if (Auth.isLoggedIn()) {
+        /** @type {User} */
+        const user = Auth.getUser()
+
+        if (user.hasRole(Role.Student)) {
+            router.navigate('/profile/mijn-routes');
+        }
+        else if (user.hasRole(Role.ModuleAdmin) || user.hasRole(Role.SystemAdmin)) {
+            router.navigate('/admin')
+        }
+        else if (user.hasRole(Role.SLB)) {
+            router.navigate('/slb')
+        }
     }
 
     document.querySelector("#login").addEventListener('click', onClickLogin);

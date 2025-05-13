@@ -177,7 +177,7 @@ StudyRoutes.onPageLoaded = () => {
         addStudyRouteDialogNoBtn.addEventListener("click", newRouteNoCallback);
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 

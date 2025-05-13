@@ -81,8 +81,6 @@ function handleSemesterClick(semester) {
 let studyRoute
 
 async function loadStudyRoute() {
-    console.log(moduleData)
-
     const requiredModules = []
 
     for (const [category, modules] of moduleData.entries()) {
