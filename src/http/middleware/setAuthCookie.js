@@ -1,7 +1,7 @@
-import { getCurrentUser } from '@/utils/getCurrentUser'
+import { getCurrentUser } from '@utils/getCurrentUser'
 import { Middleware } from '@http/middleware'
 import { Cookie } from '@utils'
-import { MiddlewareResult } from '@/models';
+import { MiddlewareResult } from '@models';
 
 /**
  * Inherits from the base `Middleware` class.

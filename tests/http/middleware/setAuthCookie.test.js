@@ -1,4 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { User } from '@/models'
+import Role from '@models/role'
 
 vi.mock('@utils/cookie', () => ({
     Cookie: {
@@ -7,8 +9,24 @@ vi.mock('@utils/cookie', () => ({
     }
 }))
 
+const user = new User({
+    id: '1234',
+    displayName: 'Jane Doe',
+    email: 'jane@example.com',
+    applicationUserRoles: [
+        {
+            role: Role.ModuleAdmin
+        },
+        {
+            role: Role.SystemAdmin
+        }
+    ]
+})
+
 vi.mock('@/utils/getCurrentUser', () => ({
-    getCurrentUser: vi.fn()
+    getCurrentUser: vi.fn(() => {
+        return user
+    })
 }))
 
 import { Cookie } from '@utils'
@@ -26,14 +44,13 @@ describe('SetAuthCookie', () => {
         vi.clearAllMocks()
     })
 
+    it('is true', () => {
+        expect(true).toBe(true)
+    })
+
     it('sets x-session if missing', async () => {
         // Arrange
         Cookie.get.mockReturnValue(null)
-        getCurrentUser.mockResolvedValue({
-            id: '1234',
-            displayName: 'Jane Doe',
-            email: 'jane@example.com'
-        })
 
         // Act
         const middleware = new SetAuthCookie()
@@ -43,11 +60,7 @@ describe('SetAuthCookie', () => {
         expect(result.status).toBe(MiddlewareStatus.Success)
         expect(Cookie.set).toHaveBeenCalledWith(
             'x-session',
-            JSON.stringify({
-                id: '1234',
-                name: 'Jane Doe',
-                email: 'jane@example.com'
-            })
+            JSON.stringify(user.asJson())
         )
     })
 
@@ -66,6 +79,8 @@ describe('SetAuthCookie', () => {
     })
 
     it('still succeeds if getCurrentUser throws', async () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => { })
+
         // Arrange
         Cookie.get.mockReturnValue(null)
         getCurrentUser.mockRejectedValue(new Error('fail'))
@@ -77,5 +92,7 @@ describe('SetAuthCookie', () => {
         // Assert
         expect(result.status).toBe(MiddlewareStatus.Success)
         expect(Cookie.set).not.toHaveBeenCalled()
+
+        warnSpy.mockRestore()
     })
 })

@@ -1,7 +1,6 @@
-import { getCurrentUser } from '@/utils/getCurrentUser'
 import { Middleware } from '@http/middleware'
-import { MiddlewareResult, User } from '@/models'
-import { Auth } from '@/utils'
+import { MiddlewareResult } from '@/models'
+import { Auth } from '@utils'
 
 /**
  * @typedef {'User' | 'Student' | 'SLB' | 'ModuleAdmin' | 'SystemAdmin'} Role
