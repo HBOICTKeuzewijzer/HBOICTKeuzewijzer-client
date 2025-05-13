@@ -16,14 +16,16 @@ export const routes = [
         .add('/studieroute/:uuid', () => import('@pages//planner/page.js')).routes,
 
     ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet()], '/profile')
-        .add('/mijn-routes', () => import('@pages/profile/studyroutes/page')).routes,
+        .add('/settings', () => import('@pages/profile/settings/page.js'))
+        .add('/mijn-routes', () => import('@pages/profile/studyroutes/page'), [new RequireRole([Role.Student])]).routes,
 
     ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet()])
         .add('/messages', () => import('@pages/messages/page.js'))
         .add('/messages/:uuid', () => import('@pages/messages/page.js')).routes,
 
-    ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet({ silent: true }), new RequireRole([Role.SLB])], '/slb')
-        .add('/review/:uuid', () => import('@pages/slb/review/page.js')).routes,
+    ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet({ silent: true }), new RequireRole([Role.SLB])])
+        .add('/slb', () => import('@pages/slb/page.js'))
+        .add('/slb/review/:uuid', () => import('@pages/slb/review/page.js')).routes,
 
     ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet({ silent: true })], '/admin')
         .add('/', () => import('@pages/admin/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])

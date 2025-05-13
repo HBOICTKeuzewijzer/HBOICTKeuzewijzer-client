@@ -45,7 +45,6 @@ export class ChatSidebar extends HTMLElement {
         ])
             .then(([currentUser, chatData]) => {
                 this.currentUser = currentUser;
-                console.log("Ingelogde gebruiker:", this.currentUser);
                 this.renderChatSidebar(chatData.items);
             })
             .catch((error) => {
@@ -75,7 +74,6 @@ export class ChatSidebar extends HTMLElement {
     getChatData() {
         return fetcher('chat', { method: 'GET' })
             .then(data => {
-                console.log("Ontvangen chatgegevens:", data);
                 return data;
             })
             .catch(error => {
