@@ -17,18 +17,21 @@ export class SetAuthCookie extends Middleware {
             if (Cookie.get('x-session') === null) {
                 const me = await getCurrentUser();
 
-                Cookie.set(
-                    'x-session',
-                    JSON.stringify({
-                        id: me.id,
-                        name: me.displayName.replace(' (student)', ''),
-                        email: me.email,
-                    })
-                );
+                if (me !== null) {
+                    Cookie.set(
+                        'x-session',
+                        JSON.stringify({
+                            id: me.id,
+                            name: me.displayName.replace(' (student)', ''),
+                            email: me.email,
+                        })
+                    );
+                }
             }
 
             return MiddlewareResult.success();
-        } catch {
+        } catch (err) {
+            console.warn(err)
             return MiddlewareResult.success();
         }
     }
