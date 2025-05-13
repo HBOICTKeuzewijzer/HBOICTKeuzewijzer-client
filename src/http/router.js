@@ -1,4 +1,5 @@
 import { MiddlewarePipeline } from '@http/middlewarePipeline'
+import MiddlewareStatus from '@models/routing/middlewareStatus'
 import { routes } from '@/routes'
 
 class Router {
@@ -26,6 +27,14 @@ class Router {
      */
     get currentRoute() {
         return window.location.pathname
+    }
+
+    /**
+     * Gets the full route
+     * @returns {string}
+     */
+    get fullRoute() {
+        return window.location
     }
 
     /**
@@ -90,14 +99,24 @@ class Router {
 
         const currentRoute = this.currentRoute
         const params = matchedRoute.match(this.currentRoute + window.location.search)
-        const context = { currentRoute, params }
+        const fullRoute = this.fullRoute
+        const context = { currentRoute, params, fullRoute }
 
         // Execute middleware before rendering the page.
-        const middlewarePassed = await MiddlewarePipeline.run(matchedRoute.middlewares, context)
-        if (!middlewarePassed) return this.#render(() => import('@pages/404.js'))
-
-        // Render the matched route component.
-        this.#render(matchedRoute.component, params)
+        const middlewareResult = await MiddlewarePipeline.run(matchedRoute.middlewares, context)
+        console.log({ "pipelineResult": middlewareResult })
+        switch (middlewareResult.status) {
+            case MiddlewareStatus.Success:
+                return this.#render(matchedRoute.component, params)
+            case MiddlewareStatus.NotFound:
+                return this.#render(() => import('@pages/404.js'))
+            case MiddlewareStatus.Redirect:
+                setTimeout(() => router.navigate(middlewareResult.redirectLocation), 0)
+                return
+            default:
+                console.warn('Unhandled middleware result status:', middlewareResult.status);
+                return this.#render(() => import('@pages/404.js'));
+        }
     }
 
     /**

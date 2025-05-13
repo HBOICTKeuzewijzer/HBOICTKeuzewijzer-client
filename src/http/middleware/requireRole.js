@@ -1,5 +1,6 @@
 import { getCurrentUser } from '@/utils/getCurrentUser';
 import { Middleware } from '@http/middleware';
+import { MiddlewareResult } from '@/models';
 
 /**
  * @typedef {'User' | 'Student' | 'SLB' | 'ModuleAdmin' | 'SystemAdmin'} Role
@@ -31,13 +32,17 @@ export class RequireRole extends Middleware {
         const currentUser = await getCurrentUser();
 
         if (!currentUser?.applicationUserRoles) {
-            return false;
+            return MiddlewareResult.notFound()
         }
 
         const hasRequiredRole = currentUser.applicationUserRoles.some(roleEntry =>
             this.#acceptedRoles.includes(roleEntry.role)
         );
 
-        return hasRequiredRole;
+        if (!hasRequiredRole) {
+            return MiddlewareResult.notFound();
+        }
+
+        return MiddlewareResult.success();
     }
 }

@@ -11,8 +11,8 @@ export class Cookie {
 
         document.cookie.split(';').forEach(cookie => {
             const [rawKey, rawVal] = cookie.split('=')
-            const key = decodeURIComponent(rawKey)
-            const val = decodeURIComponent(rawVal || '')
+            const key = decodeURIComponent(rawKey.trim())
+            const val = decodeURIComponent(rawVal.trim() || '')
 
             cookies[key] = val
         })
@@ -52,8 +52,8 @@ export class Cookie {
             typeof expires === 'number'
                 ? new Date(Date.now() + expires * 864e5)
                 : expires instanceof Date
-                  ? expires
-                  : new Date(expires)
+                    ? expires
+                    : new Date(expires)
 
         parts.push(`expires=${exp.toUTCString()}`)
         parts.push(`path=${path}`)

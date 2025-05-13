@@ -1,5 +1,4 @@
 import { Middleware } from '@http/middleware'
-import { Cookie } from '@utils'
 
 /**
  * Inherits from the base `Middleware` class.

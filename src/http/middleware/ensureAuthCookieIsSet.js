@@ -1,6 +1,6 @@
 import { Middleware } from '@http/middleware'
 import { Cookie } from '@utils'
-import { router } from '../router';
+import { MiddlewareResult } from '@models';
 
 /**
  * Inherits from the base `Middleware` class.
@@ -30,16 +30,15 @@ export class EnsureAuthCookieIsSet extends Middleware {
 
             if (sessionCookie === null) {
                 if (this.#silent) {
-                    router.navigate('/');
+                    return MiddlewareResult.redirect('/')
                 } else {
-                    router.navigate('/login');
+                    return MiddlewareResult.redirect(`/login?returnUrl=${context.fullRoute}`)
                 }
-                return false;
             }
 
-            return true;
+            return MiddlewareResult.success();
         } catch {
-            return false;
+            return MiddlewareResult.notFound();
         }
     }
 }
