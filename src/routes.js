@@ -11,9 +11,9 @@ export const routes = [
     new Route('/guest', () => import('@pages/guest/planner/page.js'), new SetAuthCookie()),
     new Route('/login', () => import('@pages/login.js')),
 
-    ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet(), new EnsureCohortIsSet()])
+    ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet(), new EnsureCohortIsSet(), new RequireRole([Role.Student])])
         .add('/studieroute', () => import('@pages/planner/page.js'))
-        .add('/studieroute/:uuid', () => import('@pages//planner/page.js')).routes,
+        .add('/studieroute/:uuid', () => import('@pages/planner/page.js')).routes,
 
     ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet()], '/profile')
         .add('/settings', () => import('@pages/profile/settings/page.js'))

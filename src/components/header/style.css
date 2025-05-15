@@ -1,0 +1,74 @@
+::slotted(img) {
+    height: 53px;
+    object-fit: contain;
+}
+
+button {
+    border: none;
+    height: 53px;
+    border-radius: var(--rounded-sm);
+    aspect-ratio: 1;
+    box-shadow: none;
+    padding: 0;
+    cursor: pointer;
+    background-color: white;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+}
+
+button:hover {
+    background-color: rgba(var(--color-gray-3), 0.1);
+    border-color: rgba(var(--color-gray-3), 0.4);
+}
+
+button:active {
+    background-color: rgba(var(--color-gray-3), 0.2);
+    border-color: rgba(var(--color-gray-3), 0.5);
+    transform: scale(0.97);
+}
+
+header {
+    box-sizing: border-box;
+    height: var(--header-height);
+    padding: 12px 32px;
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    border-bottom: 2px solid rgb(var(--color-gold));
+}
+
+.header-routes {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    width: 100%;
+    height: calc(100vh - var(--header-height));
+    background-color: white;
+    z-index: 999;
+    padding: 16px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    
+    /* Hidden state */
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.header-routes.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+
+
+/* Responsive Header Padding */
+@media (min-width: 640px) {
+    header {
+        padding: 12px 48px 12px 48px;
+    }
+}

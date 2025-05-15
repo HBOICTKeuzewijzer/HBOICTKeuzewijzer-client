@@ -1,0 +1,52 @@
+.main {
+  width: 100%;
+  display: flex;
+  border-radius: var(--rounded-sm);
+  background-color: rgba(var(--color-light-blue), 0.2);
+}
+
+a {
+  display: inline-block;
+  flex-grow: 1;
+  padding: 0.5em 1em;
+  text-decoration: none;
+  color: rgb(var(--color-black))
+}
+
+a:hover {
+  background-color: rgba(var(--color-yellow), 0.5);
+  text-decoration: underline;
+}
+
+button.toggle {
+  background: none;
+  border: none;
+  height: 37px;
+  aspect-ratio: 1;
+  cursor: pointer;
+}
+
+.dropdown {
+  display: flex;
+  flex-direction: row;
+  padding-top: 4px;
+}
+
+.dropdown .line {
+  display: flex;
+  width: 4px;
+  margin-left: 5px;
+  margin-right: 5px;
+  background-color: rgba(var(--color-light-blue), 0.2);
+}
+
+.dropdown .content {
+  flex-grow: 1;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+}
+
+:host(.open) .dropdown .content {
+  display: flex;
+}
