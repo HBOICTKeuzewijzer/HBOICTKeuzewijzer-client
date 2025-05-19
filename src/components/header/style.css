@@ -41,6 +41,29 @@ header {
   border-bottom: 2px solid rgb(var(--color-gold));
 }
 
+/* Keyframe animations */
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
 /* Navigation menu (mobile default) */
 .header-routes {
   position: fixed;
@@ -60,14 +83,18 @@ header {
   opacity: 0;
   transform: translateY(-20px);
   pointer-events: none;
-  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-/* Show state */
+/* Menu open */
 .header-routes.open {
-  opacity: 1;
-  transform: translateY(0);
+  animation: slideFadeIn 0.4s ease forwards;
   pointer-events: auto;
+}
+
+/* Menu closing animation */
+.header-routes.closing {
+  animation: slideFadeOut 0.4s ease forwards;
+  pointer-events: none;
 }
 
 .header-buttons {
@@ -106,6 +133,7 @@ header {
     opacity: 1 !important;
     transform: none !important;
     pointer-events: auto;
+    animation: none !important;
   }
 
   .profile-slot {
