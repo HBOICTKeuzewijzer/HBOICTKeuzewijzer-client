@@ -12,8 +12,12 @@ const template = html`
         <div class="header-routes-container">
             <div class="header-routes">
                 <slot name="links"></slot>
+                
+                <div class="profile-slot">
+                    <slot name="profile"></slot>
+                </div>
             </div>
-
+        
             <button id="mob-toggle">
                 <slot name="mob-icon"></slot>
             </button>

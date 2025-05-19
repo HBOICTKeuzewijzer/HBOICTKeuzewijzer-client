@@ -207,3 +207,19 @@ a[data-icon] {
         display: block;
     }
 }
+
+#profile {
+    width: 40px;
+    height: 40px;
+    background-color: rgb(var(--color-light-blue));
+    box-shadow: rgba(var(--color-blue), 0.2) 0 0 0 1px;
+    border: none;
+    border-radius: var(--rounded-sm) !important;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px !important;
+}
+
+#action-link {
+    text-decoration: none;
+}
