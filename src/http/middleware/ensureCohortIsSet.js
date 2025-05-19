@@ -1,3 +1,4 @@
+import { MiddlewareResult } from '@/models'
 import { Middleware } from '@http/middleware'
 
 /**
@@ -9,6 +10,6 @@ export class EnsureCohortIsSet extends Middleware {
      * @returns {Promise<boolean>} Resolves to `true` if the middleware passes, `false` otherwise.
      */
     async handle(context) {
-        return true
+        return MiddlewareResult.success()
     }
 }
