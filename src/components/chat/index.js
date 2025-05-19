@@ -84,7 +84,7 @@ export class Chat extends CustomElement {
                     senderName = this.chat.student?.displayName || 'Student'
                 }
 
-                this.addMessage(senderName, message.messageText, isFromMe)
+                this.addMessage(senderName, message.messageText, isFromMe, message.sentAt)
             })
 
             this.scrollToBottom()
@@ -123,22 +123,26 @@ export class Chat extends CustomElement {
         })
     }
 
-    addMessage(sender, message, isFromMe = false) {
+    addMessage(sender, message, isFromMe = false, sentAt) {
         const container = this.shadowRoot.querySelector('.chat-messages')
         const msgEl = document.createElement('div')
         msgEl.className = isFromMe ? 'message4' : 'message2'
+
+        const time = new Date(sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 
         msgEl.innerHTML = isFromMe
             ? `
         <div class="content2">
           <div class="titel">${sender}</div>
           <div class="message5">${this.linkify(message)}</div>
+          <div class="time">${time}</div>
         </div>
       `
             : `
         <div class="content">
           <div class="titel1">${sender}</div>
           <div class="message5">${this.linkify(message)}</div>
+          <div class="time">${time}</div>
         </div>
       `
 

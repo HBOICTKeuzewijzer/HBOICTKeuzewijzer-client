@@ -117,3 +117,71 @@ chat-sidebar {
     width: 300px;
     height: 100%;
 }
+
+.time {
+  font-size: 11px;
+  color: #777;
+  text-align: right;
+  margin-top: 4px;
+  margin-left: auto;
+}
+
+@media screen and (max-width: 768px) {
+  .chat-container {
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  chat-sidebar {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  .chat {
+    flex: 1;
+    height: auto;
+  }
+
+  .chat-input {
+    flex-direction: column;
+    height: auto;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .input-wrapper {
+    width: 100%;
+    height: auto;
+  }
+
+  .send {
+    width: 40px;
+    height: 40px;
+    align-self: flex-end;
+  }
+
+  .chat-messages {
+    padding: 16px;
+  }
+
+  .content,
+  .content2 {
+    max-width: 100%;
+  }
+
+  .titel,
+  .titel1 {
+    font-size: 16px;
+  }
+
+  .message3,
+  .message5 {
+    font-size: 14px;
+  }
+
+  .time {
+    font-size: 10px;
+  }
+}
+
