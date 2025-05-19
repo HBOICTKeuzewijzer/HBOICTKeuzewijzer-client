@@ -6,7 +6,7 @@
 /* Mobile toggle button */
 #mob-toggle {
   border: none;
-  height: 53px;
+  height: 100%;
   aspect-ratio: 1;
   border-radius: var(--rounded-sm);
   padding: 0;
@@ -55,7 +55,7 @@ header {
   gap: 4px;
   background-color: white;
   box-sizing: border-box;
-  z-index: 999;
+  z-index: 10;
 
   opacity: 0;
   transform: translateY(-20px);
@@ -70,10 +70,12 @@ header {
   pointer-events: auto;
 }
 
-/* Slot container for right alignment */
-.profile-slot {
+.header-buttons {
   display: flex;
+  height: 100%;
   justify-content: flex-end;
+  align-items: center;
+  gap: 1em;
 }
 
 /* Responsive: medium screens */
@@ -81,10 +83,7 @@ header {
   header {
     padding: 12px 48px;
   }
-}
 
-/* Responsive: large screens (desktop) */
-@media (min-width: 1024px) {
   #mob-toggle {
     display: none;
   }

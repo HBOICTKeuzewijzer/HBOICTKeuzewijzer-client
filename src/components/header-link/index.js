@@ -51,7 +51,7 @@ export class HeaderLink extends CustomElement {
         try {
             const parsed = JSON.parse(raw);
             return Array.isArray(parsed) ? parsed : null;
-        } catch (e) {
+        } catch {
             console.warn('Invalid role format:', raw);
             return null;
         }
@@ -81,7 +81,9 @@ export class HeaderLink extends CustomElement {
     connectedCallback() {
         this.applyTemplate(template);
 
-        if (!this.#shouldShow()) {
+        const showElement = this.#shouldShow()
+
+        if (!showElement) {
             this.style.display = 'none';
             return;
         }
@@ -121,6 +123,7 @@ export class HeaderLink extends CustomElement {
 
         // Handle auth filtering
         if (authAttr === 'true' && !isLoggedIn) return false;
+        if (authAttr === 'false' && !isLoggedIn) return true;
         if (authAttr === 'false' && isLoggedIn) return false;
         if (authAttr === 'shown') return true;
 

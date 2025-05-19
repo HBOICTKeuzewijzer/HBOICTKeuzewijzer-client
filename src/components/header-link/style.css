@@ -79,7 +79,7 @@ button.toggle:hover {
 }
 
 /* Desktop-specific styles */
-@media (min-width: 1024px) {
+@media (min-width: 640px) {
   button.toggle {
     display: none;
   }
