@@ -19,11 +19,6 @@
     transform 0.1s ease;
 }
 
-#mob-toggle:hover {
-  background-color: rgba(var(--color-gray-3), 0.1);
-  border-color: rgba(var(--color-gray-3), 0.4);
-}
-
 #mob-toggle:active {
   background-color: rgba(var(--color-gray-3), 0.2);
   border-color: rgba(var(--color-gray-3), 0.5);

@@ -13,8 +13,6 @@ const template = html`
             <div class="header-routes">
                 <slot name="links"></slot>
             </div>
-    
-            
 
             <div class="header-buttons">
                 <slot name="messages"></slot>
