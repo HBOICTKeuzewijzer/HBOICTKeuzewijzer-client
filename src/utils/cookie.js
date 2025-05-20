@@ -12,7 +12,7 @@ export class Cookie {
         document.cookie.split(';').forEach(cookie => {
             const [rawKey, rawVal] = cookie.split('=')
             const key = decodeURIComponent(rawKey.trim())
-            const val = decodeURIComponent(rawVal.trim() || '')
+            const val = rawVal ? decodeURIComponent(rawVal.trim()) : ''; // Controleer op rawVal
 
             cookies[key] = val
         })
