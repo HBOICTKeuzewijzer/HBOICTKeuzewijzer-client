@@ -54,8 +54,6 @@ async function handleAccordionItemClick(moduleItem) {
     renderStudyCards()
     drawConnections()
 
-    console.log(studyRoute.toJson())
-
     await fetcher(`studyRoute/${studyRouteId}`, { method: 'PUT', body: studyRoute.toJson() })
 }
 
@@ -164,10 +162,12 @@ function renderStudyCards() {
  * Module data is populated dynamically via `loadModules`.
  * @type {Map<string, { title: Category, modules?: Module[] }>}
  */
-let moduleData = new Map()
+let moduleData
 
 async function loadModules() {
     try {
+        moduleData = new Map()
+
         let [categories, modules] = await Promise.all([
             (async () => {
                 const data = await fetcher('category', { method: 'GET' })
@@ -242,7 +242,9 @@ function renderModuleAccordion() {
         .join('')
 
     containers.forEach(container => {
-        if (container) container.innerHTML = accordionHTML
+        if (container) {
+            container.innerHTML = accordionHTML
+        }
     })
 }
 

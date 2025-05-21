@@ -1,7 +1,7 @@
-import { getCurrentUser } from '@/utils/getCurrentUser'
+import { getCurrentUser } from '@utils/getCurrentUser'
 import { Middleware } from '@http/middleware'
 import { Cookie } from '@utils'
-import { MiddlewareResult } from '@/models';
+import { MiddlewareResult } from '@models';
 
 /**
  * Inherits from the base `Middleware` class.
@@ -17,15 +17,8 @@ export class SetAuthCookie extends Middleware {
             if (Cookie.get('x-session') === null) {
                 const me = await getCurrentUser();
 
-                if (me !== null) {
-                    Cookie.set(
-                        'x-session',
-                        JSON.stringify({
-                            id: me.id,
-                            name: me.displayName.replace(' (student)', ''),
-                            email: me.email,
-                        })
-                    );
+                if (me !== null && me !== undefined) {
+                    document.cookie = `${encodeURIComponent('x-session')}=${encodeURIComponent(JSON.stringify(me.asJson()))}; path=/`
                 }
             }
 

@@ -147,7 +147,6 @@ export class ChatSidebar extends HTMLElement {
         console.log("Ontvangen chatgegevens via fetcher:");
         return fetcher('chat', { method: 'GET' })
             .then(data => {
-                console.log("Ontvangen chatgegevens:", data);
                 return data;
             })
             .catch(error => {

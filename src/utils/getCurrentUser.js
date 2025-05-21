@@ -1,9 +1,14 @@
+import { User } from "@/models";
+
+/** @type {User} */
 let currentUser = null;
+
+/** @type {Promise<User>} */
 let currentUserPromise = null;
 
 /**
  * Returns the current user info, cached after first fetch.
- * @returns {Promise<Object>}
+ * @returns {Promise<User>}
  */
 export function getCurrentUser() {
     if (currentUser) return Promise.resolve(currentUser);
@@ -22,8 +27,10 @@ export function getCurrentUser() {
                 return response.json();
             })
             .then(data => {
-                currentUser = data;
-                return data;
+                if (data === null) return
+
+                currentUser = new User(data)
+                return currentUser;
             })
             .catch(() => {
                 currentUserPromise = null;

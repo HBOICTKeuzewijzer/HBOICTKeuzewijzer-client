@@ -11,8 +11,8 @@ export class Cookie {
 
         document.cookie.split(';').forEach(cookie => {
             const [rawKey, rawVal] = cookie.split('=')
-            const key = decodeURIComponent(rawKey.trim())
-            const val = rawVal ? decodeURIComponent(rawVal.trim()) : ''; // Controleer op rawVal
+            const key = decodeURIComponent(rawKey?.trim())
+            const val = decodeURIComponent(rawVal?.trim() || '')
 
             cookies[key] = val
         })
@@ -44,6 +44,7 @@ export class Cookie {
         } = {},
     ) {
         if (name.includes(' ')) throw new Error('[Cookie - Set] Cannot set a cookie with an invalid name')
+
         if (!value) throw new Error('[Cookie - Set] Cannot set a cookie with an invalid value')
 
         const parts = [`${encodeURIComponent(name)}=${encodeURIComponent(value)}`]

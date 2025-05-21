@@ -157,7 +157,6 @@ StudyRoutes.onPageLoaded = () => {
         table.dataTable(new DatatableConfig({
             route: "studyroute/mine",
             columns: [
-                new DatatableColumn({ path: "id", title: "Id" }),
                 new DatatableColumn({ path: "displayName", title: "Naam" })
             ],
             paging: false,
@@ -177,7 +176,7 @@ StudyRoutes.onPageLoaded = () => {
         addStudyRouteDialogNoBtn.addEventListener("click", newRouteNoCallback);
     }
     catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }
 

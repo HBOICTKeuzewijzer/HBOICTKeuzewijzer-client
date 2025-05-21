@@ -70,11 +70,11 @@ export default function ModulesPage() {
     `
 }
 
-    ModulesPage.onPageLoaded = () => {
+ModulesPage.onPageLoaded = () => {
     document.querySelector('#add-button').addEventListener('click', () => {
         router.navigate('/admin/modules/create');
     });
-    
+
     let currentRow = null
 
     try {
@@ -122,6 +122,6 @@ export default function ModulesPage() {
             })
         )
     } catch (error) {
-        console.log(error)
+        console.error(error)
     }
 }

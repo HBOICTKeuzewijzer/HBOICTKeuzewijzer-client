@@ -23,7 +23,6 @@ export class EnsureAuthCookieIsSet extends Middleware {
      * @param {Object} context - The context object containing route and request details.
      * @returns {Promise<boolean>} Resolves to `true` if the middleware passes, `false` otherwise.
      */
-    // eslint-disable-next-line no-unused-vars
     async handle(context) {
         try {
             const sessionCookie = Cookie.get('x-session');
