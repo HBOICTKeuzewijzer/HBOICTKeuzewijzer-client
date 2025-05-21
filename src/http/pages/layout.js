@@ -1,53 +1,11 @@
 import { Auth, fetcher } from '@utils';
-
+import '@components/toaster';
 export default function Layout(children) {
     const imageURL = new URL('@assets/images/windesheim-logo.png', import.meta.url).href;
     const user = Auth.getUser();
     let hasUnreadMessages = false;
 
-    function injectStyles() {
-        const style = document.createElement('style');
-        style.innerHTML = `
-        .toaster {
-            position: fixed;
-            top: 80px; /* Onder de header */
-            right: 20px;
-            background: rgba(0, 0, 0, 0.7); /* Transparante achtergrond */
-            color: white;
-            padding: 20px 40px; /* Grotere proporties */
-            border-radius: 12px;
-            font-size: 16px; /* Grotere tekst */
-            z-index: 1000;
-            opacity: 0;
-            transform: translateY(-20%);
-            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Schaduw voor diepte */
-        }
-        
-        .toaster.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .toaster.hidden {
-            opacity: 0;
-            transform: translateY(-20%);
-        }
-    `;
-        document.head.appendChild(style);
-    }
-    function showToaster() {
-        const toaster = document.getElementById('toaster');
-        if (toaster) {
-            toaster.classList.remove('hidden');
-            toaster.classList.add('visible');
-
-            setTimeout(() => {
-                toaster.classList.remove('visible');
-                toaster.classList.add('hidden');
-            }, 5000);
-        }
-    }
+  
 
     function getInitials(name) {
         if (!name) return '';
@@ -74,9 +32,11 @@ export default function Layout(children) {
                 if (Array.isArray(response) && response.some(chat => chat.hasUnread)) {
                     hasUnreadMessages = true;
 
-                    if (!hadUnreadMessages) {
-                        showToaster();
+                if (!hadUnreadMessages) {
+                    console.log('Je hebt ongelezen berichten!');
+                        document.querySelector('app-toaster')?.show('Je hebt ongelezen berichten!');
                     }
+
                 } else {
                     hasUnreadMessages = false;
                 }
@@ -94,9 +54,6 @@ export default function Layout(children) {
     function toggleUnreadIndicator(hasUnread) {
         const unreadContainer = document.querySelector('a[href="/messages"] span[style="position:relative;"]');
         const unreadIndicator = unreadContainer?.querySelector('.relative.flex.size-3');
-
-        console.log('Has unread:', hasUnread);
-        console.log('Unread container element:', unreadContainer);
 
         if (hasUnread) {
             if (!unreadIndicator) {
@@ -118,12 +75,8 @@ export default function Layout(children) {
         }
     }
 
-    injectStyles();
 
-    setTimeout(() => {
-        pollUnreadMessages();
-        setInterval(pollUnreadMessages, 30000);
-    }, 0);
+pollUnreadMessages();
 
     return /*html*/ `
     <div>
@@ -172,10 +125,9 @@ export default function Layout(children) {
         </header>
         <main>${children}</main>
 
-        <!-- Toaster Container -->
-        <div id="toaster" class="toaster hidden">
-            <p>Je hebt ongelezen berichten!</p>
-        </div>
+       <!-- Custom Element Toaster -->
+<app-toaster></app-toaster>
+
     </div>
 `;
 
