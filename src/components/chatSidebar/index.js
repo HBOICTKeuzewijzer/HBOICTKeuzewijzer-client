@@ -11,7 +11,7 @@ export class ChatSidebar extends HTMLElement {
         shadow.innerHTML = `
         <style> ${styles}</style>        
           <div id="selected-chat">
-            <button id="toggle-sidebar" class="open-btn" style="display: none;"></button>
+            
           </div>
           <div id="chat-sidebar">
             <div class="sidebar-header">
@@ -52,18 +52,18 @@ export class ChatSidebar extends HTMLElement {
             });
 
         const sidebar = this.shadowRoot.getElementById('chat-sidebar');
-        const toggleButton = this.shadowRoot.getElementById('toggle-sidebar');
+        // const toggleButton = this.shadowRoot.getElementById('toggle-sidebar');
 
-        toggleButton.style.display = 'block';
+        // toggleButton.style.display = 'block';
 
         let isSidebarOpen = true;
         toggleButton.textContent = '^';
 
-        toggleButton.addEventListener('click', () => {
-            isSidebarOpen = !isSidebarOpen;
-            sidebar.style.display = isSidebarOpen ? 'flex' : 'none';
-            toggleButton.textContent = isSidebarOpen ? '^' : 'v';
-        });
+        // toggleButton.addEventListener('click', () => {
+        //     isSidebarOpen = !isSidebarOpen;
+        //     sidebar.style.display = isSidebarOpen ? 'flex' : 'none';
+        //     toggleButton.textContent = isSidebarOpen ? '^' : 'v';
+        // });
 
         const searchBar = this.shadowRoot.getElementById('search-bar');
         searchBar.addEventListener('input', (event) => {
@@ -99,15 +99,15 @@ export class ChatSidebar extends HTMLElement {
     renderChatSidebar(chatData) {
         const chatListElement = this.shadowRoot.getElementById('chat-list');
         const selectedChatContainer = this.shadowRoot.getElementById('selected-chat');
-        const toggleButton = this.shadowRoot.getElementById('toggle-sidebar');
+        // const toggleButton = this.shadowRoot.getElementById('toggle-sidebar');
 
-        if (!toggleButton.dataset.listenerAdded) {
-            toggleButton.addEventListener('click', () => {
-                const sidebar = this.shadowRoot.getElementById('chat-sidebar');
-                sidebar.classList.toggle('open');
-            });
-            toggleButton.dataset.listenerAdded = "true";
-        }
+        // if (!toggleButton.dataset.listenerAdded) {
+        //     toggleButton.addEventListener('click', () => {
+        //         const sidebar = this.shadowRoot.getElementById('chat-sidebar');
+        //         sidebar.classList.toggle('open');
+        //     });
+        //     toggleButton.dataset.listenerAdded = "true";
+        // }
 
         if (!this.currentUser) {
             console.error("De huidige gebruiker is niet geladen.");
@@ -159,7 +159,7 @@ export class ChatSidebar extends HTMLElement {
     `;
 
                 selectedChatContainer.appendChild(selectedChat);
-                toggleButton.style.display = 'block';
+                // toggleButton.style.display = 'block';
                 const chatId = chat.id
 
                 router.navigate(`/messages/${chatId}`);

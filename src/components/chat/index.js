@@ -22,6 +22,8 @@ export class Chat extends CustomElement {
     connectedCallback() {
         const sendBtn = this.shadowRoot.querySelector('#sendbutton')
         const input = this.shadowRoot.querySelector('.input-field')
+        const toggleBtn = this.shadowRoot.querySelector('.toggle-sidebar')
+        const container = this.shadowRoot.querySelector('.chat-container')
 
         sendBtn?.addEventListener('click', () => {
             const message = input?.value.trim()
@@ -39,6 +41,19 @@ export class Chat extends CustomElement {
                     this.sendMessage(message)
                     input.value = ''
                 }
+            }
+        })
+
+        toggleBtn?.addEventListener('click', () => {
+            container.classList.toggle('sidebar-open')
+            if (!container.classList.contains('sidebar-open')) {
+                input?.focus()
+            }
+        })
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                container.classList.remove('sidebar-open')
             }
         })
 
