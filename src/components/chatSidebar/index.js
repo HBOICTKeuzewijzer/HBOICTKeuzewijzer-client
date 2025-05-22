@@ -1,12 +1,12 @@
-import styles from './style.css?inline';
+import styles from './style.css?inline'
 import { fetcher } from '@/utils'
-import { router } from '@/http/router';
+import { router } from '@/http/router'
 
 export class ChatSidebar extends HTMLElement {
     constructor() {
-        super();
-        this.currentUser = null;
-        const shadow = this.attachShadow({ mode: 'open' });
+        super()
+        this.currentUser = null
+        const shadow = this.attachShadow({ mode: 'open' })
 
         shadow.innerHTML = `
         <style> ${styles}</style>        
@@ -33,100 +33,74 @@ export class ChatSidebar extends HTMLElement {
             </div>
             <div id="chat-list" class="sidebar-content"></div>
           </div>
-        `;
+        `
 
-        this.isMobile = window.matchMedia('(max-width: 768px)').matches;
+        this.isMobile = window.matchMedia('(max-width: 768px)').matches
     }
 
     connectedCallback() {
-        Promise.all([
-            fetcher('auth/me', { method: 'GET' }),
-            this.getChatData(),
-        ])
+        Promise.all([fetcher('auth/me', { method: 'GET' }), this.getChatData()])
             .then(([currentUser, chatData]) => {
-                this.currentUser = currentUser;
-                this.renderChatSidebar(chatData.items);
+                this.currentUser = currentUser
+                this.renderChatSidebar(chatData.items)
             })
-            .catch((error) => {
-                console.error("Fout bij ophalen van gegevens:", error);
-            });
+            .catch(error => {
+                console.error('Fout bij ophalen van gegevens:', error)
+            })
 
-        const sidebar = this.shadowRoot.getElementById('chat-sidebar');
-        // const toggleButton = this.shadowRoot.getElementById('toggle-sidebar');
-
-        // toggleButton.style.display = 'block';
-
-        let isSidebarOpen = true;
-        toggleButton.textContent = '^';
-
-        // toggleButton.addEventListener('click', () => {
-        //     isSidebarOpen = !isSidebarOpen;
-        //     sidebar.style.display = isSidebarOpen ? 'flex' : 'none';
-        //     toggleButton.textContent = isSidebarOpen ? '^' : 'v';
-        // });
-
-        const searchBar = this.shadowRoot.getElementById('search-bar');
-        searchBar.addEventListener('input', (event) => {
-            const query = event.target.value.toLowerCase();
-            this.filterChatList(query);
-        });
+        const searchBar = this.shadowRoot.getElementById('search-bar')
+        searchBar.addEventListener('input', event => {
+            const query = event.target.value.toLowerCase()
+            this.filterChatList(query)
+        })
     }
     getChatData() {
         return fetcher('chat', { method: 'GET' })
             .then(data => {
-                return data;
+                return data
             })
             .catch(error => {
-                console.error("Fout bij ophalen van chatgegevens via fetcher:", error);
-                throw error;
-            });
+                console.error('Fout bij ophalen van chatgegevens via fetcher:', error)
+                throw error
+            })
     }
 
     filterChatList(query) {
-        const allChats = this.shadowRoot.querySelectorAll('.chat-item');
+        const allChats = this.shadowRoot.querySelectorAll('.chat-item')
 
-        allChats.forEach((chat) => {
-            const chatName = chat.querySelector('.student-name').textContent.toLowerCase();
-            const chatId = chat.querySelector('.student-id').textContent.toLowerCase();
+        allChats.forEach(chat => {
+            const chatName = chat.querySelector('.student-name').textContent.toLowerCase()
+            const chatId = chat.querySelector('.student-id').textContent.toLowerCase()
             if (chatName.includes(query) || chatId.includes(query)) {
-                chat.style.display = 'flex';
+                chat.style.display = 'flex'
             } else {
-                chat.style.display = 'none';
+                chat.style.display = 'none'
             }
-        });
+        })
     }
 
     renderChatSidebar(chatData) {
-        const chatListElement = this.shadowRoot.getElementById('chat-list');
-        const selectedChatContainer = this.shadowRoot.getElementById('selected-chat');
-        // const toggleButton = this.shadowRoot.getElementById('toggle-sidebar');
-
-        // if (!toggleButton.dataset.listenerAdded) {
-        //     toggleButton.addEventListener('click', () => {
-        //         const sidebar = this.shadowRoot.getElementById('chat-sidebar');
-        //         sidebar.classList.toggle('open');
-        //     });
-        //     toggleButton.dataset.listenerAdded = "true";
-        // }
+        const chatListElement = this.shadowRoot.getElementById('chat-list')
+        const selectedChatContainer = this.shadowRoot.getElementById('selected-chat')
 
         if (!this.currentUser) {
-            console.error("De huidige gebruiker is niet geladen.");
-            return;
+            console.error('De huidige gebruiker is niet geladen.')
+            return
         }
 
-        chatData.forEach((chat) => {
-            const isCurrentUserSLB = this.currentUser.id === chat.slbApplicationUserId;
-            const person = isCurrentUserSLB ? chat.student : chat.slb;
+        chatData.forEach(chat => {
+            const isCurrentUserSLB = this.currentUser.id === chat.slbApplicationUserId
+            const person = isCurrentUserSLB ? chat.student : chat.slb
             if (!person) {
-                console.warn("Geen andere partij gevonden voor deze chat:", chat);
-                return;
+                console.warn('Geen andere partij gevonden voor deze chat:', chat)
+                return
             }
 
-            const displayName = person.displayName || 'Onbekende naam';
-            const displayId = person.email || 'Onbekende ID';
+            const displayName = person.displayName || 'Onbekende naam'
+            const displayId = person.email || 'Onbekende ID'
 
-            const chatItem = document.createElement('div');
-            chatItem.classList.add('chat-item');
+            const chatItem = document.createElement('div')
+            chatItem.classList.add('chat-item')
 
             chatItem.innerHTML = `
             <div class="profile-picture">
@@ -136,18 +110,17 @@ export class ChatSidebar extends HTMLElement {
                 <span class="student-name">${displayName}</span>
                 <span class="student-id">${displayId}</span>
             </div>
-        `;
+        `
 
             chatItem.addEventListener('click', () => {
-                const allItems = this.shadowRoot.querySelectorAll('.chat-item');
-                allItems.forEach((item) => item.classList.remove('selected'));
-                chatItem.classList.add('selected');
+                const allItems = this.shadowRoot.querySelectorAll('.chat-item')
+                allItems.forEach(item => item.classList.remove('selected'))
+                chatItem.classList.add('selected')
 
-                selectedChatContainer.innerHTML = '';
-                selectedChatContainer.appendChild(toggleButton);
+                selectedChatContainer.innerHTML = ''
 
-                const selectedChat = document.createElement('div');
-                selectedChat.classList.add('selected-chat-item');
+                const selectedChat = document.createElement('div')
+                selectedChat.classList.add('selected-chat-item')
                 selectedChat.innerHTML = `
         <div class="profile-picture">
             <img src="" alt="${displayName}" />
@@ -156,18 +129,16 @@ export class ChatSidebar extends HTMLElement {
             <span class="student-name">${displayName}</span>
             <span class="student-id">${displayId}</span>
         </div>
-    `;
+    `
 
-                selectedChatContainer.appendChild(selectedChat);
-                // toggleButton.style.display = 'block';
+                selectedChatContainer.appendChild(selectedChat)
                 const chatId = chat.id
 
-                router.navigate(`/messages/${chatId}`);
+                router.navigate(`/messages/${chatId}`)
                 // hier kan je een functie aanroepen om de chat te laden anders kan je window.location.href = `/messages/${chatId}` proberen dit refreshed wel de pagina;
-            });
+            })
 
-            chatListElement.appendChild(chatItem);
-        });
+            chatListElement.appendChild(chatItem)
+        })
     }
 }
-
