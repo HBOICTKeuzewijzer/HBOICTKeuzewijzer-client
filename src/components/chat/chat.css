@@ -163,5 +163,9 @@ chat-sidebar {
   }
 }
 
+#sendbutton {
+  cursor: pointer;
+}
+
 
 
