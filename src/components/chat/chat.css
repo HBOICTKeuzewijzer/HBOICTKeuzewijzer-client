@@ -53,7 +53,6 @@ body {
     outline: none;
 }
 
-
 .message2,
 .message4 {
     display: flex;
@@ -117,11 +116,11 @@ chat-sidebar {
 }
 
 .time {
-  font-size: 11px;
-  color: #777;
-  text-align: right;
-  margin-top: 4px;
-  margin-left: auto;
+    font-size: 11px;
+    color: #777;
+    text-align: right;
+    margin-top: 4px;
+    margin-left: auto;
 }
 
 .toggle-sidebar {
