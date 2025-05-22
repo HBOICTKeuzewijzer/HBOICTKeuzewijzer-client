@@ -19,6 +19,8 @@ import {
     Datatable,
     Chat,
     ChatSidebar,
+    Header,
+    HeaderLink
 } from '@components'
 customElements.define('x-accordion', Accordion)
 customElements.define('x-dialog', Dialog)
@@ -35,3 +37,5 @@ customElements.define('x-data-table', Datatable)
 customElements.define('x-page-header', PageHeader)
 customElements.define('x-chat', Chat)
 customElements.define('chat-sidebar', ChatSidebar)
+customElements.define('x-header', Header)
+customElements.define('x-header-link', HeaderLink)

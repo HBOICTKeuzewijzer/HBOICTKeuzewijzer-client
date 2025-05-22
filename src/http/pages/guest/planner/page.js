@@ -218,10 +218,12 @@ function renderStudyCards() {
  * Module data is populated dynamically via `loadModules`.
  * @type {Map<string, { title: Category, modules?: Module[] }>}
  */
-let moduleData = new Map()
+let moduleData
 
 async function loadModules() {
     try {
+        moduleData = new Map()
+
         let [categories, modules] = await Promise.all([
             (async () => {
                 const data = await fetcher('category', { method: 'GET' })

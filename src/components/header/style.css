@@ -1,0 +1,142 @@
+::slotted(img) {
+  height: 53px;
+  object-fit: contain;
+}
+
+/* Mobile toggle button */
+#mob-toggle {
+  border: none;
+  height: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--rounded-sm);
+  padding: 0;
+  box-shadow: none;
+  cursor: pointer;
+  background-color: white;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+#mob-toggle:active {
+  background-color: rgba(var(--color-gray-3), 0.2);
+  border-color: rgba(var(--color-gray-3), 0.5);
+  transform: scale(0.97);
+}
+
+/* Header layout */
+header {
+  box-sizing: border-box;
+  height: var(--header-height);
+  padding: 12px 32px;
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  border-bottom: 2px solid rgb(var(--color-gold));
+}
+
+/* Keyframe animations */
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* Navigation menu (mobile default) */
+.header-routes {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  width: 100%;
+  height: calc(100vh - var(--header-height));
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background-color: white;
+  box-sizing: border-box;
+  z-index: 10;
+
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+}
+
+/* Menu open */
+.header-routes.open {
+  animation: slideFadeIn 0.4s ease forwards;
+  pointer-events: auto;
+}
+
+/* Menu closing animation */
+.header-routes.closing {
+  animation: slideFadeOut 0.4s ease forwards;
+  pointer-events: none;
+}
+
+.header-buttons {
+  display: flex;
+  height: 100%;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1em;
+}
+
+/* Responsive: medium screens */
+@media (min-width: 640px) {
+  header {
+    padding: 12px 48px;
+  }
+
+  #mob-toggle {
+    display: none;
+  }
+
+  .header-routes-container {
+    display: flex;
+    flex-grow: 1;
+  }
+
+  .header-routes {
+    position: static;
+    height: auto;
+    padding: 0;
+    overflow: visible;
+    background-color: unset;
+    flex-direction: row;
+    align-items: center;
+    gap: 24px;
+
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto;
+    animation: none !important;
+  }
+
+  .profile-slot {
+    margin-left: auto;
+  }
+
+  header {
+    justify-content: start;
+    gap: 5rem;
+  }
+}

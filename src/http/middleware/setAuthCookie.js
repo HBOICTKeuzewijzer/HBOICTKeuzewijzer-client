@@ -1,6 +1,6 @@
 import { getCurrentUser } from '@utils/getCurrentUser'
 import { Middleware } from '@http/middleware'
-import { Cookie } from '@utils'
+import { Cookie } from '@/utils'
 import { MiddlewareResult } from '@models';
 
 /**
@@ -14,14 +14,13 @@ export class SetAuthCookie extends Middleware {
     // eslint-disable-next-line no-unused-vars
     async handle(context) {
         try {
+            console.log(Cookie.get('x-session'))
+
             if (Cookie.get('x-session') === null) {
                 const me = await getCurrentUser();
 
                 if (me !== null && me !== undefined) {
-                    Cookie.set(
-                        'x-session',
-                        JSON.stringify(me.asJson())
-                    );
+                    Cookie.set('x-session', JSON.stringify(me.asJson()), { expires: "session" })
                 }
             }
 

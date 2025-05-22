@@ -95,7 +95,7 @@ SlbRelationsPage.onPageLoaded = () => {
         route: "slb",
         columns: [
             new DatatableColumn({ path: "id", title: "Id", sorting: true }),
-            new DatatableColumn({ path: "slbApplicationUser.name", title: "SLB'er", sorting: true })
+            new DatatableColumn({ path: "slbApplicationUser.displayName", title: "SLB'er", sorting: true })
         ],
         searching: true,
         paging: true,

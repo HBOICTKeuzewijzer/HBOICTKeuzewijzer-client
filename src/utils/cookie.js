@@ -27,7 +27,7 @@ export class Cookie {
      * @param {Object} [options]
      * @param {string} [options.path='/']
      * @param {string} [options.domain]
-     * @param {number|Date|string} [options.expires=1] - In days, Date, or string.
+     * @param {number|Date|string} [options.expires] - In days, Date, or string.
      * @param {boolean} [options.secure=true]
      * @param {string} [options.sameSite='Lax']
      */
@@ -49,14 +49,17 @@ export class Cookie {
 
         const parts = [`${encodeURIComponent(name)}=${encodeURIComponent(value)}`]
 
-        const exp =
-            typeof expires === 'number'
-                ? new Date(Date.now() + expires * 864e5)
-                : expires instanceof Date
-                    ? expires
-                    : new Date(expires)
+        if (expires !== "session") {
+            const exp =
+                typeof expires === 'number'
+                    ? new Date(Date.now() + expires * 864e5)
+                    : expires instanceof Date
+                        ? expires
+                        : new Date(expires)
 
-        parts.push(`expires=${exp.toUTCString()}`)
+            parts.push(`expires=${exp.toUTCString()}`)
+        }
+
         parts.push(`path=${path}`)
 
         if (domain) parts.push(`domain=${domain}`)
