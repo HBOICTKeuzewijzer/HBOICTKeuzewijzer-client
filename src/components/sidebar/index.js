@@ -22,7 +22,6 @@ export class Sidebar extends CustomElement {
             { id: 'button-modules', route: '/admin/modules' },
             { id: 'button-oer', route: '/admin/oer' },
             { id: 'button-categorien', route: '/admin/categorien' },
-            { id: 'button-rollen-toewijzen', route: '/admin/rollen-toewijzen' },
             { id: 'button-slb-relaties', route: '/admin/slb-relaties' },
         ]
 

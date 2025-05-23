@@ -6,7 +6,7 @@ export class User {
     _id
 
     /** @type {string|undefined} */
-    _name
+    _displayName
 
     /** @type {string|undefined} */
     _email
@@ -18,12 +18,12 @@ export class User {
      * Constructs a new User instance.
      * @param {Object} params - The parameters to initialize the user.
      * @param {string} [params.id] - The user's ID.
-     * @param {string} [params.name] - The user's full name (e.g. "Alice (student)").
+     * @param {string} [params.displayName] - The user's full name (e.g. "Alice (student)").
      * @param {string} [params.email] - The user's email address.
      */
     constructor(params = {}) {
         if (params.id) this._id = params.id
-        if (params.name) this._name = params.name
+        if (params.displayName) this._displayName = params.displayName
         if (params.email) this._email = params.email
         if (params.roles) this._roles = params.roles
         if (params.applicationUserRoles) this._roles = this.parseApplicationUserRoles(params.applicationUserRoles)
@@ -41,8 +41,8 @@ export class User {
      * Returns the user's name.
      * @returns {string|undefined}
      */
-    get name() {
-        return this._name
+    get displayName() {
+        return this._displayName
     }
 
     /**
@@ -62,7 +62,7 @@ export class User {
     }
 
     hasRole(role) {
-        return this._roles.includes(role)
+        return this._roles?.includes(role)
     }
 
     parseApplicationUserRoles(roles) {
@@ -72,7 +72,7 @@ export class User {
     asJson() {
         return {
             id: this.id,
-            name: this.name,
+            displayName: this.displayName,
             email: this.email,
             roles: this.roles
         }

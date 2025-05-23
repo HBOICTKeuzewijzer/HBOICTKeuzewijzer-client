@@ -1,17 +1,17 @@
-import styles from './style.css?inline';
+import styles from './style.css?inline'
 import { fetcher } from '@/utils'
-import { router } from '@/http/router';
+import { router } from '@/http/router'
 
 export class ChatSidebar extends HTMLElement {
     constructor() {
-        super();
-        this.currentUser = null;
-        const shadow = this.attachShadow({ mode: 'open' });
+        super()
+        this.currentUser = null
+        const shadow = this.attachShadow({ mode: 'open' })
 
         shadow.innerHTML = `
         <style> ${styles}</style>        
           <div id="selected-chat">
-            <button id="toggle-sidebar" class="open-btn" style="display: none;"></button>
+            
           </div>
           <div id="chat-sidebar">
             <div class="sidebar-header">
@@ -27,147 +27,270 @@ export class ChatSidebar extends HTMLElement {
                   aria-label="Zoek meldingen"
                 />
               </div>
+              
               <div class="title-wrapper">
-                <h3>Meldingen</h3>
+              
+                <h3>Meldingen
+                          <button id="new-chat-btn" class="new-chat-btn">Nieuwe Chat</button>
+               </h3>
               </div>
             </div>
             <div id="chat-list" class="sidebar-content"></div>
+           <x-dialog id="newChatDialog" closable>
+            <div>
+                <h2>Voer het e-mailadres in om een chat te starten.</h2>
+                <br>
+                <x-input id="newChatEmail" placeholder="E-mailadres" submitenter></x-input>
+                <br>
+                <button id="newChatConfirmYes">Toevoegen</button>
+                <button id="newChatConfirmNo">Annuleren</button>
+            </div>
+        </x-dialog>
+
+
           </div>
-        `;
+        `
 
         this.isMobile = window.matchMedia('(max-width: 768px)').matches;
+    }
+
+
+
+    markChatAsRead(chatId) {
+        console.log("Ik ben in de markChatAsRead functie");
+        fetcher(`chat/mark-as-read/${chatId}`, { method: 'PUT' })
+            .then(() => {
+                console.log(`Chat ${chatId} is gemarkeerd als gelezen.`);
+                this.removeUnreadIndicator(chatId); 
+            })
+            .catch((error) => {
+                console.error(`Fout bij het markeren van de chat als gelezen:`, error);
+            });
+    }
+
+
+    createNewChat(newChatInput, newChatDialog) {
+        const email = newChatInput.value.trim();
+
+        newChatInput.error = '';
+
+        if (!this.validateEmail(email)) {
+            newChatInput.error = 'Voer een geldig e-mailadres in.';
+            return;
+        }
+
+        fetcher(`chat/create?email=${encodeURIComponent(email)}`, {
+            method: 'POST'
+        })
+            .then(() => {
+                console.log('Nieuwe chat succesvol gestart met:', email);
+                this.getChatData().then(chatData => {
+                    this.renderChatSidebar(chatData.items, []); 
+                });
+                newChatDialog.removeAttribute('open'); 
+            })
+            .catch(err => {
+                console.error('Fout bij het starten van de nieuwe chat:', err);
+                newChatInput.error = 'Fout bij het starten van de chat. Probeer het opnieuw.';
+            });
+    }
+
+    validateEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     }
 
     connectedCallback() {
         Promise.all([
             fetcher('auth/me', { method: 'GET' }),
             this.getChatData(),
+            this.getHasUnreadMessages()
         ])
-            .then(([currentUser, chatData]) => {
+            .then(([currentUser, chatData, unreadStatuses]) => {
                 this.currentUser = currentUser;
-                this.renderChatSidebar(chatData.items);
+
+                this.renderChatSidebar(chatData.items, unreadStatuses);
+
+                const currentUrl = window.location.pathname;
+                const chatIdFromUrl = currentUrl.split('/').pop();
+                const matchingChat = chatData.items.find(chat => chat.id === chatIdFromUrl);
+
+                if (matchingChat) {
+                    this.markChatAsRead(matchingChat.id);
+                }
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error("Fout bij ophalen van gegevens:", error);
             });
 
-        const sidebar = this.shadowRoot.getElementById('chat-sidebar');
-        const toggleButton = this.shadowRoot.getElementById('toggle-sidebar');
+        const newChatBtn = this.shadowRoot.getElementById('new-chat-btn');
+        const newChatDialog = this.shadowRoot.getElementById('newChatDialog');
+        const newChatConfirmYesBtn = this.shadowRoot.getElementById('newChatConfirmYes');
+        const newChatConfirmNoBtn = this.shadowRoot.getElementById('newChatConfirmNo');
+        const newChatInput = this.shadowRoot.getElementById('newChatEmail');
 
-        toggleButton.style.display = 'block';
-
-        let isSidebarOpen = true;
-        toggleButton.textContent = '^';
-
-        toggleButton.addEventListener('click', () => {
-            isSidebarOpen = !isSidebarOpen;
-            sidebar.style.display = isSidebarOpen ? 'flex' : 'none';
-            toggleButton.textContent = isSidebarOpen ? '^' : 'v';
+        newChatBtn.addEventListener('click', () => {
+            newChatDialog.setAttribute('open', '');
+            newChatInput.value = ''; 
+            newChatInput.error = ''; 
         });
 
-        const searchBar = this.shadowRoot.getElementById('search-bar');
-        searchBar.addEventListener('input', (event) => {
-            const query = event.target.value.toLowerCase();
-            this.filterChatList(query);
+        newChatConfirmYesBtn.addEventListener('click', () => this.createNewChat(newChatInput, newChatDialog));
+
+        newChatConfirmNoBtn.addEventListener('click', () => {
+            newChatDialog.removeAttribute('open');
         });
+
+        newChatInput.addEventListener('onSubmitEnter', () => this.createNewChat(newChatInput, newChatDialog));
     }
     getChatData() {
+        console.log("Ontvangen chatgegevens via fetcher:");
         return fetcher('chat', { method: 'GET' })
             .then(data => {
-                return data;
+                return data
             })
             .catch(error => {
-                console.error("Fout bij ophalen van chatgegevens via fetcher:", error);
-                throw error;
-            });
+                console.error('Fout bij ophalen van chatgegevens via fetcher:', error)
+                throw error
+            })
     }
 
     filterChatList(query) {
-        const allChats = this.shadowRoot.querySelectorAll('.chat-item');
+        const allChats = this.shadowRoot.querySelectorAll('.chat-item')
 
-        allChats.forEach((chat) => {
-            const chatName = chat.querySelector('.student-name').textContent.toLowerCase();
-            const chatId = chat.querySelector('.student-id').textContent.toLowerCase();
+        allChats.forEach(chat => {
+            const chatName = chat.querySelector('.student-name').textContent.toLowerCase()
+            const chatId = chat.querySelector('.student-id').textContent.toLowerCase()
             if (chatName.includes(query) || chatId.includes(query)) {
-                chat.style.display = 'flex';
+                chat.style.display = 'flex'
             } else {
-                chat.style.display = 'none';
+                chat.style.display = 'none'
             }
-        });
+        })
     }
-
-    renderChatSidebar(chatData) {
+    getHasUnreadMessages() {
+        return fetcher('chat/has-unread', { method: 'GET' })
+            .then((response) => {
+                console.log("Chats met ongelezen berichten:", response);
+                return response; 
+            })
+            .catch((error) => {
+                console.error("Fout bij ophalen van ongelezen berichten:", error);
+                throw error;
+            });
+    }
+    renderChatSidebar(chatData, unreadStatuses) {
         const chatListElement = this.shadowRoot.getElementById('chat-list');
         const selectedChatContainer = this.shadowRoot.getElementById('selected-chat');
-        const toggleButton = this.shadowRoot.getElementById('toggle-sidebar');
 
-        if (!toggleButton.dataset.listenerAdded) {
-            toggleButton.addEventListener('click', () => {
-                const sidebar = this.shadowRoot.getElementById('chat-sidebar');
-                sidebar.classList.toggle('open');
-            });
-            toggleButton.dataset.listenerAdded = "true";
-        }
+        
+        chatListElement.innerHTML = '';
 
         if (!this.currentUser) {
-            console.error("De huidige gebruiker is niet geladen.");
-            return;
+            console.error('De huidige gebruiker is niet geladen.')
+            return
+        }
+
+
+        function getInitials(name) {
+            if (!name) return '';
+
+            const cleanedName = name.replace(/\([^)]*\)/g, '').trim();
+
+            const parts = cleanedName.split(/\s+/);
+
+            if (parts.length === 1) {
+                const first = parts[0][0].toUpperCase();
+                return first + first;
+            }
+
+            const first = parts[0][0].toUpperCase();
+            const last = parts[parts.length - 1][0].toUpperCase();
+
+            return first + last;
         }
 
         chatData.forEach((chat) => {
             const isCurrentUserSLB = this.currentUser.id === chat.slbApplicationUserId;
             const person = isCurrentUserSLB ? chat.student : chat.slb;
             if (!person) {
-                console.warn("Geen andere partij gevonden voor deze chat:", chat);
-                return;
+                console.warn('Geen andere partij gevonden voor deze chat:', chat)
+                return
             }
 
             const displayName = person.displayName || 'Onbekende naam';
             const displayId = person.email || 'Onbekende ID';
 
+            const unreadStatus = unreadStatuses.find((status) => status.chatId === chat.id);
+            const hasUnreadMessages = unreadStatus ? unreadStatus.hasUnread : false;
+
             const chatItem = document.createElement('div');
             chatItem.classList.add('chat-item');
 
+            chatItem.dataset.chatId = chat.id;
+
             chatItem.innerHTML = `
-            <div class="profile-picture">
-                <img src="" alt="${displayName}" />
+            <div class="profile-picture" style="display: flex; justify-content: center; align-items: center; background-color: #f0f0f0; color: #555; font-weight: bold; font-size: 1rem; border-radius: 50%; width: 40px; height: 40px;">
+                ${person.photoURL ? `<img src="${person.photoURL}" alt="${displayName}" />` : getInitials(displayName)}
             </div>
             <div class="chat-details">
                 <span class="student-name">${displayName}</span>
                 <span class="student-id">${displayId}</span>
             </div>
+            ${hasUnreadMessages ? `<span class="unread-indicator"></span>` : ''}
         `;
 
             chatItem.addEventListener('click', () => {
-                const allItems = this.shadowRoot.querySelectorAll('.chat-item');
-                allItems.forEach((item) => item.classList.remove('selected'));
-                chatItem.classList.add('selected');
+                const allItems = this.shadowRoot.querySelectorAll('.chat-item')
+                allItems.forEach(item => item.classList.remove('selected'))
+                chatItem.classList.add('selected')
 
-                selectedChatContainer.innerHTML = '';
-                selectedChatContainer.appendChild(toggleButton);
+                selectedChatContainer.innerHTML = ''
 
-                const selectedChat = document.createElement('div');
-                selectedChat.classList.add('selected-chat-item');
+                const selectedChat = document.createElement('div')
+                selectedChat.classList.add('selected-chat-item')
                 selectedChat.innerHTML = `
-        <div class="profile-picture">
-            <img src="" alt="${displayName}" />
-        </div>
-        <div class="chat-details">
-            <span class="student-name">${displayName}</span>
-            <span class="student-id">${displayId}</span>
-        </div>
-    `;
+                <div class="profile-picture" style="display: flex; justify-content: center; align-items: center; background-color: #f0f0f0; color: #555; font-weight: bold; font-size: 1rem; border-radius: 50%; width: 40px; height: 40px;">
+                    ${person.photoURL ? `<img src="${person.photoURL}" alt="${displayName}" />` : getInitials(displayName)}
+                </div>
+                <div class="chat-details">
+                    <span class="student-name">${displayName}</span>
+                    <span class="student-id">${displayId}</span>
+                </div>
+            `;
 
                 selectedChatContainer.appendChild(selectedChat);
-                toggleButton.style.display = 'block';
-                const chatId = chat.id
+                const chatId = chat.id;
+
+                fetcher(`chat/mark-as-read/${chatId}`, { method: 'PUT' })
+                    .then(() => {
+                        console.log(`Chat ${chatId} is gemarkeerd als gelezen.`);
+
+                        this.removeUnreadIndicator(chatId);
+                    });
 
                 router.navigate(`/messages/${chatId}`);
-                // hier kan je een functie aanroepen om de chat te laden anders kan je window.location.href = `/messages/${chatId}` proberen dit refreshed wel de pagina;
             });
 
             chatListElement.appendChild(chatItem);
         });
+    }
+    removeUnreadIndicator(chatId) {
+        console.log(`ik zit nu in de fucntie: ${chatId}`);
+        const chatItem = Array.from(this.shadowRoot.querySelectorAll('.chat-item'))
+            .find(item => item.dataset.chatId === chatId);
+
+        if (chatItem) {
+            const unreadIndicator = chatItem.querySelector('.unread-indicator');
+            if (unreadIndicator) {
+                unreadIndicator.remove();
+                console.log(`Unread indicator verwijderd voor chatId: ${chatId}`);
+            } else {
+                console.log(`Geen unread indicator gevonden voor chatId: ${chatId}`);
+            }
+        } else {
+            console.warn(`Geen chat-item gevonden voor chatId: ${chatId}`);
+        }
     }
 }
 

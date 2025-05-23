@@ -22,6 +22,8 @@ export class Chat extends CustomElement {
     connectedCallback() {
         const sendBtn = this.shadowRoot.querySelector('#sendbutton')
         const input = this.shadowRoot.querySelector('.input-field')
+        const toggleBtn = this.shadowRoot.querySelector('.toggle-sidebar')
+        const container = this.shadowRoot.querySelector('.chat-container')
 
         sendBtn?.addEventListener('click', () => {
             const message = input?.value.trim()
@@ -39,6 +41,19 @@ export class Chat extends CustomElement {
                     this.sendMessage(message)
                     input.value = ''
                 }
+            }
+        })
+
+        toggleBtn?.addEventListener('click', () => {
+            container.classList.toggle('sidebar-open')
+            if (!container.classList.contains('sidebar-open')) {
+                input?.focus()
+            }
+        })
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                container.classList.remove('sidebar-open')
             }
         })
 
@@ -84,7 +99,7 @@ export class Chat extends CustomElement {
                     senderName = this.chat.student?.displayName || 'Student'
                 }
 
-                this.addMessage(senderName, message.messageText, isFromMe)
+                this.addMessage(senderName, message.messageText, isFromMe, message.sentAt)
             })
 
             this.scrollToBottom()
@@ -117,28 +132,43 @@ export class Chat extends CustomElement {
 
     linkify(text) {
         const urlRegex = /((https?:\/\/|www\.)[^\s<]+)/g
+
         return text.replace(urlRegex, url => {
             const href = url.startsWith('http') ? url : `https://${url}`
-            return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`
+
+            try {
+                const urlObj = new URL(href)
+                const shortText = '[Open link, studieroute]'
+
+
+                return `<a href="${href}" target="_blank" rel="noopener noreferrer">${shortText}</a>`
+            } catch (e) {
+                return url 
+            }
         })
     }
 
-    addMessage(sender, message, isFromMe = false) {
+
+    addMessage(sender, message, isFromMe = false, sentAt) {
         const container = this.shadowRoot.querySelector('.chat-messages')
         const msgEl = document.createElement('div')
         msgEl.className = isFromMe ? 'message4' : 'message2'
+
+        const time = new Date(sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 
         msgEl.innerHTML = isFromMe
             ? `
         <div class="content2">
           <div class="titel">${sender}</div>
           <div class="message5">${this.linkify(message)}</div>
+          <div class="time">${time}</div>
         </div>
       `
             : `
         <div class="content">
           <div class="titel1">${sender}</div>
           <div class="message5">${this.linkify(message)}</div>
+          <div class="time">${time}</div>
         </div>
       `
 
