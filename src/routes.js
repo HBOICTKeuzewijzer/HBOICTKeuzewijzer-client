@@ -35,5 +35,9 @@ export const routes = [
         .add('/modules/edit/:uuid', () => import('@/http/pages/admin/modules/modules-edit/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
         .add('/oer', () => import('@pages/admin/oer/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
         .add('/categorien', () => import('@pages/admin/category/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
+        .add('/categorien/create', () => import('@/http/pages/admin/category/category-create/page.js'))
+        .add('/categorien/edit/:uuid', () => import('@/http/pages/admin/category/category-edit/page.js'))
+
+        .add('/rollen-toewijzen', () => import('@pages/admin/role-assignment/page.js'), [new RequireRole([Role.SystemAdmin])])
         .add('/slb-relaties', () => import('@pages/admin/slb-relations/page.js'), [new RequireRole([Role.SystemAdmin])]).routes,
 ]
