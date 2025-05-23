@@ -149,7 +149,7 @@ export default function Layout(children) {
                 </a>
                 `}
 
-                <i class="ph ph-list" slot="mob-icon" style="font-size: 30px;" ></i>
+                <i class="ph ph-list color-black" slot="mob-icon" style="font-size: 30px;" ></i>
             </x-header>
             <main>${children}</main>
             <app-toaster></app-toaster>

@@ -22,6 +22,9 @@ function delegatedSemesterClickHandler(event) {
     const semester = event.target.closest('[data-card-module]')
     if (!semester) return
 
+    const drawer = document.querySelector('x-drawer')
+    if (!drawer.hasAttribute('open')) drawer.setAttribute('open', '')
+
     handleSemesterClick(semester)
 }
 
@@ -391,7 +394,7 @@ export default function PlannerPage({ params }) {
                 <div id="modules-list-desktop" style="display: flex; flex-direction: column; padding: 24px;"></div>
             </x-sheet>
 
-            <x-drawer class="xl:hidden" open>
+            <x-drawer class="xl:hidden">
                 <div id="modules-list-mobile" style="padding: 24px;"></div>
             </x-drawer>
 
