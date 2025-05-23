@@ -11,6 +11,7 @@ export const routes = [
     new Route('/guest', () => import('@pages/guest/planner/page.js'), new SetAuthCookie()),
     new Route('/login', () => import('@pages/login.js')),
 
+
     ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet(), new EnsureCohortIsSet()])
         .add('/studieroute', () => import('@pages/planner/page.js'))
         .add('/studieroute/:uuid', () => import('@pages//planner/page.js')).routes,
@@ -34,6 +35,9 @@ export const routes = [
         .add('/modules/edit/:uuid', () => import('@/http/pages/admin/modules/modules-edit/page.js'))
         .add('/oer', () => import('@pages/admin/oer/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
         .add('/categorien', () => import('@pages/admin/category/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
+        .add('/categorien/create', () => import('@/http/pages/admin/category/category-create/page.js'))
+        .add('/categorien/edit/:uuid', () => import('@/http/pages/admin/category/category-edit/page.js'))
+
         .add('/rollen-toewijzen', () => import('@pages/admin/role-assignment/page.js'), [new RequireRole([Role.SystemAdmin])])
         .add('/slb-relaties', () => import('@pages/admin/slb-relations/page.js'), [new RequireRole([Role.SystemAdmin])]).routes,
 ]
