@@ -72,7 +72,7 @@ CategoryPage.onPageLoaded = () => {
 }
 
     document.querySelector('#add-button').addEventListener('click', () => {
-        router.navigate('/categorien/create');
+        router.navigate('/admin/categorien/create');
     });
 
     try {
@@ -127,7 +127,7 @@ CategoryPage.onPageLoaded = () => {
                 pageSize: 10,
                 buttons: new DatatableButtons({
                     edit: (row) => {
-                        router.navigate(`/categorien/edit/${row.id}`);
+                        router.navigate(`/admin/categorien/edit/${row.id}`);
                     },
                     delete: (row) => {
                         currentRow = row;
@@ -143,6 +143,6 @@ CategoryPage.onPageLoaded = () => {
 
 CategoryPage.onBeforePageUnloaded = () => {
     document.querySelector('#add-button')?.removeEventListener('click', () => {
-        router.navigate('/categorien/create');
+        router.navigate('/admin/categorien/create');
     });
 };
