@@ -1,0 +1,107 @@
+:host {
+  display: block;
+}
+
+/* Main container */
+.main {
+  width: 100%;
+  display: flex;
+  border-radius: var(--rounded-lg);
+  background-color: rgba(var(--color-light-blue), 0.2);
+}
+
+/* Link styling */
+a {
+  flex-grow: 1;
+  padding: 1em;
+  text-decoration: none;
+  color: rgb(var(--color-black));
+}
+
+a:hover {
+  background-color: rgba(var(--color-gray-4), 0.3);
+  text-decoration: underline;
+  border-radius: var(--rounded-lg);
+}
+
+/* Toggle button */
+button.toggle {
+  background: none;
+  border: none;
+  height: 52px;
+  aspect-ratio: 1;
+  cursor: pointer;
+}
+
+button.toggle:hover {
+  background-color: rgba(var(--color-gray-4), 0.3);
+  border-radius: var(--rounded-lg);
+}
+
+/* Dropdown */
+.dropdown {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  padding-top: 4px;
+  background-color: white;
+  flex-direction: row;
+}
+
+/* Line separator inside dropdown */
+.dropdown .line {
+  width: 4px;
+  margin: 0 5px;
+  background-color: rgba(var(--color-light-blue), 0.2);
+}
+
+/* Dropdown content */
+.dropdown .content {
+  flex-grow: 1;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Host class toggle for open state */
+:host(.open) .dropdown {
+  display: flex;
+}
+
+:host(.open) .dropdown .content {
+  display: flex;
+}
+
+/* Wrapper for hover-based dropdown in desktop */
+.hover-wrapper {
+  position: relative;
+}
+
+/* Desktop-specific styles */
+@media (min-width: 640px) {
+  button.toggle {
+    display: none;
+  }
+
+  .main {
+    background-color: unset;
+  }
+
+  a {
+    display: inline;
+  }
+
+  .dropdown {
+    display: none;
+    width: max-content;
+    white-space: nowrap;
+    padding: 4px 4px 4px 0;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: var(--rounded-sm);
+    background-color: white;
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.06),
+      0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}

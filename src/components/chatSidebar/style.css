@@ -2,6 +2,17 @@
 :root {
     --selected-chat-height: 70px;
 }
+button {
+    height: 38px;
+    padding: 0 6px;
+    color: rgb(var(--color-black));
+    background-color: rgb(var(--color-gold));
+    border: 1px solid rgba(var(--color-orange), 0.2);
+    border-radius: var(--rounded-md);
+    font-size: 14px;
+    font-weight: 600;
+
+}
 
 #chat-sidebar {
     display: flex;
@@ -26,6 +37,7 @@
     border-bottom: none;
     height: auto;
 }
+
 
 .search-container {
     position: relative;
@@ -57,13 +69,35 @@
     outline: none;
 }
 
-    #search-bar::placeholder {
-        color: rgba(0, 0, 0, 0.5);
-    }
+.chat-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
 
-    #search-bar:focus {
-        border-color: rgba(0, 0, 0, 0.5);
-    }
+.unread-indicator {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    width: 8px;
+    height: 8px;
+    background-color: rgb(var(--color-red)); /* Rode kleur aangepast naar de gebruikte variabele */
+    border-radius: 50%;
+    border: 1px solid rgba(var(--color-light-pink), 0.75); /* Schaduwrand voor extra contrast */
+}
+
+#search-bar::placeholder {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+#search-bar:focus {
+    border-color: rgba(0, 0, 0, 0.5);
+}
 
 .title-wrapper {
     position: relative;

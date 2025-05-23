@@ -10,11 +10,11 @@ export const routes = [
     new Route('/', () => import('@pages/page.js'), new SetAuthCookie()),
     new Route('/guest', () => import('@pages/guest/planner/page.js'), new SetAuthCookie()),
     new Route('/login', () => import('@pages/login.js')),
+    new Route('/logout', () => import('@pages/logout.js')),
 
-
-    ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet(), new EnsureCohortIsSet()])
+    ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet(), new EnsureCohortIsSet(), new RequireRole([Role.Student])])
         .add('/studieroute', () => import('@pages/planner/page.js'))
-        .add('/studieroute/:uuid', () => import('@pages//planner/page.js')).routes,
+        .add('/studieroute/:uuid', () => import('@pages/planner/page.js')).routes,
 
     ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet()], '/profile')
         .add('/settings', () => import('@pages/profile/settings/page.js'))
@@ -30,9 +30,9 @@ export const routes = [
 
     ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet({ silent: true })], '/admin')
         .add('/', () => import('@pages/admin/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
-        .add('/modules', () => import('@/http/pages/admin/modules/page.js'))
-        .add('/modules/create', () => import('@/http/pages/admin/modules/modules-create/page.js'))
-        .add('/modules/edit/:uuid', () => import('@/http/pages/admin/modules/modules-edit/page.js'))
+        .add('/modules', () => import('@/http/pages/admin/modules/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
+        .add('/modules/create', () => import('@/http/pages/admin/modules/modules-create/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
+        .add('/modules/edit/:uuid', () => import('@/http/pages/admin/modules/modules-edit/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
         .add('/oer', () => import('@pages/admin/oer/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
         .add('/categorien', () => import('@pages/admin/category/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
         .add('/categorien/create', () => import('@/http/pages/admin/category/category-create/page.js'))
