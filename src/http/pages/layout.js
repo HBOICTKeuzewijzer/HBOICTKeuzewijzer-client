@@ -144,7 +144,7 @@ export default function Layout(children) {
                     </a>
                 </x-popover>
                 ` : /*html*/`
-                <a href="/login?returnUrl=${location.href}" class="text-sm action-link header-a-tags" slot="profile">
+                <a href="/login?returnUrl=${location.href}" class="text-sm action-link header-a-tags color-black" slot="profile">
                     <i class="ph-duotone ph-sign-in"></i>
                 </a>
                 `}
