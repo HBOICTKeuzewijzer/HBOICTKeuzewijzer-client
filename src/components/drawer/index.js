@@ -59,7 +59,7 @@ export class Drawer extends composeTraits(HTMLElement, Openable, AriaReflector) 
      */
     static get observedAttributes() {
         return [
-            // ...(super.observedAttributes?.() || []),
+            'open',
             'disabled',
         ]
     }
@@ -104,7 +104,7 @@ export class Drawer extends composeTraits(HTMLElement, Openable, AriaReflector) 
         super.attributeChangedCallback?.()
 
         if (newValue !== oldValue) {
-            if (name === 'open' && newValue) {
+            if (name === 'open') {
                 this.contentElement.style.top = ''
             }
         }
