@@ -182,18 +182,9 @@ export class ChatSidebar extends HTMLElement {
     renderChatSidebar(chatData, unreadStatuses) {
         const chatListElement = this.shadowRoot.getElementById('chat-list');
         const selectedChatContainer = this.shadowRoot.getElementById('selected-chat');
-        const toggleButton = this.shadowRoot.getElementById('toggle-sidebar');
 
         
         chatListElement.innerHTML = '';
-
-        if (!toggleButton.dataset.listenerAdded) {
-            toggleButton.addEventListener('click', () => {
-                const sidebar = this.shadowRoot.getElementById('chat-sidebar');
-                sidebar.classList.toggle('open');
-            });
-            toggleButton.dataset.listenerAdded = "true";
-        }
 
         if (!this.currentUser) {
             console.error('De huidige gebruiker is niet geladen.')
@@ -269,7 +260,6 @@ export class ChatSidebar extends HTMLElement {
             `;
 
                 selectedChatContainer.appendChild(selectedChat);
-                toggleButton.style.display = 'block';
                 const chatId = chat.id;
 
                 fetcher(`chat/mark-as-read/${chatId}`, { method: 'PUT' })
