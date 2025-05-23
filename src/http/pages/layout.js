@@ -123,12 +123,6 @@ export default function Layout(children) {
                 <x-tooltip position="left" placement="bottom" slot="messages" style="height: 100%">
                     <a slot="trigger" id="messages" href="/messages" data-icon class="header-a-tags">
                         <span style="position:relative;">
-                            <span class="relative flex size-3" style="position: absolute; display: flex; width: 8px; height: 8px; right: 0;">
-                                <span class="animate-ping"
-                                style="position: absolute; display:inline-flex; height: 100%; width: 100%; opacity: 75%; background-color: rgb(var(--color-light-pink)); border-radius: var(--rounded-full);"></span>
-                                <span
-                                style="position: relative; display:inline-flex; height: 8px; width: 8px; background-color: rgb(var(--color-red)); border-radius: var(--rounded-full);"></span>
-                            </span>
                             <i class="ph ph-chat"></i>
                         </span>
                     </a>

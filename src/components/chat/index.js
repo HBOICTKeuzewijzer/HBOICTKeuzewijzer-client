@@ -132,11 +132,22 @@ export class Chat extends CustomElement {
 
     linkify(text) {
         const urlRegex = /((https?:\/\/|www\.)[^\s<]+)/g
+
         return text.replace(urlRegex, url => {
             const href = url.startsWith('http') ? url : `https://${url}`
-            return `<a href="${href}" target="_blank" rel="noopener noreferrer">${url}</a>`
+
+            try {
+                const urlObj = new URL(href)
+                const shortText = '[Open link, studieroute]'
+
+
+                return `<a href="${href}" target="_blank" rel="noopener noreferrer">${shortText}</a>`
+            } catch (e) {
+                return url 
+            }
         })
     }
+
 
     addMessage(sender, message, isFromMe = false, sentAt) {
         const container = this.shadowRoot.querySelector('.chat-messages')

@@ -1,23 +1,35 @@
 <div class="chat-container">
-  <button class="toggle-sidebar" aria-label="Toon zijbalk">&#9776;</button>
-  <chat-sidebar></chat-sidebar> 
-  
+
+  <chat-sidebar></chat-sidebar>
+
   <div class="chat">
-    <div class="chat-messages">
-      
+    <div class="chat-header">
+      <button class="toggle-sidebar" aria-label="Toon zijbalk">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#000" viewBox="0 0 24 24">
+          <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+        </svg>
+      </button>
+      <span class="chat-title">Berichten</span>
     </div>
-  
+
+
+    <div class="chat-messages"></div>
+
     <div class="chat-input">
       <div class="input-wrapper">
         <input class="input-field" placeholder="Typ een bericht..." />
       </div>
       <div class="send" style="position: relative; width: 30px; height: 30px">
-        <svg id="rounded-send" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none" style="position: absolute; top: 0; left: 0; z-index: 1">
+        <svg id="rounded-send" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none"
+          style="position: absolute; top: 0; left: 0; z-index: 1">
           <circle cx="15" cy="15" r="15" fill="#FFCB05" />
           <circle cx="15" cy="15" r="14.5" stroke="#F5A61A" stroke-opacity="0.2" />
         </svg>
-        <svg id="sendbutton" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" style="position: absolute; top: 5px; left: 5px; z-index: 2">
-          <path d="M2.5 16.6668V3.3335L18.3333 10.0002L2.5 16.6668ZM4.16667 14.1668L14.0417 10.0002L4.16667 5.8335V8.75016L9.16667 10.0002L4.16667 11.2502V14.1668ZM4.16667 14.1668V10.0002V5.8335V8.75016V11.2502V14.1668Z" fill="#000" />
+        <svg id="sendbutton" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"
+          style="position: absolute; top: 5px; left: 5px; z-index: 2">
+          <path
+            d="M2.5 16.6668V3.3335L18.3333 10.0002L2.5 16.6668ZM4.16667 14.1668L14.0417 10.0002L4.16667 5.8335V8.75016L9.16667 10.0002L4.16667 11.2502V14.1668ZM4.16667 14.1668V10.0002V5.8335V8.75016V11.2502V14.1668Z"
+            fill="#000" />
         </svg>
       </div>
     </div>
