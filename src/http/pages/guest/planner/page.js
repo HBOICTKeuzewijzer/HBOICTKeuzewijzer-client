@@ -324,6 +324,8 @@ function drawConnections() {
     }
 
     svg.innerHTML = ''
+    svg.setAttribute('width', 0)
+    svg.setAttribute('height', 0)
     svg.setAttribute('width', container.scrollWidth)
     svg.setAttribute('height', container.scrollHeight)
 
@@ -336,11 +338,12 @@ function drawConnections() {
         const fromCard = cards[i].getBoundingClientRect()
         const toCard = cards[i + 1].getBoundingClientRect()
         const containerRect = container.getBoundingClientRect()
+        const scrollTop = container.scrollTop
 
         let startX = fromCard.right - containerRect.left
-        let startY = fromCard.top + fromCard.height / 2 - containerRect.top
+        let startY = ((fromCard.top + (fromCard.height / 2)) - containerRect.top) + scrollTop
         let endX = toCard.left - containerRect.left
-        let endY = toCard.top + toCard.height / 2 - containerRect.top
+        let endY = ((toCard.top + (toCard.height / 2)) - containerRect.top) + scrollTop
 
         let midX1 = startX + 40
         let midY = (startY + endY) / 2
@@ -348,9 +351,9 @@ function drawConnections() {
 
         if (isMobile) {
             startX = fromCard.left + fromCard.width / 2 - containerRect.left
-            startY = fromCard.bottom - containerRect.top
+            startY = (fromCard.bottom - containerRect.top) + scrollTop
             endX = toCard.left + toCard.width / 2 - containerRect.left
-            endY = toCard.top - containerRect.top
+            endY = (toCard.top - containerRect.top) + scrollTop
 
             midX1 = startX
             midX2 = endX
