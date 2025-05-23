@@ -18,10 +18,7 @@ export class SetAuthCookie extends Middleware {
                 const me = await getCurrentUser();
 
                 if (me !== null && me !== undefined) {
-                    Cookie.set(
-                        'x-session',
-                        JSON.stringify(me.asJson())
-                    );
+                    document.cookie = `${encodeURIComponent('x-session')}=${encodeURIComponent(JSON.stringify(me.asJson()))}; path=/`
                 }
             }
 
