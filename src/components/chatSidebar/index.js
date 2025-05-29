@@ -85,13 +85,20 @@ export class ChatSidebar extends HTMLElement {
             .then(() => {
                 console.log('Nieuwe chat succesvol gestart met:', email);
                 this.getChatData().then(chatData => {
-                    this.renderChatSidebar(chatData.items, []); 
+                    this.renderChatSidebar(chatData.items, []);
                 });
-                newChatDialog.removeAttribute('open'); 
+                newChatDialog.removeAttribute('open');
             })
             .catch(err => {
                 console.error('Fout bij het starten van de nieuwe chat:', err);
-                newChatInput.error = 'Fout bij het starten van de chat. Probeer het opnieuw.';
+
+                if (err.message && err.message.includes("User with email")) {
+                    newChatInput.error = 'E-mailadres bestaat niet binnen Windesheim. Controleer en probeer opnieuw.';
+                } else if (err.message === 'Network Error') {
+                    newChatInput.error = 'Netwerkfout, controleer uw verbinding.';
+                } else {
+                    newChatInput.error = 'Er ging iets mis bij het starten van een nieuwe chat. Probeer het opnieuw.';
+                }
             });
     }
 
@@ -142,6 +149,13 @@ export class ChatSidebar extends HTMLElement {
         });
 
         newChatInput.addEventListener('onSubmitEnter', () => this.createNewChat(newChatInput, newChatDialog));
+
+        const searchBar = this.shadowRoot.getElementById('search-bar');
+        searchBar.addEventListener('input', (event) => {
+            const query = event.target.value.toLowerCase().trim();
+            this.filterChatList(query);
+        });
+
     }
     getChatData() {
         console.log("Ontvangen chatgegevens via fetcher:");
@@ -171,7 +185,6 @@ export class ChatSidebar extends HTMLElement {
     getHasUnreadMessages() {
         return fetcher('chat/has-unread', { method: 'GET' })
             .then((response) => {
-                console.log("Chats met ongelezen berichten:", response);
                 return response; 
             })
             .catch((error) => {
@@ -289,7 +302,6 @@ export class ChatSidebar extends HTMLElement {
                 console.log(`Geen unread indicator gevonden voor chatId: ${chatId}`);
             }
         } else {
-            console.warn(`Geen chat-item gevonden voor chatId: ${chatId}`);
         }
     }
 }

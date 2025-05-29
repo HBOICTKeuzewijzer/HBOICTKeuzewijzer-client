@@ -2,6 +2,7 @@
 :root {
     --selected-chat-height: 70px;
 }
+
 button {
     height: 38px;
     padding: 0 6px;
@@ -11,7 +12,6 @@ button {
     border-radius: var(--rounded-md);
     font-size: 14px;
     font-weight: 600;
-
 }
 
 #chat-sidebar {
@@ -213,35 +213,8 @@ button {
 
 
 @media (max-width: 768px) {
-    #selected-chat {
-        display: flex;
-        flex-shrink: 0;
-        height: var(--selected-chat-height, 70px);
-        width: 100%;
-        background-color: rgba(255, 255, 255, 1);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        z-index: 10;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        position: relative;
-    }
-
-        #selected-chat .profile-picture {
-            margin-left: 32px;
-            flex-shrink: 0;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
 
 
-
-        #selected-chat .selected-chat-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
 
     #toggle-sidebar {
         background: none;
@@ -290,6 +263,7 @@ button {
         background-color: #fff;
         overflow-y: auto;
         box-sizing: border-box;
+        margin: 0;
     }
 
         #chat-sidebar.open {
