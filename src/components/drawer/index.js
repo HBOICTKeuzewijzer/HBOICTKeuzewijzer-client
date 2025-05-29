@@ -59,7 +59,7 @@ export class Drawer extends composeTraits(HTMLElement, Openable, AriaReflector) 
      */
     static get observedAttributes() {
         return [
-            // ...(super.observedAttributes?.() || []),
+            'open',
             'disabled',
         ]
     }
@@ -79,7 +79,7 @@ export class Drawer extends composeTraits(HTMLElement, Openable, AriaReflector) 
 
         // Dragging Functionality
         this.handleElement?.addEventListener('mousedown', this.#startDrag)
-        this.handleElement?.addEventListener('touchstart', this.#startDrag, { passive: true })
+        this.handleElement?.addEventListener('touchstart', this.#startDrag, { passive: false })
     }
 
     /**
@@ -104,7 +104,7 @@ export class Drawer extends composeTraits(HTMLElement, Openable, AriaReflector) 
         super.attributeChangedCallback?.()
 
         if (newValue !== oldValue) {
-            if (name === 'open' && newValue) {
+            if (name === 'open') {
                 this.contentElement.style.top = ''
             }
         }
@@ -132,7 +132,7 @@ export class Drawer extends composeTraits(HTMLElement, Openable, AriaReflector) 
             // Add event listeners for mouse/touch movement
             document.addEventListener('mousemove', this.#dragMove)
             document.addEventListener('mouseup', this.#stopDrag)
-            document.addEventListener('touchmove', this.#dragMove)
+            document.addEventListener('touchmove', this.#dragMove, { passive: false })
             document.addEventListener('touchend', this.#stopDrag)
         }
     }
@@ -160,7 +160,7 @@ export class Drawer extends composeTraits(HTMLElement, Openable, AriaReflector) 
     #stopDrag = () => {
         document.removeEventListener('mousemove', this.#dragMove)
         document.removeEventListener('mouseup', this.#stopDrag)
-        document.removeEventListener('touchmove', this.#dragMove)
+        document.removeEventListener('touchmove', this.#dragMove, { passive: false })
         document.removeEventListener('touchend', this.#stopDrag)
 
         const rect = this.contentElement.getBoundingClientRect()

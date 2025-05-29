@@ -1,6 +1,7 @@
 import Role from "@/models/role"
 import { router } from "../router"
-import { Auth } from "@/utils"
+import { Auth, fetcher } from "@/utils"  // Import fetcher for polling
+import '@components/toaster';
 
 function afterReturn() {
     const profileBtns = document.querySelectorAll(".header-a-tags")
@@ -35,15 +36,72 @@ function getInitials(name) {
 }
 
 export default function Layout(children) {
+    let hasUnreadMessages = false; // Declare the variable here
+    const imageURL = new URL('@assets/images/windesheim-logo.png', import.meta.url).href
+
     function roleArray(roles) {
         let str = JSON.stringify(roles)
         return str
     }
 
-    const imageURL = new URL('@assets/images/windesheim-logo.png', import.meta.url).href
+    // Polling function for unread messages
+    function pollUnreadMessages() {
+        return fetcher('chat/has-unread', { method: 'GET' })
+            .then((response) => {
+                console.log('Chats met ongelezen berichten:', response);
+
+                const hadUnreadMessages = hasUnreadMessages;
+
+                if (Array.isArray(response) && response.some(chat => chat.hasUnread)) {
+                    hasUnreadMessages = true;
+
+                    if (!hadUnreadMessages) {
+                        console.log('Je hebt ongelezen berichten!');
+                        document.querySelector('app-toaster')?.show('Je hebt ongelezen berichten!');
+                    }
+
+                } else {
+                    hasUnreadMessages = false;
+                }
+
+                toggleUnreadIndicator(hasUnreadMessages);
+
+                return response;
+            })
+            .catch((error) => {
+                console.error('Fout bij ophalen van ongelezen berichten:', error);
+                throw error;
+            });
+    }
+
+    // Toggle unread message indicator
+    function toggleUnreadIndicator(hasUnread) {
+        const unreadContainer = document.querySelector('a[href="/messages"] span[style="position:relative;"]');
+        const unreadIndicator = unreadContainer?.querySelector('.relative.flex.size-3');
+
+       if (hasUnread) {
+     if (!unreadIndicator) {
+         const indicatorHTML = `
+         <span class="relative flex size-3" style="position: absolute; display: flex; width: 8px; height: 8px; right: 0; top: 0;">
+             <span class="animate-ping"
+                 style="position: absolute; display:inline-flex; height: 100%; width: 100%; opacity: 75%; background-color: rgb(var(--color-light-pink)); border-radius: var(--rounded-full);">
+             </span>
+             <span
+                 style="position: relative; display:inline-flex; height: 8px; width: 8px; background-color: rgb(var(--color-red)); border-radius: var(--rounded-full);">
+             </span>
+         </span>`;
+         unreadContainer?.insertAdjacentHTML('beforeend', indicatorHTML);
+     }
+        } else {
+            if (unreadIndicator) {
+                unreadIndicator.remove();
+            }
+        }
+    }
 
     setTimeout(() => {
         afterReturn()
+        pollUnreadMessages(); // Start polling after the initial setup
     }, 0);
 
     return /*html*/ `
@@ -65,12 +123,6 @@ export default function Layout(children) {
                 <x-tooltip position="left" placement="bottom" slot="messages" style="height: 100%">
                     <a slot="trigger" id="messages" href="/messages" data-icon class="header-a-tags">
                         <span style="position:relative;">
-                            <span class="relative flex size-3" style="position: absolute; display: flex; width: 8px; height: 8px; right: 0;">
-                                <span class="animate-ping"
-                                style="position: absolute; display:inline-flex; height: 100%; width: 100%; opacity: 75%; background-color: rgb(var(--color-light-pink)); border-radius: var(--rounded-full);"></span>
-                                <span
-                                style="position: relative; display:inline-flex; height: 8px; width: 8px; background-color: rgb(var(--color-red)); border-radius: var(--rounded-full);"></span>
-                            </span>
                             <i class="ph ph-chat"></i>
                         </span>
                     </a>
@@ -92,15 +144,17 @@ export default function Layout(children) {
                     </a>
                 </x-popover>
                 ` : /*html*/`
-                <a href="/login?returnUrl=${location.href}" class="text-sm action-link header-a-tags" slot="profile">
+                <a href="/login?returnUrl=${location.href}" class="text-sm action-link header-a-tags color-black" slot="profile">
                     <i class="ph-duotone ph-sign-in"></i>
                 </a>
                 `}
 
-                <i class="ph ph-list" slot="mob-icon" style="font-size: 30px;" ></i>
+                <i class="ph ph-list color-black" slot="mob-icon" style="font-size: 30px;" ></i>
             </x-header>
             <main>${children}</main>
+            <app-toaster></app-toaster>
+
+
         </div>
     `
 }
-
