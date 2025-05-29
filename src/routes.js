@@ -8,6 +8,7 @@ import Role from '@models/role'
  */
 export const routes = [
     new Route('/', () => import('@pages/page.js'), new SetAuthCookie()),
+    // new Route('/', () => import('@pages/page.js')),
     new Route('/guest', () => import('@pages/guest/planner/page.js'), new SetAuthCookie()),
     new Route('/login', () => import('@pages/login.js')),
     new Route('/logout', () => import('@pages/logout.js')),
