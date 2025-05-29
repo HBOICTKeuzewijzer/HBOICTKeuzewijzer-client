@@ -111,6 +111,7 @@ export default function Layout(children) {
 
                 <x-header-link slot="links" path='/guest' authenticated='false'>Guest</x-header-link>
                 <x-header-link slot="links" path='/profile/mijn-routes' authenticated='true' roles='${roleArray([Role.Student])}'>Mijn routes</x-header-link>
+                <x-header-link slot="links" path='/modules' authenticated='true' roles='${roleArray([Role.Student])}'>Modules</x-header-link>
                 <x-header-link slot="links" path="/admin" authenticated='true' roles='${roleArray([Role.ModuleAdmin, Role.SystemAdmin])}'>
                     Admin
                     <x-header-link slot="dropdown" path="/admin/modules" authenticated='true' roles='${roleArray([Role.ModuleAdmin, Role.SystemAdmin])}'>Modules</x-header-link>

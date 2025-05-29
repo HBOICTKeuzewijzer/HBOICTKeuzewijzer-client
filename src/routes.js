@@ -13,6 +13,7 @@ export const routes = [
     new Route('/logout', () => import('@pages/logout.js')),
 
     ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet(), new EnsureCohortIsSet(), new RequireRole([Role.Student])])
+        .add('/modules', () => import('@pages/modules/page.js'))
         .add('/studieroute', () => import('@pages/planner/page.js'))
         .add('/studieroute/:uuid', () => import('@pages/planner/page.js')).routes,
 
