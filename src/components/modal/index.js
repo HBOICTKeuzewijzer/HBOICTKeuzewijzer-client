@@ -10,7 +10,6 @@ export default class Modal {
         <button class="modal-close" aria-label="Close modal">&times;</button>
         <h2 id="modal-title"></h2>
         <form class="modal-form">
-          <!-- dynamische content hier -->
         </form>
       </div>
     `
@@ -43,6 +42,10 @@ export default class Modal {
 
         // EC
         this.form.appendChild(this.createField('EC', 'ec', module.ec || 0, isCustom, false, 'number'))
+
+        // Acquired EC
+        this.form.appendChild(this.createField('Behaalde EC', 'acquiredEc', module.acquiredEc || 0, isCustom, false, 'number')
+        );
 
         // If it's a custom module, add a submit button.
         if (isCustom) {
@@ -106,20 +109,30 @@ export default class Modal {
     }
 
     handleSubmit(event) {
-        event.preventDefault()
+        event.preventDefault();
 
-        const formData = new FormData(this.form)
-        const data = {
-            id: crypto.randomUUID(), // Generate GUID
-            name: formData.get('name'),
-            description: formData.get('description'),
-            ec: Number(formData.get('ec')),
-            isCustom: true,
+        const formData = new FormData(this.form);
+        const ec = Number(formData.get('ec'));
+        const acquiredEc = Number(formData.get('acquiredEc'));
+
+        if (acquiredEc < 0 || acquiredEc > 30) {
+            alert('Behaalde EC moet tussen 0 en 30 zijn.');
+            return;
         }
 
-        this.onSaveCallback?.(data)
-        this.close()
+        const data = {
+            // id is gained from API
+            name: formData.get('name'),
+            description: formData.get('description'),
+            ec: ec,
+            acquiredEc: acquiredEc,
+            isCustom: true,
+        };
+
+        this.onSaveCallback?.(data);
+        this.close();
     }
+
 
     setOnSaveCallback(callback) {
         this.onSaveCallback = callback

@@ -103,7 +103,6 @@ export class CustomModule {
             description: this.description,
             ec: this.ec,
             semester: this.semester,
-            isCustom: this.isCustom
         }
     }
 }
