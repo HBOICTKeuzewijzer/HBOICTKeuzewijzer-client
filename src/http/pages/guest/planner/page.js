@@ -54,19 +54,8 @@ async function handleAccordionItemClick(moduleItem) {
 
     const semesterIndex = selectedSemester.dataset.semesterindex
 
-    //studyRoute.semesters[semesterIndex].moduleId = moduleItem.dataset.guid
-    //studyRoute.semesters[semesterIndex].module = getModuleById(moduleItem.dataset.guid)
-
-    const clickedModule = getModuleById(moduleItem.dataset.guid)
-    if (clickedModule instanceof CustomModule) {
-        studyRoute.semesters[semesterIndex].customModule = clickedModule
-        studyRoute.semesters[semesterIndex].module = null
-        studyRoute.semesters[semesterIndex].moduleId = clickedModule.id
-    } else {
-        studyRoute.semesters[semesterIndex].customModule = null
-        studyRoute.semesters[semesterIndex].module = clickedModule
-        studyRoute.semesters[semesterIndex].moduleId = clickedModule.id
-    }
+    studyRoute.semesters[semesterIndex].moduleId = moduleItem.dataset.guid
+    studyRoute.semesters[semesterIndex].module = getModuleById(moduleItem.dataset.guid)
 
     renderStudyCards()
     drawConnections()
@@ -190,9 +179,8 @@ function renderStudyCards() {
         let semesterOne = studyRouteSemesters[semesterOneIndex]
         let semesterTwo = studyRouteSemesters[semesterTwoIndex]
 
-        // Pick customModule if it exists, otherwise a module
-        let moduleOne = semesterOne.customModule ?? semesterOne.module
-        let moduleTwo = semesterTwo.customModule ?? semesterTwo.module
+        let moduleOne = semesterOne.module
+        let moduleTwo = semesterTwo.module
 
         let semesterOneLockStatus = moduleOne?.required ? "locked" : "unlocked"
         let semesterTwoLockStatus = moduleTwo?.required ? "locked" : "unlocked"
@@ -226,10 +214,8 @@ function renderStudyCards() {
 }
 
 function createTooltipContent(module) {
-    const isCustom = module.isCustom === true;
-
     return `
-      <div class="info-icon" style="cursor: pointer;" data-guid="${module.id}" data-type="${isCustom ? 'custom' : 'standard'}">
+      <div class="info-icon" style="cursor: pointer;" data-guid="${module.id}" data-type="standard">
         <i class="ph ph-info"></i>
       </div>
     `
@@ -270,20 +256,6 @@ async function loadModules() {
             }
         })
 
-        const overigCat = categories.find(c => c.value === 'Overig')
-        if (overigCat) {
-            const eigenKeuze = new CustomModule({
-                id: crypto.randomUUID(),
-                name: 'Eigen keuze',
-                description: 'Hier kan je een eigen keuze toevoegen',
-                ec: 0,
-                semester: null
-            })
-            moduleData.get(overigCat).unshift(eigenKeuze)
-        } else {
-            console.warn(`Category 'Overig' not found; placeholder Eigen keuze not added`)
-        }
-
         renderModuleAccordion()
     } catch (error) {
         console.error('Modules ophalen mislukt:', error)
@@ -317,7 +289,7 @@ function renderModuleAccordion() {
                 <span slot="title">${category.value}</span>
                 ${modules.map(
                 (module, index) => `
-                        <div class="module-item" data-index="${index}" data-guid="${module.id}" data-type="${module instanceof CustomModule ? 'custom' : 'standard'}">
+                        <div class="module-item" data-index="${index}" data-guid="${module.id}" data-type="standard">
                             <span>${module.name}</span>
                             ${module.description
                         ? `<x-tooltip position="left" placement="middle">
