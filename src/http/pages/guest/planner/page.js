@@ -235,7 +235,6 @@ function createTooltipContent(module) {
     `
 }
 
-
 /**
  * Stores available module categories with their respective titles.
  * Module data is populated dynamically via `loadModules`.

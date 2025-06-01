@@ -98,11 +98,10 @@ export class CustomModule {
     /** @returns {string} JSON string */
     toJson() {
         return {
-            id: this.id,
             name: this.name,
             description: this.description,
             ec: this.ec,
-            semester: this.semester,
+            semester: this.semester
         }
     }
 }

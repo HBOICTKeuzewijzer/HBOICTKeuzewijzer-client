@@ -1,5 +1,8 @@
 import { fetcher } from '@/utils'
-import { Module, Category, Semester, StudyRoute } from '@/models'
+import { Module, Category, Semester, StudyRoute, CustomModule } from '@/models'
+import Modal from '@/components/modal'
+
+const modal = new Modal()
 
 let studyRouteId = null
 
@@ -21,6 +24,9 @@ function delegatedAccordionClickHandler(event) {
 function delegatedSemesterClickHandler(event) {
     const semester = event.target.closest('[data-card-module]')
     if (!semester) return
+
+    const drawer = document.querySelector('x-drawer')
+    if (!drawer.hasAttribute('open')) drawer.setAttribute('open', '')
 
     handleSemesterClick(semester)
 }
@@ -48,12 +54,26 @@ async function handleAccordionItemClick(moduleItem) {
 
     const semesterIndex = selectedSemester.dataset.semesterindex
 
-    studyRoute.semesters[semesterIndex].moduleId = moduleItem.dataset.guid
-    studyRoute.semesters[semesterIndex].module = getModuleById(moduleItem.dataset.guid)
+    //studyRoute.semesters[semesterIndex].moduleId = moduleItem.dataset.guid
+    //studyRoute.semesters[semesterIndex].module = getModuleById(moduleItem.dataset.guid)
+
+    const clickedModule = getModuleById(moduleItem.dataset.guid)
+    if (clickedModule instanceof CustomModule) {
+        studyRoute.semesters[semesterIndex].customModule = clickedModule
+        studyRoute.semesters[semesterIndex].customModuleId = clickedModule.id
+        studyRoute.semesters[semesterIndex].module = null
+        studyRoute.semesters[semesterIndex].moduleId = null
+    } else {
+        studyRoute.semesters[semesterIndex].customModule = null
+        studyRoute.semesters[semesterIndex].module = clickedModule
+        studyRoute.semesters[semesterIndex].moduleId = clickedModule.id
+        studyRoute.semesters[semesterIndex].customModuleId = null
+    }
 
     renderStudyCards()
     drawConnections()
 
+    console.log(studyRoute)
     await fetcher(`studyRoute/${studyRouteId}`, { method: 'PUT', body: studyRoute.toJson() })
 }
 
@@ -116,45 +136,50 @@ function renderStudyCards() {
         let semesterTwoIndex = semesterModelIndex++
         let semesterOne = studyRouteSemesters[semesterOneIndex]
         let semesterTwo = studyRouteSemesters[semesterTwoIndex]
-        let semesterOneLockStatus = semesterOne.module?.required ?? false ? "locked" : "unlocked"
-        let semesterTwoLockStatus = semesterTwo.module?.required ?? false ? "locked" : "unlocked"
+
+        // Pick customModule if it exists, otherwise a module
+        let moduleOne = semesterOne.customModule ?? semesterOne.module
+        let moduleTwo = semesterTwo.customModule ?? semesterTwo.module
+
+        let semesterOneLockStatus = moduleOne?.required ? "locked" : "unlocked"
+        let semesterTwoLockStatus = moduleTwo?.required ? "locked" : "unlocked"
 
         container.innerHTML += /*html*/`
             <x-study-card data-year="${yearIndex}">
                 <span slot="header">Jaar ${yearIndex + 1}</span>
                 <div slot="content-1" data-card-module data-index="0" data-status="${semesterOneLockStatus}" data-semesterindex="${semesterOneIndex}" class="card-module-item"
-                    ${semesterOne.module ? `style="--primary-color: ${hexToRGB(semesterOne.module.category?.primaryColor)}; --accent-color: ${hexToRGB(semesterOne.module.category?.accentColor)};"` : 'type="empty"'}>
+                    ${moduleOne ? `style="--primary-color: ${hexToRGB(moduleOne.category?.primaryColor ?? '#cccccc')}; --accent-color: ${hexToRGB(moduleOne.category?.accentColor ?? '#999999')};"` : 'type="empty"'}>
                     <input name="choice[${yearIndex + 1}][1]" hidden/>
                     <div style="display: flex; justify-content: space-between;">
                         <i class="ph ${statusIconMap[semesterOneLockStatus]}"></i>
-                        ${semesterOne.module && semesterOne.module.description ? /*html*/`
-                        <x-tooltip>
-                            <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                            <p style="color: rgb(var(--color-black));">${semesterOne.module.description}</p>
-                        </x-tooltip>    
-                        ` : ''}
+                        ${moduleOne ? createTooltipContent(moduleOne) : ''}
                     </div>
-                    ${semesterOne.module ? semesterOne.module.name : `Optie 1`}
+                    ${moduleOne ? moduleOne.name : `Optie 1`}
                 </div>
 
                 
                 <div slot="content-2" data-card-module data-index="1" data-status="${semesterTwoLockStatus}" data-semesterindex="${semesterTwoIndex}" class="card-module-item"
-                    ${semesterTwo.module ? `style="--primary-color: ${hexToRGB(semesterTwo.module.category?.primaryColor)}; --accent-color: ${hexToRGB(semesterTwo.module.category?.accentColor)};"` : 'type="empty"'}>
+                    ${moduleTwo ? `style="--primary-color: ${hexToRGB(moduleTwo.category?.primaryColor ?? '#cccccc')}; --accent-color: ${hexToRGB(moduleTwo.category?.accentColor ?? '#999999')};"` : 'type="empty"'}>
                     <input name="choice[${yearIndex + 1}][2]" hidden/>
                     <div style="display: flex; justify-content: space-between;">
                         <i class="ph ${statusIconMap[semesterTwoLockStatus]}"></i>
-                        ${semesterTwo.module && semesterTwo.module.description ? /*html*/`
-                        <x-tooltip>
-                            <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                            <p style="color: rgb(var(--color-black));">${semesterTwo.module.description}</p>
-                        </x-tooltip>    
-                        ` : ''}
+                        ${moduleTwo ? createTooltipContent(moduleTwo) : ''}
                     </div>
-                    ${semesterTwo.module ? semesterTwo.module.name : `Optie 2`}
+                    ${moduleTwo ? moduleTwo.name : `Optie 2`}
                 </div>
             </x-study-card>
         `
     }
+}
+
+function createTooltipContent(module) {
+    const isCustom = module.isCustom === true;
+
+    return `
+      <div class="info-icon" style="cursor: pointer;" data-guid="${module.id}" data-type="${isCustom ? 'custom' : 'standard'}">
+        <i class="ph ph-info"></i>
+      </div>
+    `
 }
 
 /**
@@ -191,6 +216,20 @@ async function loadModules() {
                 console.warn(`Module '${module.name}' has unknown categoryId: ${module.category.id}`)
             }
         })
+
+        const overigCat = categories.find(c => c.value === 'Overig')
+        if (overigCat) {
+            const eigenKeuze = new CustomModule({
+                id: crypto.randomUUID(),
+                name: 'Eigen keuze',
+                description: 'Hier kan je een eigen keuze toevoegen',
+                ec: 30,
+                semester: null
+            })
+            moduleData.get(overigCat).unshift(eigenKeuze)
+        } else {
+            console.warn(`Category 'Overig' not found; placeholder Eigen keuze not added`)
+        }
 
         renderModuleAccordion()
     } catch (error) {
@@ -362,6 +401,32 @@ export default function PlannerPage({ params }) {
 PlannerPage.onPageLoaded = async () => {
     document.addEventListener('click', delegatedAccordionClickHandler)
     document.addEventListener('click', delegatedSemesterClickHandler)
+
+    document.addEventListener('click', (e) => {
+        const infoIcon = e.target.closest('.info-icon')
+        if (!infoIcon) return
+
+        const guid = infoIcon.dataset.guid
+        const type = infoIcon.dataset.type
+
+        const module = getModuleById(guid)
+        if (!module) return
+
+        const isCustom = type === 'custom'
+
+        modal.setOnSaveCallback((updatedModule) => {
+            const semesterIndex = selectedSemester.dataset.semesterindex
+
+            const newModule = new CustomModule(updatedModule)
+            studyRoute.semesters[semesterIndex].moduleId = newModule.id
+            studyRoute.semesters[semesterIndex].module = newModule
+
+            renderStudyCards()
+            drawConnections()
+        })
+
+        modal.open(module, isCustom)
+    })
 
     window.addEventListener('resize', () => {
         requestAnimationFrame(drawConnections)
