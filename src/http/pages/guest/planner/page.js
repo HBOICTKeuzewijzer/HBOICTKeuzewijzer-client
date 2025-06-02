@@ -292,10 +292,9 @@ function renderModuleAccordion() {
                         <div class="module-item" data-index="${index}" data-guid="${module.id}" data-type="standard">
                             <span>${module.name}</span>
                             ${module.description
-                        ? `<x-tooltip position="left" placement="middle">
-                                    <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                                    <p class="color-black text-sm">${module.description}</p>
-                                   </x-tooltip>`
+                        ? `<div class="info-icon" style="cursor: pointer;" data-guid="${module.id}" data-type="${module instanceof CustomModule || module.isCustom ? 'custom' : 'standard'}">
+                                <i class="ph ph-info"></i>
+                            </div>`
                         : ''
                     }
                         </div>`
