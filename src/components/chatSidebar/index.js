@@ -57,10 +57,8 @@ export class ChatSidebar extends HTMLElement {
 
 
     markChatAsRead(chatId) {
-        console.log("Ik ben in de markChatAsRead functie");
         fetcher(`chat/mark-as-read/${chatId}`, { method: 'PUT' })
             .then(() => {
-                console.log(`Chat ${chatId} is gemarkeerd als gelezen.`);
                 this.removeUnreadIndicator(chatId); 
             })
             .catch((error) => {
@@ -83,7 +81,6 @@ export class ChatSidebar extends HTMLElement {
             method: 'POST'
         })
             .then(() => {
-                console.log('Nieuwe chat succesvol gestart met:', email);
                 this.getChatData().then(chatData => {
                     this.renderChatSidebar(chatData.items, []);
                 });
@@ -158,7 +155,6 @@ export class ChatSidebar extends HTMLElement {
 
     }
     getChatData() {
-        console.log("Ontvangen chatgegevens via fetcher:");
         return fetcher('chat', { method: 'GET' })
             .then(data => {
                 return data
@@ -277,7 +273,6 @@ export class ChatSidebar extends HTMLElement {
 
                 fetcher(`chat/mark-as-read/${chatId}`, { method: 'PUT' })
                     .then(() => {
-                        console.log(`Chat ${chatId} is gemarkeerd als gelezen.`);
 
                         this.removeUnreadIndicator(chatId);
                     });
@@ -289,7 +284,6 @@ export class ChatSidebar extends HTMLElement {
         });
     }
     removeUnreadIndicator(chatId) {
-        console.log(`ik zit nu in de fucntie: ${chatId}`);
         const chatItem = Array.from(this.shadowRoot.querySelectorAll('.chat-item'))
             .find(item => item.dataset.chatId === chatId);
 
@@ -297,9 +291,7 @@ export class ChatSidebar extends HTMLElement {
             const unreadIndicator = chatItem.querySelector('.unread-indicator');
             if (unreadIndicator) {
                 unreadIndicator.remove();
-                console.log(`Unread indicator verwijderd voor chatId: ${chatId}`);
             } else {
-                console.log(`Geen unread indicator gevonden voor chatId: ${chatId}`);
             }
         } else {
         }

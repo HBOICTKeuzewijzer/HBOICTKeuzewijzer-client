@@ -20,23 +20,26 @@ function afterReturn() {
     })
 }
 
-function getInitials(name) {
-    if (!name) return ''
+        function getInitials(name) {
+            if (!name) return '';
 
-    const parts = name.trim().split(/\s+/)
+            const cleanedName = name.replace(/\([^)]*\)/g, '').trim();
 
-    if (parts.length === 1) {
-        return parts[0][0].toUpperCase()
-    }
+            const parts = cleanedName.split(/\s+/);
 
-    const first = parts[0][0].toUpperCase()
-    const last = parts[parts.length - 1][0].toUpperCase()
+            if (parts.length === 1) {
+                const first = parts[0][0].toUpperCase();
+                return first + first;
+            }
 
-    return first + last
-}
+            const first = parts[0][0].toUpperCase();
+            const last = parts[parts.length - 1][0].toUpperCase();
+
+            return first + last;
+        }
 
 export default function Layout(children) {
-    let hasUnreadMessages = false; // Declare the variable here
+    let hasUnreadMessages = false; 
     const imageURL = new URL('@assets/images/windesheim-logo.png', import.meta.url).href
 
     function roleArray(roles) {
@@ -48,7 +51,6 @@ export default function Layout(children) {
     function pollUnreadMessages() {
         return fetcher('chat/has-unread', { method: 'GET' })
             .then((response) => {
-                console.log('Chats met ongelezen berichten:', response);
 
                 const hadUnreadMessages = hasUnreadMessages;
 
@@ -56,7 +58,6 @@ export default function Layout(children) {
                     hasUnreadMessages = true;
 
                     if (!hadUnreadMessages) {
-                        console.log('Je hebt ongelezen berichten!');
                         document.querySelector('app-toaster')?.show('Je hebt ongelezen berichten!');
                     }
 
@@ -99,10 +100,14 @@ export default function Layout(children) {
         }
     }
 
-    setTimeout(() => {
-        afterReturn()
-        pollUnreadMessages(); // Start polling after the initial setup
-    }, 0);
+setTimeout(() => {
+    afterReturn();
+
+    if (Auth.isLoggedIn()) {
+        pollUnreadMessages(); 
+    }
+}, 0);
+
 
     return /*html*/ `
         <div>
