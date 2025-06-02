@@ -100,10 +100,14 @@ export default function Layout(children) {
         }
     }
 
-    setTimeout(() => {
-        afterReturn()
-        pollUnreadMessages(); // Start polling after the initial setup
-    }, 0);
+setTimeout(() => {
+    afterReturn();
+
+    if (Auth.isLoggedIn()) {
+        pollUnreadMessages(); 
+    }
+}, 0);
+
 
     return /*html*/ `
         <div>
