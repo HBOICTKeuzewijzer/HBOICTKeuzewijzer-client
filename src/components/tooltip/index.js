@@ -36,6 +36,8 @@ export class Tooltip extends Popper {
         const _styleElement = document.createElement('style')
         _styleElement.textContent = styling
         this.shadowRoot.appendChild(_styleElement)
+
+        this._leaveTimeout = null
     }
 
     /**
@@ -47,10 +49,13 @@ export class Tooltip extends Popper {
     connectedCallback() {
         super.connectedCallback?.()
 
-        this.triggerElement?.addEventListener('mouseenter', this._openHandler)
-        this.triggerElement?.addEventListener('mouseleave', this._closeHandler)
-        this.triggerElement?.addEventListener('focus', this._openHandler)
-        this.triggerElement?.addEventListener('blur', this._closeHandler)
+        this.triggerElement?.addEventListener('mouseenter', this.#openHandler)
+        this.triggerElement?.addEventListener('mouseleave', this.#leaveHandler)
+        this.contentElement?.addEventListener('mouseenter', this.#openHandler)
+        this.contentElement?.addEventListener('mouseleave', this.#leaveHandler)
+
+        this.triggerElement?.addEventListener('focus', this.#openHandler)
+        this.triggerElement?.addEventListener('blur', this.#closeHandler)
     }
 
     /**
@@ -62,10 +67,13 @@ export class Tooltip extends Popper {
     disconnectedCallback() {
         super.disconnectedCallback?.()
 
-        this.triggerElement?.removeEventListener('mouseenter', this._openHandler)
-        this.triggerElement?.removeEventListener('mouseleave', this._closeHandler)
-        this.triggerElement?.removeEventListener('focus', this._openHandler)
-        this.triggerElement?.removeEventListener('blur', this._closeHandler)
+        this.triggerElement?.removeEventListener('mouseenter', this.#openHandler)
+        this.triggerElement?.removeEventListener('mouseleave', this.#leaveHandler)
+        this.contentElement?.removeEventListener('mouseenter', this.#openHandler)
+        this.contentElement?.removeEventListener('mouseleave', this.#leaveHandler)
+
+        this.triggerElement?.removeEventListener('focus', this.#openHandler)
+        this.triggerElement?.removeEventListener('blur', this.#closeHandler)
     }
 
     /**
@@ -73,13 +81,22 @@ export class Tooltip extends Popper {
      * @private
      */
     #openHandler = () => {
+        if (this._leaveTimeout) {
+            clearTimeout(this._leaveTimeout)
+            this._leaveTimeout = null
+        }
         this.open = true
     }
-
     /**
      * Hides the tooltip.
      * @private
      */
+    #leaveHandler = () => {
+        this._leaveTimeout = setTimeout(() => {
+            this.open = false
+        }, 100) // 100ms delay
+    }
+
     #closeHandler = () => {
         this.open = false
     }
