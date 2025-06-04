@@ -30,7 +30,7 @@ export class CustomModule {
         if (params.id) this.id = params.id
         if (params.name) this.name = params.name
         if (params.description) this.description = params.description
-        if (params.ec) this.ec = params.ec
+        if (params.eCs) this.ec = params.eCs
         if (params.semester) this.semester = params.semester
         this.isCustom = params.isCustom ?? true
     }

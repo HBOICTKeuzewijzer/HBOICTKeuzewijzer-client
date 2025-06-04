@@ -41,7 +41,7 @@ export default class Modal {
         this.form.appendChild(this.createField('Beschrijving', 'description', module.description || '', isCustom, true))
 
         // ECs
-        this.form.appendChild(this.createField('ECs', 'ecs', module.ecs || 0, isCustom, false, 'number'))
+        this.form.appendChild(this.createField('ECs', 'ecs', module.ec || 0, isCustom, false, 'number'))
 
         // Acquired EC
         this.form.appendChild(this.createField('Behaalde EC', 'acquiredEc', module.acquiredEc || 0, isCustom, false, 'number')
