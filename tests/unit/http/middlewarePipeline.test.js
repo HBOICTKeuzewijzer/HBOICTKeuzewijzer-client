@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// Mock Middleware en SetAuthCookie classes als dummy classes
+// Mock Middleware and SetAuthCookie classes as dummy classes
 vi.mock('@/http/middleware', () => ({
     Middleware: class { },
     SetAuthCookie: class {
