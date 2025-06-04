@@ -41,7 +41,7 @@ export default class Modal {
         this.form.appendChild(this.createField('Beschrijving', 'description', module.description || '', isCustom, true))
 
         // ECs
-        this.form.appendChild(this.createField('ECs', 'ecs', module.ec || 0, isCustom, false, 'number'))
+        this.form.appendChild(this.createField('ECs', 'ec', module.ec || 0, isCustom, false, 'number'))
 
         // Acquired EC
         this.form.appendChild(this.createField('Behaalde EC', 'acquiredEc', module.acquiredEc || 0, isCustom, false, 'number')
@@ -112,7 +112,7 @@ export default class Modal {
         event.preventDefault();
 
         const formData = new FormData(this.form);
-        const ecs = Number(formData.get('ecs'));
+        const ec = Number(formData.get('ec'));
         const acquiredEc = Number(formData.get('acquiredEc'));
 
         if (acquiredEc < 0 || acquiredEc > 30) {
@@ -124,7 +124,7 @@ export default class Modal {
             // id is gained from API
             name: formData.get('name'),
             description: formData.get('description'),
-            ecs: ecs,
+            ec: ec,
             acquiredEc: acquiredEc,
             isCustom: true,
         };

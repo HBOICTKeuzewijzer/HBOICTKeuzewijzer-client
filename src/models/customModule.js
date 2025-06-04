@@ -30,6 +30,7 @@ export class CustomModule {
         if (params.id) this.id = params.id
         if (params.name) this.name = params.name
         if (params.description) this.description = params.description
+        if (params.ec) this.ec = params.ec
         if (params.eCs) this.ec = params.eCs
         if (params.semester) this.semester = params.semester
         this.isCustom = params.isCustom ?? true
@@ -97,10 +98,16 @@ export class CustomModule {
 
     /** @returns {string} JSON string */
     toJson() {
+        console.log("Serializing customModule:", {
+            name: this.name,
+            description: this.description,
+            eCs: this.ec ?? 0,
+            semester: this.semester
+        });
         return {
             name: this.name,
             description: this.description,
-            ec: this.ec,
+            eCs: this.ec ?? 0,
             semester: this.semester
         }
     }

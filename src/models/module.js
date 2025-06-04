@@ -43,6 +43,7 @@ export class Module {
         if (params.name) this.name = params.name
         if (params.code) this.code = params.code
         if (params.eCs) this.ec = params.eCs
+        if (params.ec) this.ec = params.ec
         if (params.description) this.description = params.description
         if (params.category) this.category = new Category(params.category)
         if (params.required) this.required = Boolean(params.required)
