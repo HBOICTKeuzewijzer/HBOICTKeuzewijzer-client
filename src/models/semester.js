@@ -8,7 +8,7 @@ export class Semester {
     /** @type {string} */
     _index
     /** @type {number} */
-    _acquiredEcs
+    _acquiredECs
     /** @type {string} */
     _moduleId
     /** @type {Module} */
@@ -28,7 +28,7 @@ export class Semester {
     constructor(params = {}) {
         if (params.id) this.id = params.id
         if (params.index || params.index === 0) this.index = params.index
-        if (params.acquiredEcs) this.acquiredEcs = params.acquiredEcs
+        if (params.acquiredECs !== undefined) this.acquiredECs = params.acquiredECs;
         if (params.moduleId) this.moduleId = params.moduleId
         if (params.module) this.module = new Module(params.module)
         if (params.customModuleId) this.customModuleId = params.customModuleId
@@ -58,13 +58,13 @@ export class Semester {
     }
 
     /** @returns {number} */
-    get acquiredEcs() {
-        return this._acquiredEcs
+    get acquiredECs() {
+        return this._acquiredECs
     }
 
     /** @param {number} value */
-    set acquiredEcs(value) {
-        this._acquiredEcs = value
+    set acquiredECs(value) {
+        this._acquiredECs = value
     }
 
     /** @returns {string} */
@@ -132,7 +132,7 @@ export class Semester {
         return {
             id: this.id,
             index: this.index,
-            acquiredEcs: this.acquiredEcs,
+            acquiredECs: this.acquiredECs,
             moduleId: this.moduleId,
             customModuleId: this.customModuleId,
             customModule: this.customModule ? this.customModule.toJson() : null,
