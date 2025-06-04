@@ -1,5 +1,8 @@
 import { fetcher } from '@/utils'
-import { Module, Category, Semester, StudyRoute } from '@/models'
+import { Module, Category, Semester, StudyRoute, CustomModule } from '@/models'
+import Modal from '@/components/modal'
+
+const modal = new Modal()
 
 let studyRouteId = null
 
@@ -175,45 +178,47 @@ function renderStudyCards() {
         let semesterTwoIndex = semesterModelIndex++
         let semesterOne = studyRouteSemesters[semesterOneIndex]
         let semesterTwo = studyRouteSemesters[semesterTwoIndex]
-        let semesterOneLockStatus = semesterOne.module?.required ?? false ? "locked" : "unlocked"
-        let semesterTwoLockStatus = semesterTwo.module?.required ?? false ? "locked" : "unlocked"
+
+        let moduleOne = semesterOne.module
+        let moduleTwo = semesterTwo.module
+
+        let semesterOneLockStatus = moduleOne?.required ? "locked" : "unlocked"
+        let semesterTwoLockStatus = moduleTwo?.required ? "locked" : "unlocked"
 
         container.innerHTML += /*html*/`
             <x-study-card data-year="${yearIndex}">
                 <span slot="header">Jaar ${yearIndex + 1}</span>
                 <div slot="content-1" data-card-module data-index="0" data-status="${semesterOneLockStatus}" data-semesterindex="${semesterOneIndex}" class="card-module-item"
-                    ${semesterOne.module ? `style="--primary-color: ${hexToRGB(semesterOne.module.category?.primaryColor)}; --accent-color: ${hexToRGB(semesterOne.module.category?.accentColor)};"` : 'type="empty"'}>
+                    ${moduleOne ? `style="--primary-color: ${hexToRGB(moduleOne.category?.primaryColor ?? '#cccccc')}; --accent-color: ${hexToRGB(moduleOne.category?.accentColor ?? '#999999')};"` : 'type="empty"'}>
                     <input name="choice[${yearIndex + 1}][1]" hidden/>
                     <div style="display: flex; justify-content: space-between;">
                         <i class="ph ${statusIconMap[semesterOneLockStatus]}"></i>
-                        ${semesterOne.module && semesterOne.module.description ? /*html*/`
-                        <x-tooltip>
-                            <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                            <p style="color: rgb(var(--color-black));">${semesterOne.module.description}</p>
-                        </x-tooltip>    
-                        ` : ''}
+                        ${moduleOne ? createTooltipContent(moduleOne) : ''}
                     </div>
-                    ${semesterOne.module ? semesterOne.module.name : `Optie 1`}
+                    ${moduleOne ? moduleOne.name : `Optie 1`}
                 </div>
 
                 
                 <div slot="content-2" data-card-module data-index="1" data-status="${semesterTwoLockStatus}" data-semesterindex="${semesterTwoIndex}" class="card-module-item"
-                    ${semesterTwo.module ? `style="--primary-color: ${hexToRGB(semesterTwo.module.category?.primaryColor)}; --accent-color: ${hexToRGB(semesterTwo.module.category?.accentColor)};"` : 'type="empty"'}>
+                    ${moduleTwo ? `style="--primary-color: ${hexToRGB(moduleTwo.category?.primaryColor ?? '#cccccc')}; --accent-color: ${hexToRGB(moduleTwo.category?.accentColor ?? '#999999')};"` : 'type="empty"'}>
                     <input name="choice[${yearIndex + 1}][2]" hidden/>
                     <div style="display: flex; justify-content: space-between;">
                         <i class="ph ${statusIconMap[semesterTwoLockStatus]}"></i>
-                        ${semesterTwo.module && semesterTwo.module.description ? /*html*/`
-                        <x-tooltip>
-                            <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                            <p style="color: rgb(var(--color-black));">${semesterTwo.module.description}</p>
-                        </x-tooltip>    
-                        ` : ''}
+                        ${moduleTwo ? createTooltipContent(moduleTwo) : ''}
                     </div>
-                    ${semesterTwo.module ? semesterTwo.module.name : `Optie 2`}
+                    ${moduleTwo ? moduleTwo.name : `Optie 2`}
                 </div>
             </x-study-card>
         `
     }
+}
+
+function createTooltipContent(module) {
+    return `
+      <div class="info-icon" style="cursor: pointer;" data-guid="${module.id}" data-type="standard">
+        <i class="ph ph-info"></i>
+      </div>
+    `
 }
 
 /**
@@ -235,7 +240,7 @@ async function loadModules() {
             (async () => {
                 const data = await fetcher('module', { method: 'GET' })
                 return data.map(element => new Module(element))
-            })()
+            })(),
         ])
 
         categories.forEach(category => {
@@ -284,7 +289,7 @@ function renderModuleAccordion() {
                 <span slot="title">${category.value}</span>
                 ${modules.map(
                 (module, index) => `
-                        <div class="module-item" data-index="${index}" data-guid="${module.id}">
+                        <div class="module-item" data-index="${index}" data-guid="${module.id}" data-type="standard">
                             <span>${module.name}</span>
                             ${module.description
                         ? `<x-tooltip position="left" placement="middle">
@@ -422,6 +427,33 @@ export default function PlannerPage({ params }) {
 PlannerPage.onPageLoaded = async () => {
     document.addEventListener('click', delegatedAccordionClickHandler)
     document.addEventListener('click', delegatedSemesterClickHandler)
+
+    document.addEventListener('click', (e) => {
+        const infoIcon = e.target.closest('.info-icon')
+        if (!infoIcon) return
+
+        const guid = infoIcon.dataset.guid
+        const type = infoIcon.dataset.type
+
+        const module = getModuleById(guid)
+        if (!module) return
+
+        const isCustom = type === 'custom'
+
+        modal.setOnSaveCallback((updatedModule) => {
+            const semesterIndex = selectedSemester.dataset.semesterindex
+
+            const newModule = new CustomModule(updatedModule)
+            studyRoute.semesters[semesterIndex].moduleId = newModule.id
+            studyRoute.semesters[semesterIndex].module = newModule
+
+            renderStudyCards()
+            drawConnections()
+        })
+
+        modal.open(module, isCustom)
+    })
+
 
     window.addEventListener('resize', () => {
         requestAnimationFrame(drawConnections)

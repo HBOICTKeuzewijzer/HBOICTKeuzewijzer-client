@@ -5,7 +5,7 @@ import { Category } from "@models"
  * @property {string} id - Unique identifier (GUID) of the module.
  * @property {string} name - The display name of the module.
  * @property {string} code - Internal code identifying the module.
- * @property {number} ec - Number of ECTS credits awarded for the module.
+ * @property {number} ecs - Number of ECTS credits awarded for the module.
  * @property {string | undefined} description - Optional textual description of the module.
  * @property {Category} category - Normalized category string (one of the predefined constants).
  * @property {Oer} oer - Open Educational Resources metadata associated with the module.
@@ -22,7 +22,7 @@ export class Module {
     /** @type {string} */
     _code
     /** @type {number} */
-    _ec
+    _ecs
     /** @type {string | undefined} */
     _description
     /** @type {Category} */
@@ -42,7 +42,7 @@ export class Module {
         if (params.id) this.id = params.id
         if (params.name) this.name = params.name
         if (params.code) this.code = params.code
-        if (params.ec) this.ec = params.ec
+        if (params.eCs) this.ecs = params.eCs
         if (params.description) this.description = params.description
         if (params.category) this.category = new Category(params.category)
         if (params.required) this.required = Boolean(params.required)
@@ -82,13 +82,13 @@ export class Module {
     }
 
     /** @returns {number} */
-    get ec() {
-        return this._ec
+    get ecs() {
+        return this._ecs
     }
 
     /** @param {number} value */
-    set ec(value) {
-        this._ec = value
+    set ecs(value) {
+        this._ecs = value
     }
 
     /** @returns {string | undefined} */
