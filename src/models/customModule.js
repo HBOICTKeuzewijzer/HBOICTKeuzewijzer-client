@@ -98,12 +98,6 @@ export class CustomModule {
 
     /** @returns {string} JSON string */
     toJson() {
-        console.log("Serializing customModule:", {
-            name: this.name,
-            description: this.description,
-            eCs: this.ec ?? 0,
-            semester: this.semester
-        });
         return {
             name: this.name,
             description: this.description,

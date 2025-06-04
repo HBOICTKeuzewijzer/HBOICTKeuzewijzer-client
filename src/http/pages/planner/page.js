@@ -418,8 +418,12 @@ PlannerPage.onPageLoaded = async () => {
 
         const isCustom = type === 'custom'
 
+        // Get semester for the acquiredECs
+        const semesterIndex = selectedSemester.dataset.semesterindex
+
+        const acquiredECs = studyRoute.semesters[semesterIndex].acquiredECs
+
         modal.setOnSaveCallback(async (updatedModule) => {
-            console.log('Updated module from modal:', updatedModule);
             const semesterIndex = selectedSemester.dataset.semesterindex
 
             updatedModule.id ??= studyRoute.semesters[semesterIndex].customModule?.id
@@ -431,16 +435,14 @@ PlannerPage.onPageLoaded = async () => {
             studyRoute.semesters[semesterIndex].moduleId = null
 
             studyRoute.semesters[semesterIndex].acquiredECs = updatedModule.acquiredECs
-            console.log('Semester acquiredECs after assignment:', studyRoute.semesters[semesterIndex].acquiredECs);
 
             renderStudyCards()
             drawConnections()
 
-            console.log('Serialized semester:', studyRoute.semesters[semesterIndex].toJson());
             await fetcher(`studyRoute/${studyRouteId}`, { method: 'PUT', body: studyRoute.toJson() })
         })
 
-        modal.open(module, isCustom)
+        modal.open(module, isCustom, acquiredECs)
     })
 
     window.addEventListener('resize', () => {

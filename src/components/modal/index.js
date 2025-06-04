@@ -28,7 +28,7 @@ export default class Modal {
         this.handleEsc = this.handleEsc.bind(this)
     }
 
-    open(module, isCustom) {
+    open(module, isCustom, acquiredECs = 0) {
         this.titleElem.textContent = 'Module info'
 
         // Clear form
@@ -44,7 +44,7 @@ export default class Modal {
         this.form.appendChild(this.createField('ECs', 'ec', module.ec || 0, isCustom, false, 'number'))
 
         // Acquired EC (from semester)
-        this.form.appendChild(this.createField('Behaalde EC', 'acquiredECs', module.acquiredECs || 0, isCustom, false, 'number')
+        this.form.appendChild(this.createField('Behaalde EC', 'acquiredECs', acquiredECs, isCustom, false, 'number')
         );
 
         // If it's a custom module, add a submit button.
