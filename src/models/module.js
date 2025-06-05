@@ -51,7 +51,9 @@ export class Module {
         if (params.description) this.description = params.description
         if (params.category) this.category = new Category(params.category)
         if (params.required) this.required = Boolean(params.required)
-        if (params.requiredSemester) this.requiredSemester = Number(params.requiredSemester)
+        if (params.requiredSemester !== null && params.requiredSemester !== undefined) {
+            this.requiredSemester = Number(params.requiredSemester)
+        }
         if (params.level) this.level = Number(params.level)
         if (params.prerequisiteJson) this.prerequisiteJson = params.prerequisiteJson
         //if (params.oer) this.oer = params.oer
@@ -150,12 +152,12 @@ export class Module {
 
     /** @returns {number} */
     get level() {
-        return this._requiredSemester
+        return this._level
     }
 
     /** @param {number} value */
     set level(value) {
-        this._requiredSemester = value
+        this._level = value
     }
 
     /** @returns {string} */

@@ -62,6 +62,9 @@ async function handleAccordionItemClick(moduleItem) {
     if (selectedSemester === undefined || selectedSemester === null) return
 
     const semesterIndex = selectedSemester.dataset.semesterindex
+    if (studyRoute.semesters[semesterIndex].module?.required === true) {
+        return
+    }
 
     const clickedModule = getModuleById(moduleItem.dataset.guid)
     if (clickedModule instanceof CustomModule) {
