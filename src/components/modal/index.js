@@ -1,111 +1,110 @@
-import './style.css'
+import './style.css';
 
 export default class Modal {
     constructor() {
-        this.modal = document.createElement('div')
-        this.modal.className = 'modal-overlay'
-        this.handleSubmit = this.handleSubmit.bind(this)
+        this.modal = document.createElement('div');
+        this.modal.className = 'modal-overlay';
+
+        // Bind once
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleEsc = this.handleEsc.bind(this);
+
         this.modal.innerHTML = `
-      <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
-        <button class="modal-close" aria-label="Close modal">&times;</button>
-        <h2 id="modal-title"></h2>
-        <form class="modal-form">
-        </form>
-      </div>
-    `
+            <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
+                <button class="modal-close" aria-label="Close modal">&times;</button>
+                <h2 id="modal-title"></h2>
+                <form class="modal-form"></form>
+            </div>
+        `;
 
-        document.body.appendChild(this.modal)
-        this.modalContent = this.modal.querySelector('.modal-content')
-        this.titleElem = this.modal.querySelector('#modal-title')
-        this.form = this.modal.querySelector('.modal-form')
-        this.closeBtn = this.modal.querySelector('.modal-close')
+        document.body.appendChild(this.modal);
+        this.modalContent = this.modal.querySelector('.modal-content');
+        this.titleElem = this.modal.querySelector('#modal-title');
+        this.form = this.modal.querySelector('.modal-form');
+        this.closeBtn = this.modal.querySelector('.modal-close');
 
-        this.closeBtn.addEventListener('click', () => this.close())
+        this.closeBtn.addEventListener('click', () => this.close());
         this.modal.addEventListener('click', (e) => {
-            if (e.target === this.modal) this.close()
-        })
+            if (e.target === this.modal) this.close();
+        });
 
-        this.handleEsc = this.handleEsc.bind(this)
+        // Attach submit listener once
+        this.form.addEventListener('submit', this.handleSubmit);
     }
 
     open(module, isCustom, acquiredECs = 0) {
-        this.titleElem.textContent = 'Module info'
+        this.titleElem.textContent = 'Module info';
 
         // Clear form
-        this.form.innerHTML = ''
+        this.form.innerHTML = '';
 
         // Name
-        this.form.appendChild(this.createField('Naam', 'name', module.name, isCustom))
+        this.form.appendChild(this.createField('Naam', 'name', module.name, isCustom));
 
         // Description
-        this.form.appendChild(this.createField('Beschrijving', 'description', module.description || '', isCustom, true))
+        this.form.appendChild(this.createField('Beschrijving', 'description', module.description || '', isCustom, true));
 
-        // ECs
-        this.form.appendChild(this.createField('ECs', 'ec', module.ec || 0, isCustom, false, 'number'))
-
-        // Acquired EC (from semester)
-        this.form.appendChild(this.createField('Behaalde EC', 'acquiredECs', acquiredECs, isCustom, false, 'number')
-        );
-
-        // If it's a custom module, add a submit button.
-        if (isCustom) {
-            const submitBtn = document.createElement('button')
-            submitBtn.type = 'submit'
-            submitBtn.textContent = 'Opslaan'
-            submitBtn.className = 'modal-submit'
-            this.form.appendChild(submitBtn)
-
-            // Event listener for form submit
-            this.form.addEventListener('submit', this.handleSubmit.bind(this))
+        if (!isCustom) {
+            this.form.appendChild(this.createField('Niveau', 'level', module.level, false, false, 'number'));
         }
 
-        this.modal.style.display = 'flex'
-        this.modalContent.focus()
+        // ECs
+        this.form.appendChild(this.createField('ECs', 'ec', module.ec || 0, isCustom, false, 'number'));
 
-        document.addEventListener('keydown', this.handleEsc)
+        // Acquired ECs — always editable
+        this.form.appendChild(this.createField('Behaalde EC', 'acquiredECs', acquiredECs, true, false, 'number'));
+
+
+        // Always show submit button
+        const submitBtn = document.createElement('button');
+        submitBtn.type = 'submit';
+        submitBtn.textContent = 'Opslaan';
+        submitBtn.className = 'modal-submit';
+        this.form.appendChild(submitBtn);
+
+        this.modal.style.display = 'flex';
+        this.modalContent.focus();
+        document.addEventListener('keydown', this.handleEsc);
     }
 
+
     close() {
-        this.modal.style.display = 'none'
-        document.removeEventListener('keydown', this.handleEsc)
-        this.form.removeEventListener('submit', this.handleSubmit)
+        this.modal.style.display = 'none';
+        document.removeEventListener('keydown', this.handleEsc);
+        // No need to remove submit listener since it's attached once in constructor
     }
 
     handleEsc(e) {
         if (e.key === 'Escape') {
-            this.close()
+            this.close();
         }
     }
 
     createField(labelText, fieldName, value, isEditable, isTextarea = false, type = 'text') {
-        const wrapper = document.createElement('div')
-        wrapper.className = 'modal-field'
+        const wrapper = document.createElement('div');
+        wrapper.className = 'modal-field';
 
-        const label = document.createElement('label')
-        label.textContent = labelText
-        label.setAttribute('for', `modal-${fieldName}`)
+        const label = document.createElement('label');
+        label.textContent = labelText;
+        label.setAttribute('for', `modal-${fieldName}`);
 
-        let input
+        let input;
         if (isTextarea) {
-            input = document.createElement('textarea')
-            input.rows = 3
-            input.value = value
-            input.id = `modal-${fieldName}`
-            input.name = fieldName
-            input.readOnly = !isEditable
+            input = document.createElement('textarea');
+            input.rows = 3;
         } else {
-            input = document.createElement('input')
-            input.type = type
-            input.value = value
-            input.id = `modal-${fieldName}`
-            input.name = fieldName
-            input.readOnly = !isEditable
+            input = document.createElement('input');
+            input.type = type;
         }
+        input.value = value;
+        input.id = `modal-${fieldName}`;
+        input.name = fieldName;
+        input.readOnly = !isEditable;
 
-        wrapper.appendChild(label)
-        wrapper.appendChild(input)
+        wrapper.appendChild(label);
+        wrapper.appendChild(input);
 
-        return wrapper
+        return wrapper;
     }
 
     handleSubmit(event) {
@@ -121,7 +120,6 @@ export default class Modal {
         }
 
         const data = {
-            // id is gained from API
             name: formData.get('name'),
             description: formData.get('description'),
             ec: ec,
@@ -133,8 +131,7 @@ export default class Modal {
         this.close();
     }
 
-
     setOnSaveCallback(callback) {
-        this.onSaveCallback = callback
+        this.onSaveCallback = callback;
     }
 }

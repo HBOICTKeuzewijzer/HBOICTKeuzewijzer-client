@@ -1,5 +1,5 @@
 import { fetcher } from '@/utils'
-import { Module, Category, Semester, StudyRoute, CustomModule } from '@/models'
+import { Module, Category, StudyRoute, CustomModule } from '@/models'
 import Modal from '@/components/modal'
 
 const modal = new Modal()
@@ -65,6 +65,10 @@ async function handleAccordionItemClick(moduleItem) {
 
     const clickedModule = getModuleById(moduleItem.dataset.guid)
     if (clickedModule instanceof CustomModule) {
+        if (studyRoute.semesters[semesterIndex].moduleId !== null) {
+            studyRoute.semesters[semesterIndex].acquiredECs = 0
+        }
+
         studyRoute.semesters[semesterIndex].customModule = clickedModule
         studyRoute.semesters[semesterIndex].customModuleId = clickedModule.id
         studyRoute.semesters[semesterIndex].module = null
@@ -74,12 +78,38 @@ async function handleAccordionItemClick(moduleItem) {
         studyRoute.semesters[semesterIndex].module = clickedModule
         studyRoute.semesters[semesterIndex].moduleId = clickedModule.id
         studyRoute.semesters[semesterIndex].customModuleId = null
+
+        studyRoute.semesters[semesterIndex].acquiredECs = 0
+    }
+
+    saveRoute()
+}
+
+async function saveRoute() {
+    try {
+        studyRoute.semesters.forEach(s => s.errors = null)
+        await fetcher(`studyRoute/${studyRouteId}`, { method: 'PUT', body: studyRoute.toJson() })
+    }
+    catch (err) {
+        try {
+            const parsed = JSON.parse(err.message.replace("Failed to fetch data: ", ""));
+            const errors = parsed.errors;
+
+            applyValidationErrors(errors)
+        } catch (parseError) {
+            console.error("Parsing error response failed:", parseError);
+        }
     }
 
     renderStudyCards()
     drawConnections()
+}
 
-    await fetcher(`studyRoute/${studyRouteId}`, { method: 'PUT', body: studyRoute.toJson() })
+function applyValidationErrors(errors) {
+    for (const [key, value] of Object.entries(errors)) {
+        var relevantSemester = studyRoute.semesters.find(s => s.id === key)
+        relevantSemester.errors = value
+    }
 }
 
 let selectedSemester
@@ -152,14 +182,35 @@ function renderStudyCards() {
         container.innerHTML += /*html*/`
             <x-study-card data-year="${yearIndex}">
                 <span slot="header">Jaar ${yearIndex + 1}</span>
+                
+                
                 <div slot="content-1" data-card-module data-index="0" data-status="${semesterOneLockStatus}" data-semesterindex="${semesterOneIndex}" class="card-module-item"
                     ${moduleOne ? `style="--primary-color: ${hexToRGB(moduleOne.category?.primaryColor ?? '#cccccc')}; --accent-color: ${hexToRGB(moduleOne.category?.accentColor ?? '#999999')};"` : 'type="empty"'}>
                     <input name="choice[${yearIndex + 1}][1]" hidden/>
                     <div style="display: flex; justify-content: space-between;">
                         <i class="ph ${statusIconMap[semesterOneLockStatus]}"></i>
-                        ${moduleOne ? createTooltipContent(moduleOne) : ''}
+                        
+                        ${moduleOne ? createModuleInfoThing(moduleOne) : ''}
                     </div>
-                    ${moduleOne ? moduleOne.name : `Optie 1`}
+                    <div style="position: absolute; bottom: 5px; right: 10px;">
+                    ${semesterOne.errors ? /*html*/`
+                        <x-dialog id="newStudyRouteDialog" closable>
+                            
+                            <div>
+                                ${semesterOne.errors.map(error => /*html*/`<div style="color: rgb(var(--color-black)); text-align: left; white-space: pre-wrap;">${error}</div>`).join('</br>')}
+                            </div>
+
+                            
+                            <x-tooltip position="left" slot="trigger">
+                                <div slot="trigger" data-icon><i class="ph ph-x" style="color: red; cursor: pointer;"></i></div>
+
+                                <p style="color: rgb(var(--color-black)); width: 150px;">Module kan hier niet, click voor meer!<p>
+                            </x-tooltip>
+                        </x-dialog>
+                    ` : ''}
+                    </div>
+                    <p>${moduleOne ? moduleOne.name : `Optie 1`}</p>
+                    
                 </div>
 
                 
@@ -168,16 +219,35 @@ function renderStudyCards() {
                     <input name="choice[${yearIndex + 1}][2]" hidden/>
                     <div style="display: flex; justify-content: space-between;">
                         <i class="ph ${statusIconMap[semesterTwoLockStatus]}"></i>
-                        ${moduleTwo ? createTooltipContent(moduleTwo) : ''}
+
+                        ${moduleTwo ? createModuleInfoThing(moduleTwo) : ''}
                     </div>
-                    ${moduleTwo ? moduleTwo.name : `Optie 2`}
+                    <div style="position: absolute; bottom: 5px; right: 10px;">
+                    ${semesterTwo.errors ? /*html*/`
+                        <x-dialog id="newStudyRouteDialog" closable>
+                            
+                            <div>
+                                ${semesterTwo.errors.map(error => /*html*/`<div style="color: rgb(var(--color-black)); text-align: left; white-space: pre-wrap;">${error}</div>`).join('</br>')}
+                            </div>
+
+                            
+                            <x-tooltip position="left" slot="trigger">
+                                <div slot="trigger" data-icon><i class="ph ph-x" style="color: red; cursor: pointer;"></i></div>
+
+                                <p style="color: rgb(var(--color-black)); width: 150px;">Module kan hier niet, click voor meer!<p>
+                            </x-tooltip>
+                        </x-dialog>                      
+                    ` : ''}
+                    </div>                    
+
+                    <p>${moduleTwo ? moduleTwo.name : `Optie 2`}</p>
                 </div>
             </x-study-card>
         `
     }
 }
 
-function createTooltipContent(module) {
+function createModuleInfoThing(module) {
     const isCustom = module instanceof CustomModule || module.isCustom === true;
 
     return `
@@ -422,24 +492,29 @@ PlannerPage.onPageLoaded = async () => {
         const semesterIndex = selectedSemester.dataset.semesterindex
 
         const acquiredECs = studyRoute.semesters[semesterIndex].acquiredECs
+        console.log(studyRoute.semesters[semesterIndex])
 
         modal.setOnSaveCallback(async (updatedModule) => {
             const semesterIndex = selectedSemester.dataset.semesterindex
+            const semester = studyRoute.semesters[semesterIndex];
 
             updatedModule.id ??= studyRoute.semesters[semesterIndex].customModule?.id
 
-            const newModule = new CustomModule(updatedModule)
-            studyRoute.semesters[semesterIndex].customModule = newModule
-            studyRoute.semesters[semesterIndex].customModuleId = newModule.id
-            studyRoute.semesters[semesterIndex].module = null
-            studyRoute.semesters[semesterIndex].moduleId = null
+            if (semester.module !== null && semester.module !== undefined) {
+                // clearly this is a Module
+            }
+            else {
+                // clearly this is a CustomModule
+                const newModule = new CustomModule(updatedModule)
+                studyRoute.semesters[semesterIndex].customModule = newModule
+                studyRoute.semesters[semesterIndex].customModuleId = newModule.id
+                studyRoute.semesters[semesterIndex].module = null
+                studyRoute.semesters[semesterIndex].moduleId = null
+            }
 
             studyRoute.semesters[semesterIndex].acquiredECs = updatedModule.acquiredECs
 
-            renderStudyCards()
-            drawConnections()
-
-            await fetcher(`studyRoute/${studyRouteId}`, { method: 'PUT', body: studyRoute.toJson() })
+            saveRoute()
         })
 
         modal.open(module, isCustom, acquiredECs)
@@ -451,6 +526,5 @@ PlannerPage.onPageLoaded = async () => {
 
     loadModules().catch(console.error)
     await loadStudyRoute()
-    renderStudyCards()
-    drawConnections()
+    saveRoute()
 }

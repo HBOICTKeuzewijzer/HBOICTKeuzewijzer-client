@@ -84,6 +84,11 @@ export default function ModulesCreatePage() {
                         </select>
                     </div>
 
+                    <div>
+                        <label for="prerequisite" class="block text-sm font-medium text-gray-800 mb-1">Voorwaarden</label>
+                        <x-multiline-input id="prerequisite" placeholder="Voorwaarden van module"></x-multiline-input>
+                    </div>
+
                     <div class="flex justify-end">
                         <button type="submit" style="margin-top: 20px">
                             Opslaan
@@ -111,10 +116,10 @@ ModulesCreatePage.onPageLoaded = () => {
         const newModule = {
             name: form.querySelector('#name').value,
             code: form.querySelector('#code').value,
-            description: form.querySelector('#description')?.shadowRoot?.querySelector('textarea')?.value ?? '',
+            description: form.querySelector('#description')?.value ?? '',
             eCs: parseInt(form.querySelector('#ecs').value),
             level: parseInt(form.querySelector('#level').value),
-            prerequisiteJson: '[]',
+            prerequisiteJson: form.querySelector('#prerequisite').value,
             categoryId: categorySelect.value || null,
             oerId: oerSelect.value || null,
         }
