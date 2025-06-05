@@ -33,6 +33,8 @@ export class Module {
     _required
     /** @type {number} */
     _requiredSemester
+    /** @type {number} */
+    _level
 
     /**
      * Constructs a Module instance.
@@ -48,6 +50,7 @@ export class Module {
         if (params.category) this.category = new Category(params.category)
         if (params.required) this.required = Boolean(params.required)
         if (params.requiredSemester) this.requiredSemester = Number(params.requiredSemester)
+        if (params.level) this.level = Number(params.level)
         //if (params.oer) this.oer = params.oer
         //TODO: Uncomment above when these models have been made
     }
@@ -139,6 +142,16 @@ export class Module {
 
     /** @param {number} value */
     set requiredSemester(value) {
+        this._requiredSemester = value
+    }
+
+    /** @returns {number} */
+    get level() {
+        return this._requiredSemester
+    }
+
+    /** @param {number} value */
+    set level(value) {
         this._requiredSemester = value
     }
 }
