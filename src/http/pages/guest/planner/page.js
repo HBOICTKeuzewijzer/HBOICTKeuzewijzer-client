@@ -57,6 +57,9 @@ async function handleAccordionItemClick(moduleItem) {
     studyRoute.semesters[semesterIndex].moduleId = moduleItem.dataset.guid
     studyRoute.semesters[semesterIndex].module = getModuleById(moduleItem.dataset.guid)
 
+    const drawer = document.querySelector('x-drawer')
+    if (drawer.hasAttribute('open')) drawer.removeAttribute('open')
+
     renderStudyCards()
     drawConnections()
 }
@@ -187,7 +190,7 @@ function renderStudyCards() {
 
         container.innerHTML += /*html*/`
             <x-study-card data-year="${yearIndex}">
-                <span slot="header">Jaar ${yearIndex + 1}</span>
+                <span data-testid="study-card-year" slot="header">Jaar ${yearIndex + 1}</span>
                 <div slot="content-1" data-card-module data-index="0" data-status="${semesterOneLockStatus}" data-semesterindex="${semesterOneIndex}" class="card-module-item"
                     ${moduleOne ? `style="--primary-color: ${hexToRGB(moduleOne.category?.primaryColor ?? '#cccccc')}; --accent-color: ${hexToRGB(moduleOne.category?.accentColor ?? '#999999')};"` : 'type="empty"'}>
                     <input name="choice[${yearIndex + 1}][1]" hidden/>
@@ -387,7 +390,7 @@ export default function PlannerPage({ params }) {
 
     return /*html*/ `
         <div class="container flex" style="position: relative; flex-direction: row; overflow: hidden; max-height: calc(100vh - var(--header-height));">
-            <x-sheet class="hidden xl:flex" side="left" open>
+            <x-sheet data-testid="module-sheet" class="hidden xl:flex" side="left" open>
                 <div style="padding: 24px 24px 0; display: flex; flex-direction: column; gap: 6px;">
                     <h5 style="margin: 0; font-size: 18px;">Modules</h5>
                     <div class="divider" style="background-color: rgb(var(--color-gray-4)); height:1px;"></div>
@@ -398,27 +401,11 @@ export default function PlannerPage({ params }) {
                 <div id="modules-list-desktop" style="display: flex; flex-direction: column; padding: 24px;"></div>
             </x-sheet>
 
-            <x-drawer class="xl:hidden">
+            <x-drawer data-testid="module-drawer" class="xl:hidden">
                 <div id="modules-list-mobile" style="padding: 24px;"></div>
             </x-drawer>
 
             <form id="study-cards-container" style></form>
-
-            <div style="position: absolute; right: 32px; top: 32px;">
-                <x-popover position="bottom" placement="right">
-                    <button slot="trigger" style="cursor: pointer; align-items: center; display: flex; gap: 8px; background: white; border: 1px solid rgba(var(--color-gray-4), 0.2);">
-                        <i class="ph-duotone ph-share-network"></i>Delen
-                    </button>
-
-                    <button popover-action type="button" class="text-sm">
-                        <i class="ph-duotone ph-download"></i>Save as PDF
-                    </button>
-
-                    <button popover-action type="button" class="text-sm">
-                        <i class="ph-duotone ph-link"></i>Copy link
-                    </button>
-                </x-popover>
-            </div>
         </div>
     `
 }
