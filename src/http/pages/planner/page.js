@@ -41,6 +41,15 @@ function getModuleById(id) {
         const found = modules.find(module => module.id === id)
         if (found) return found
     }
+
+    if (studyRoute?.semesters) {
+        for (const semester of studyRoute.semesters) {
+            if (semester.customModule?.id === id) {
+                return semester.customModule
+            }
+        }
+    }
+
     return undefined
 }
 
@@ -70,7 +79,6 @@ async function handleAccordionItemClick(moduleItem) {
     renderStudyCards()
     drawConnections()
 
-    console.log(studyRoute)
     await fetcher(`studyRoute/${studyRouteId}`, { method: 'PUT', body: studyRoute.toJson() })
 }
 
@@ -170,7 +178,7 @@ function renderStudyCards() {
 }
 
 function createTooltipContent(module) {
-    const isCustom = module.isCustom === true;
+    const isCustom = module instanceof CustomModule || module.isCustom === true;
 
     return `
       <div class="info-icon" style="cursor: pointer;" data-guid="${module.id}" data-type="${isCustom ? 'custom' : 'standard'}">
@@ -264,10 +272,9 @@ function renderModuleAccordion() {
                         <div class="module-item" data-index="${index}" data-guid="${module.id}">
                             <span>${module.name}</span>
                             ${module.description
-                        ? `<x-tooltip position="left" placement="middle">
-                                    <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                                    <p class="color-black text-sm">${module.description}</p>
-                                   </x-tooltip>`
+                        ? `<div class="info-icon" style="cursor: pointer;" data-guid="${module.id}" data-type="${module instanceof CustomModule || module.isCustom ? 'custom' : 'standard'}">
+                                <i class="ph ph-info"></i>
+                            </div>`
                         : ''
                     }
                         </div>`
@@ -411,18 +418,31 @@ PlannerPage.onPageLoaded = async () => {
 
         const isCustom = type === 'custom'
 
-        modal.setOnSaveCallback((updatedModule) => {
+        // Get semester for the acquiredECs
+        const semesterIndex = selectedSemester.dataset.semesterindex
+
+        const acquiredECs = studyRoute.semesters[semesterIndex].acquiredECs
+
+        modal.setOnSaveCallback(async (updatedModule) => {
             const semesterIndex = selectedSemester.dataset.semesterindex
 
+            updatedModule.id ??= studyRoute.semesters[semesterIndex].customModule?.id
+
             const newModule = new CustomModule(updatedModule)
-            studyRoute.semesters[semesterIndex].moduleId = newModule.id
-            studyRoute.semesters[semesterIndex].module = newModule
+            studyRoute.semesters[semesterIndex].customModule = newModule
+            studyRoute.semesters[semesterIndex].customModuleId = newModule.id
+            studyRoute.semesters[semesterIndex].module = null
+            studyRoute.semesters[semesterIndex].moduleId = null
+
+            studyRoute.semesters[semesterIndex].acquiredECs = updatedModule.acquiredECs
 
             renderStudyCards()
             drawConnections()
+
+            await fetcher(`studyRoute/${studyRouteId}`, { method: 'PUT', body: studyRoute.toJson() })
         })
 
-        modal.open(module, isCustom)
+        modal.open(module, isCustom, acquiredECs)
     })
 
     window.addEventListener('resize', () => {

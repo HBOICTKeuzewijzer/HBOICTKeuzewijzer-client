@@ -101,42 +101,42 @@ async function loadStudyRoute() {
         new Semester({
             id: "5B59BE13-0F24-4F3E-8C5A-C3A99D08E7F6",
             index: 0,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
         new Semester({
             id: "8F7FED8A-6A8A-454E-BE05-D6B1C66F9C3E",
             index: 1,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
         new Semester({
             id: "2CF53F55-7896-488D-9C3C-CCA726093379",
             index: 2,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
         new Semester({
             id: "3F1F4470-AF74-4092-9412-E2B264C7E763",
             index: 3,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
         new Semester({
             id: "40690D5D-33CE-4FA6-9FF1-AEE5193DB326",
             index: 4,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
         new Semester({
             id: "14906BED-FBE4-4CEF-86E3-37F664586FE7",
             index: 5,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
         new Semester({
             id: "4CB71888-38EB-4BAB-8B6A-9D248933B4DE",
             index: 6,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
         new Semester({
             id: "6A0865C5-69F7-4402-8C52-973F6997A79C",
             index: 7,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
     ]
 
@@ -292,10 +292,9 @@ function renderModuleAccordion() {
                         <div class="module-item" data-index="${index}" data-guid="${module.id}" data-type="standard">
                             <span>${module.name}</span>
                             ${module.description
-                        ? `<x-tooltip position="left" placement="middle">
-                                    <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                                    <p class="color-black text-sm">${module.description}</p>
-                                   </x-tooltip>`
+                        ? `<div class="info-icon" style="cursor: pointer;" data-guid="${module.id}" data-type="${module instanceof CustomModule || module.isCustom ? 'custom' : 'standard'}">
+                                <i class="ph ph-info"></i>
+                            </div>`
                         : ''
                     }
                         </div>`
