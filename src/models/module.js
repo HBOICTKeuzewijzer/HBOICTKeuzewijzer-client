@@ -35,6 +35,8 @@ export class Module {
     _requiredSemester
     /** @type {number} */
     _level
+    /** @type {string} */
+    _prerequisiteJson
 
     /**
      * Constructs a Module instance.
@@ -51,6 +53,7 @@ export class Module {
         if (params.required) this.required = Boolean(params.required)
         if (params.requiredSemester) this.requiredSemester = Number(params.requiredSemester)
         if (params.level) this.level = Number(params.level)
+        if (params.prerequisiteJson) this.prerequisiteJson = params.prerequisiteJson
         //if (params.oer) this.oer = params.oer
         //TODO: Uncomment above when these models have been made
     }
@@ -153,5 +156,15 @@ export class Module {
     /** @param {number} value */
     set level(value) {
         this._requiredSemester = value
+    }
+
+    /** @returns {string} */
+    get prerequisiteJson() {
+        return this._prerequisiteJson
+    }
+
+    /** @param {string} value */
+    set prerequisiteJson(value) {
+        this._prerequisiteJson = value
     }
 }

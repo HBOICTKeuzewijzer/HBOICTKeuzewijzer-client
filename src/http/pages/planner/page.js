@@ -65,6 +65,10 @@ async function handleAccordionItemClick(moduleItem) {
 
     const clickedModule = getModuleById(moduleItem.dataset.guid)
     if (clickedModule instanceof CustomModule) {
+        if (studyRoute.semesters[semesterIndex].moduleId !== null) {
+            studyRoute.semesters[semesterIndex].acquiredECs = 0
+        }
+
         studyRoute.semesters[semesterIndex].customModule = clickedModule
         studyRoute.semesters[semesterIndex].customModuleId = clickedModule.id
         studyRoute.semesters[semesterIndex].module = null
@@ -74,6 +78,8 @@ async function handleAccordionItemClick(moduleItem) {
         studyRoute.semesters[semesterIndex].module = clickedModule
         studyRoute.semesters[semesterIndex].moduleId = clickedModule.id
         studyRoute.semesters[semesterIndex].customModuleId = null
+
+        studyRoute.semesters[semesterIndex].acquiredECs = 0
     }
 
     saveRoute()
@@ -486,15 +492,13 @@ PlannerPage.onPageLoaded = async () => {
         const semesterIndex = selectedSemester.dataset.semesterindex
 
         const acquiredECs = studyRoute.semesters[semesterIndex].acquiredECs
+        console.log(studyRoute.semesters[semesterIndex])
 
         modal.setOnSaveCallback(async (updatedModule) => {
             const semesterIndex = selectedSemester.dataset.semesterindex
             const semester = studyRoute.semesters[semesterIndex];
 
             updatedModule.id ??= studyRoute.semesters[semesterIndex].customModule?.id
-
-            console.log(studyRoute.semesters[semesterIndex])
-            console.log(updatedModule.id)
 
             if (semester.module !== null && semester.module !== undefined) {
                 // clearly this is a Module
@@ -522,6 +526,5 @@ PlannerPage.onPageLoaded = async () => {
 
     loadModules().catch(console.error)
     await loadStudyRoute()
-    renderStudyCards()
-    drawConnections()
+    saveRoute()
 }

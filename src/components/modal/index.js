@@ -43,8 +43,10 @@ export default class Modal {
 
         // Description
         this.form.appendChild(this.createField('Beschrijving', 'description', module.description || '', isCustom, true));
-        console.log(module)
-        this.form.appendChild(this.createField('Niveau', 'level', module.level, false, false, 'number'));
+
+        if (!isCustom) {
+            this.form.appendChild(this.createField('Niveau', 'level', module.level, false, false, 'number'));
+        }
 
         // ECs
         this.form.appendChild(this.createField('ECs', 'ec', module.ec || 0, isCustom, false, 'number'));
