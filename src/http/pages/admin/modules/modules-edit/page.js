@@ -111,11 +111,13 @@ ModulesEditPage.onPageLoaded = async () => {
     const oerSelect = form.querySelector('#oer')
     const cancelBtn = form.querySelector('#cancelBtn')
 
-    const [module, categories, oers] = await Promise.all([
+    const [module, categories, oerResult] = await Promise.all([
         fetcher(`module/${id}`),
         fetcher('category'),
         fetcher('oer'),
     ])
+
+    const oers = oerResult.items ?? []
 
     // Fill dropdowns
     categories?.forEach(cat => {

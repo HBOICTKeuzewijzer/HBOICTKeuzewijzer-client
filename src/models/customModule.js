@@ -31,6 +31,7 @@ export class CustomModule {
         if (params.name) this.name = params.name
         if (params.description) this.description = params.description
         if (params.ec) this.ec = params.ec
+        if (params.eCs) this.ec = params.eCs
         if (params.semester) this.semester = params.semester
         this.isCustom = params.isCustom ?? true
     }
@@ -100,7 +101,7 @@ export class CustomModule {
         return {
             name: this.name,
             description: this.description,
-            ec: this.ec,
+            eCs: this.ec ?? 0,
             semester: this.semester
         }
     }

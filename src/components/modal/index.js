@@ -28,23 +28,23 @@ export default class Modal {
         this.handleEsc = this.handleEsc.bind(this)
     }
 
-    open(module, isCustom) {
+    open(module, isCustom, acquiredECs = 0) {
         this.titleElem.textContent = 'Module info'
 
         // Clear form
         this.form.innerHTML = ''
 
-        // Nme
+        // Name
         this.form.appendChild(this.createField('Naam', 'name', module.name, isCustom))
 
         // Description
         this.form.appendChild(this.createField('Beschrijving', 'description', module.description || '', isCustom, true))
 
         // ECs
-        this.form.appendChild(this.createField('ECs', 'ecs', module.ecs || 0, isCustom, false, 'number'))
+        this.form.appendChild(this.createField('ECs', 'ec', module.ec || 0, isCustom, false, 'number'))
 
-        // Acquired EC
-        this.form.appendChild(this.createField('Behaalde EC', 'acquiredEc', module.acquiredEc || 0, isCustom, false, 'number')
+        // Acquired EC (from semester)
+        this.form.appendChild(this.createField('Behaalde EC', 'acquiredECs', acquiredECs, isCustom, false, 'number')
         );
 
         // If it's a custom module, add a submit button.
@@ -112,10 +112,10 @@ export default class Modal {
         event.preventDefault();
 
         const formData = new FormData(this.form);
-        const ecs = Number(formData.get('ecs'));
-        const acquiredEc = Number(formData.get('acquiredEc'));
+        const ec = Number(formData.get('ec'));
+        const acquiredECs = Number(formData.get('acquiredECs'));
 
-        if (acquiredEc < 0 || acquiredEc > 30) {
+        if (acquiredECs < 0 || acquiredECs > 30) {
             alert('Behaalde EC moet tussen 0 en 30 zijn.');
             return;
         }
@@ -124,8 +124,8 @@ export default class Modal {
             // id is gained from API
             name: formData.get('name'),
             description: formData.get('description'),
-            ecs: ecs,
-            acquiredEc: acquiredEc,
+            ec: ec,
+            acquiredECs: acquiredECs,
             isCustom: true,
         };
 

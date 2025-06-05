@@ -102,7 +102,7 @@ ModulesPage.onPageLoaded = () => {
 
         table.dataTable(
             new DatatableConfig({
-                route: 'module',
+                route: 'module/paged',
                 columns: [
                     new DatatableColumn({ path: 'name', title: 'Naam', sorting: true }),
                     new DatatableColumn({ path: 'code', title: 'Code', sorting: true }),
