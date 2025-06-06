@@ -1,6 +1,7 @@
 import { fetcher } from '@/utils'
 import { Module, Category, StudyRoute, CustomModule } from '@/models'
 import Modal from '@/components/modal'
+import html2pdf from 'html2pdf.js'
 
 const modal = new Modal()
 
@@ -462,7 +463,7 @@ export default function PlannerPage({ params }) {
                         <i class="ph-duotone ph-share-network"></i>Delen
                     </button>
 
-                    <button popover-action type="button" class="text-sm">
+                    <button popover-action type="button" class="text-sm" id="export-btn">
                         <i class="ph-duotone ph-download"></i>Save as PDF
                     </button>
 
@@ -473,6 +474,42 @@ export default function PlannerPage({ params }) {
             </div>
         </div>
     `
+}
+
+// TODO: does not work nice with more than 4 years...
+function exportStudyRouteToPDF() {
+    const container = document.getElementById('study-cards-container');
+    const connections = document.getElementById('connection-svg');
+
+    // Store original styles
+    const originalStyle = container.getAttribute('style');
+    const originalStyleConnections = connections.getAttribute('style');
+    // Hide connections before export
+    if (connections) {
+        connections.style.display = 'none';
+    }
+
+    // Expand fully
+    container.style.overflow = 'visible';
+    container.style.maxHeight = 'none';
+    container.style.height = 'auto';
+
+    const opt = {
+        margin: 0.5,
+        filename: 'studyroute.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(container).save().then(() => {
+        // Restore original style afterwards
+        container.setAttribute('style', originalStyle || '');
+        // Hide connections before export
+        if (connections) {
+            connections.setAttribute('style', originalStyleConnections || '');
+        }
+    });
 }
 
 PlannerPage.onPageLoaded = async () => {
@@ -526,6 +563,8 @@ PlannerPage.onPageLoaded = async () => {
     window.addEventListener('resize', () => {
         requestAnimationFrame(drawConnections)
     })
+
+    document.querySelector('#export-btn').addEventListener('click', exportStudyRouteToPDF)
 
     loadModules().catch(console.error)
     await loadStudyRoute()
