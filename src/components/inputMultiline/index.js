@@ -6,7 +6,7 @@ const template = html`
     <style>
         ${styling}
     </style>
-    <textarea spellcheck="false"></textarea>
+    <textarea spellcheck="false" style="resize: vertical;"></textarea>
 `
 
 export class InputMultiline extends CustomElement {
@@ -27,12 +27,12 @@ export class InputMultiline extends CustomElement {
     }
 
     get value() {
-        const input = this.shadowRoot?.querySelector('input')
+        const input = this.shadowRoot?.querySelector('textarea')
         return input?.value || ''
     }
 
     set value(val) {
-        const input = this.shadowRoot?.querySelector('input')
+        const input = this.shadowRoot?.querySelector('textarea')
         if (input) input.value = val
     }
 

@@ -42,5 +42,8 @@
     "prettier": "3.5.3",
     "vite": "^6.2.3",
     "vitest": "^3.1.4"
+  },
+  "dependencies": {
+    "html2pdf.js": "^0.10.3"
   }
 }

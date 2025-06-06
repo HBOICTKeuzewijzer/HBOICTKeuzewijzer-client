@@ -22,6 +22,8 @@ export class Semester {
     /** @type {StudyRoute} */
     _studyRoute
 
+    _errors
+
     /**
      * @param {Object} params
      */
@@ -125,6 +127,18 @@ export class Semester {
     /** @param {StudyRoute} value */
     set studyRoute(value) {
         this._studyRoute = value
+    }
+
+    get errors() {
+        return this._errors
+    }
+
+    set errors(value) {
+        this._errors = value
+    }
+
+    get errorsText() {
+        return this._errors.join('\r\n---------------------\r\n')
     }
 
     /** @returns {string} JSON string */
