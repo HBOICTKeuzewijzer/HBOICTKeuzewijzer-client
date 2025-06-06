@@ -67,10 +67,6 @@ export default function CategoryPage() {
 }
 
 CategoryPage.onPageLoaded = () => {
-    function hasLinkedModules(row) {
-    return row.modules?.length > 0;
-}
-
     document.querySelector('#add-button').addEventListener('click', () => {
         router.navigate('/admin/categorien/create');
     });
@@ -89,18 +85,14 @@ CategoryPage.onPageLoaded = () => {
             dialog.removeAttribute("open");
 
             try {
-                const category = await fetcher(`category/${currentRow.id}`);
-                if (category.modules.length > 0) {
-                    alert("Deze categorie heeft nog gekoppelde modules en kan niet worden verwijderd.");
-                    return;
-                }
                 await fetcher(`category/${currentRow.id}`, { method: "delete" });
-                currentRow = null;
                 table.reload();
             } catch (err) {
-                alert("Verwijderen mislukt. Probeer het opnieuw.");
+                alert(err.message.replace("Failed to fetch data: ", ""));
                 console.debug("Unexpected deletion error:", err);
             }
+
+            currentRow = null;
         };
 
 

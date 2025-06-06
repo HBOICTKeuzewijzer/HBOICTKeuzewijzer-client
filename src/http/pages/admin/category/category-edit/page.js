@@ -55,11 +55,11 @@ export default function CategoryEditPage({ params }) {
                     </div>
                     <div>
                         <label for="primaryColor" class="block text-sm font-medium text-gray-800 mb-1">Primaire kleur</label>
-                        <x-input id="primaryColor" placeholder="#FACC15"></x-input>
+                        <input type="color" id="primaryColor" value="#FF0000" style="width:85%;">
                     </div>
                     <div>
                         <label for="accentColor" class="block text-sm font-medium text-gray-800 mb-1">Accentkleur</label>
-                        <x-input id="accentColor" placeholder="#FDE68A"></x-input>
+                        <input type="color" id="accentColor" value="#FF0000" style="width:85%;">
                     </div>
                     <div>
                         <label for="position" class="block text-sm font-medium text-gray-800 mb-1">Positie</label>
@@ -80,7 +80,6 @@ CategoryEditPage.onPageLoaded = async () => {
     const { uuid: id } = CategoryEditPage.params;
 
     const form = document.querySelector('#edit-form')
-    if (!form) return console.error('Form not found')
 
     const valueInput = form.querySelector('#value')
     const primaryColorInput = form.querySelector('#primaryColor')
@@ -96,11 +95,11 @@ CategoryEditPage.onPageLoaded = async () => {
         return
     }
 
-    // Pre-fill values
-    valueInput.value = category.value ?? ''
-    primaryColorInput.value = category.primaryColor ?? ''
-    accentColorInput.value = category.accentColor ?? ''
-    positionInput.value = category.position ?? ''
+    // Pre-fill values (safe defaults)
+    valueInput.value = category.value ?? '';
+    primaryColorInput.value = category.primaryColor || '#FF0000';
+    accentColorInput.value = category.accentColor || '#FF0000';
+    positionInput.value = category.position ?? '';
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault()
@@ -108,8 +107,8 @@ CategoryEditPage.onPageLoaded = async () => {
         const updatedCategory = {
             id,
             value: valueInput.value,
-            primaryColor: primaryColorInput.value,
-            accentColor: accentColorInput.value,
+            primaryColor: primaryColorInput.value.toUpperCase(),  // send full #RRGGBB
+            accentColor: accentColorInput.value.toUpperCase(),
             position: parseInt(positionInput.value) || null,
         }
 
@@ -119,13 +118,13 @@ CategoryEditPage.onPageLoaded = async () => {
                 body: updatedCategory,
             })
 
-            router.navigate('/categorien')
+            router.navigate('/admin/categorien')
         } catch (err) {
             console.error('Update failed:', err)
         }
     })
 
     cancelBtn.addEventListener('click', () => {
-        router.navigate('/categorien')
+        router.navigate('/admin/categorien')
     })
 }
