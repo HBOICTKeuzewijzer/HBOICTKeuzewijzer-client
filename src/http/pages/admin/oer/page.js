@@ -117,10 +117,7 @@ OerPage.onPageLoaded = () => {
                 delete: (row) => {
                     currentRow = row;
                     dialog.setAttribute("open", "");
-                },
-                inspect: (row) => {
-                    router.navigate(`/admin/oer/inspect/${row.id}`);
-                },
+                }
             })
         }));
     }
