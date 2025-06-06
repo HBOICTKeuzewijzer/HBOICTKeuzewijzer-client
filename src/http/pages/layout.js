@@ -20,23 +20,26 @@ function afterReturn() {
     })
 }
 
-function getInitials(name) {
-    if (!name) return ''
+        function getInitials(name) {
+            if (!name) return '';
 
-    const parts = name.trim().split(/\s+/)
+            const cleanedName = name.replace(/\([^)]*\)/g, '').trim();
 
-    if (parts.length === 1) {
-        return parts[0][0].toUpperCase()
-    }
+            const parts = cleanedName.split(/\s+/);
 
-    const first = parts[0][0].toUpperCase()
-    const last = parts[parts.length - 1][0].toUpperCase()
+            if (parts.length === 1) {
+                const first = parts[0][0].toUpperCase();
+                return first + first;
+            }
 
-    return first + last
-}
+            const first = parts[0][0].toUpperCase();
+            const last = parts[parts.length - 1][0].toUpperCase();
+
+            return first + last;
+        }
 
 export default function Layout(children) {
-    let hasUnreadMessages = false; // Declare the variable here
+    let hasUnreadMessages = false; 
     const imageURL = new URL('@assets/images/windesheim-logo.png', import.meta.url).href
 
     function roleArray(roles) {
@@ -48,7 +51,6 @@ export default function Layout(children) {
     function pollUnreadMessages() {
         return fetcher('chat/has-unread', { method: 'GET' })
             .then((response) => {
-                console.log('Chats met ongelezen berichten:', response);
 
                 const hadUnreadMessages = hasUnreadMessages;
 
@@ -56,7 +58,6 @@ export default function Layout(children) {
                     hasUnreadMessages = true;
 
                     if (!hadUnreadMessages) {
-                        console.log('Je hebt ongelezen berichten!');
                         document.querySelector('app-toaster')?.show('Je hebt ongelezen berichten!');
                     }
 
@@ -99,10 +100,14 @@ export default function Layout(children) {
         }
     }
 
-    setTimeout(() => {
-        afterReturn()
-        pollUnreadMessages(); // Start polling after the initial setup
-    }, 0);
+setTimeout(() => {
+    afterReturn();
+
+    if (Auth.isLoggedIn()) {
+        pollUnreadMessages(); 
+    }
+}, 0);
+
 
     return /*html*/ `
         <div>
@@ -111,6 +116,7 @@ export default function Layout(children) {
 
                 <x-header-link slot="links" path='/guest' authenticated='false'>Guest</x-header-link>
                 <x-header-link slot="links" path='/profile/mijn-routes' authenticated='true' roles='${roleArray([Role.Student])}'>Mijn routes</x-header-link>
+                <x-header-link slot="links" path='/modules' authenticated='true' roles='${roleArray([Role.Student])}'>Modules</x-header-link>
                 <x-header-link slot="links" path="/admin" authenticated='true' roles='${roleArray([Role.ModuleAdmin, Role.SystemAdmin])}'>
                     Admin
                     <x-header-link slot="dropdown" path="/admin/modules" authenticated='true' roles='${roleArray([Role.ModuleAdmin, Role.SystemAdmin])}'>Modules</x-header-link>
@@ -144,12 +150,12 @@ export default function Layout(children) {
                     </a>
                 </x-popover>
                 ` : /*html*/`
-                <a href="/login?returnUrl=${location.href}" class="text-sm action-link header-a-tags" slot="profile">
+                <a href="/login?returnUrl=${location.href}" class="text-sm action-link header-a-tags color-black" slot="profile">
                     <i class="ph-duotone ph-sign-in"></i>
                 </a>
                 `}
 
-                <i class="ph ph-list" slot="mob-icon" style="font-size: 30px;" ></i>
+                <i class="ph ph-list color-black" slot="mob-icon" style="font-size: 30px;" ></i>
             </x-header>
             <main>${children}</main>
             <app-toaster></app-toaster>

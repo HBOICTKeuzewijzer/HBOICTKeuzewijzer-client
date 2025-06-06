@@ -8,11 +8,13 @@ import Role from '@models/role'
  */
 export const routes = [
     new Route('/', () => import('@pages/page.js'), new SetAuthCookie()),
+    // new Route('/', () => import('@pages/page.js')),
     new Route('/guest', () => import('@pages/guest/planner/page.js'), new SetAuthCookie()),
     new Route('/login', () => import('@pages/login.js')),
     new Route('/logout', () => import('@pages/logout.js')),
 
     ...new RouteGroup([new SetAuthCookie(), new EnsureAuthCookieIsSet(), new EnsureCohortIsSet(), new RequireRole([Role.Student])])
+        .add('/modules', () => import('@pages/modules/page.js'))
         .add('/studieroute', () => import('@pages/planner/page.js'))
         .add('/studieroute/:uuid', () => import('@pages/planner/page.js')).routes,
 

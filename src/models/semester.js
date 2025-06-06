@@ -1,4 +1,5 @@
 import { Module } from "./module"
+import { CustomModule } from "./customModule"
 import { StudyRoute } from "./studyroute"
 
 export class Semester {
@@ -7,15 +8,21 @@ export class Semester {
     /** @type {string} */
     _index
     /** @type {number} */
-    _acquiredEcs
+    _acquiredECs
     /** @type {string} */
     _moduleId
     /** @type {Module} */
     _module
     /** @type {string} */
+    _customModuleId
+    /** @type {CustomModule} */
+    _customModule
+    /** @type {string} */
     _studyRouteId
     /** @type {StudyRoute} */
     _studyRoute
+
+    _errors
 
     /**
      * @param {Object} params
@@ -23,9 +30,11 @@ export class Semester {
     constructor(params = {}) {
         if (params.id) this.id = params.id
         if (params.index || params.index === 0) this.index = params.index
-        if (params.acquiredEcs) this.acquiredEcs = params.acquiredEcs
+        if (params.acquiredECs !== undefined) this.acquiredECs = params.acquiredECs;
         if (params.moduleId) this.moduleId = params.moduleId
         if (params.module) this.module = new Module(params.module)
+        if (params.customModuleId) this.customModuleId = params.customModuleId
+        if (params.customModule) this.customModule = new CustomModule(params.customModule)
         if (params.studyRouteId) this.studyRouteId = params.studyRouteId
         if (params.studyRoute) this.studyRoute = new StudyRoute(params.studyRoute)
     }
@@ -50,14 +59,14 @@ export class Semester {
         this._index = value
     }
 
-    /** @returns {string} */
-    get acquiredEcs() {
-        return this._acquiredEcs
+    /** @returns {number} */
+    get acquiredECs() {
+        return this._acquiredECs
     }
 
-    /** @param {string} value */
-    set acquiredEcs(value) {
-        this._acquiredEcs = value
+    /** @param {number} value */
+    set acquiredECs(value) {
+        this._acquiredECs = value
     }
 
     /** @returns {string} */
@@ -81,6 +90,26 @@ export class Semester {
     }
 
     /** @returns {string} */
+    get customModuleId() {
+        return this._customModuleId
+    }
+
+    /** @param {string} value */
+    set customModuleId(value) {
+        this._customModuleId = value
+    }
+
+    /** @returns {CustomModule} */
+    get customModule() {
+        return this._customModule
+    }
+
+    /** @param {CustomModule} value */
+    set customModule(value) {
+        this._customModule = value
+    }
+
+    /** @returns {string} */
     get studyRouteId() {
         return this._studyRouteId
     }
@@ -100,13 +129,27 @@ export class Semester {
         this._studyRoute = value
     }
 
+    get errors() {
+        return this._errors
+    }
+
+    set errors(value) {
+        this._errors = value
+    }
+
+    get errorsText() {
+        return this._errors.join('\r\n---------------------\r\n')
+    }
+
     /** @returns {string} JSON string */
     toJson() {
         return {
             id: this.id,
             index: this.index,
-            acquiredEcs: this.acquiredEcs,
+            acquiredECs: this.acquiredECs,
             moduleId: this.moduleId,
+            customModuleId: this.customModuleId,
+            customModule: this.customModule ? this.customModule.toJson() : null,
             studyRouteId: this.studyRouteId,
         }
     }

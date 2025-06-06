@@ -1,7 +1,9 @@
-export default function Logout() {
-    let logoutUrl = `${import.meta.env.VITE_API_URL}/saml2/logout`;
+import { Cookie } from "@/utils";
 
-    document.cookie = `${encodeURIComponent('x-session')}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC`
+export default function Logout() {
+    let logoutUrl = `${import.meta.env.VITE_API_URL}/auth/logout?returnUrl=${location.origin}`;
+
+    Cookie.set('x-session', 'null', { expires: new Date(0) })
 
     setTimeout(() => {
         location.href = logoutUrl;

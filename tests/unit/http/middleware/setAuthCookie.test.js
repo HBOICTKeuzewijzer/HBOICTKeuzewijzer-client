@@ -29,7 +29,7 @@ vi.mock('@/utils/getCurrentUser', () => ({
     })
 }))
 
-import { Cookie } from '@utils'
+import { Cookie } from '@/utils'
 import { getCurrentUser } from '@/utils/getCurrentUser'
 import { SetAuthCookie } from '@/http/middleware'
 import MiddlewareStatus from '@models/routing/middlewareStatus'
@@ -60,7 +60,8 @@ describe('SetAuthCookie', () => {
         expect(result.status).toBe(MiddlewareStatus.Success)
         expect(Cookie.set).toHaveBeenCalledWith(
             'x-session',
-            JSON.stringify(user.asJson())
+            JSON.stringify(user.asJson()),
+            { expires: "session" }
         )
     })
 

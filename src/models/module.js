@@ -5,7 +5,7 @@ import { Category } from "@models"
  * @property {string} id - Unique identifier (GUID) of the module.
  * @property {string} name - The display name of the module.
  * @property {string} code - Internal code identifying the module.
- * @property {number} ec - Number of ECTS credits awarded for the module.
+ * @property {number} ecs - Number of ECTS credits awarded for the module.
  * @property {string | undefined} description - Optional textual description of the module.
  * @property {Category} category - Normalized category string (one of the predefined constants).
  * @property {Oer} oer - Open Educational Resources metadata associated with the module.
@@ -22,7 +22,7 @@ export class Module {
     /** @type {string} */
     _code
     /** @type {number} */
-    _ec
+    _ecs
     /** @type {string | undefined} */
     _description
     /** @type {Category} */
@@ -33,6 +33,10 @@ export class Module {
     _required
     /** @type {number} */
     _requiredSemester
+    /** @type {number} */
+    _level
+    /** @type {string} */
+    _prerequisiteJson
 
     /**
      * Constructs a Module instance.
@@ -42,11 +46,16 @@ export class Module {
         if (params.id) this.id = params.id
         if (params.name) this.name = params.name
         if (params.code) this.code = params.code
+        if (params.eCs) this.ec = params.eCs
         if (params.ec) this.ec = params.ec
         if (params.description) this.description = params.description
         if (params.category) this.category = new Category(params.category)
         if (params.required) this.required = Boolean(params.required)
-        if (params.requiredSemester) this.requiredSemester = Number(params.requiredSemester)
+        if (params.requiredSemester !== null && params.requiredSemester !== undefined) {
+            this.requiredSemester = Number(params.requiredSemester)
+        }
+        if (params.level) this.level = Number(params.level)
+        if (params.prerequisiteJson) this.prerequisiteJson = params.prerequisiteJson
         //if (params.oer) this.oer = params.oer
         //TODO: Uncomment above when these models have been made
     }
@@ -139,5 +148,25 @@ export class Module {
     /** @param {number} value */
     set requiredSemester(value) {
         this._requiredSemester = value
+    }
+
+    /** @returns {number} */
+    get level() {
+        return this._level
+    }
+
+    /** @param {number} value */
+    set level(value) {
+        this._level = value
+    }
+
+    /** @returns {string} */
+    get prerequisiteJson() {
+        return this._prerequisiteJson
+    }
+
+    /** @param {string} value */
+    set prerequisiteJson(value) {
+        this._prerequisiteJson = value
     }
 }

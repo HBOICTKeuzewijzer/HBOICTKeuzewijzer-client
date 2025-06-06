@@ -1,6 +1,6 @@
 import { getCurrentUser } from '@utils/getCurrentUser'
 import { Middleware } from '@http/middleware'
-import { Cookie } from '@utils'
+import { Cookie } from '@/utils'
 import { MiddlewareResult } from '@models';
 
 /**
@@ -18,7 +18,7 @@ export class SetAuthCookie extends Middleware {
                 const me = await getCurrentUser();
 
                 if (me !== null && me !== undefined) {
-                    document.cookie = `${encodeURIComponent('x-session')}=${encodeURIComponent(JSON.stringify(me.asJson()))}; path=/`
+                    Cookie.set('x-session', JSON.stringify(me.asJson()), { expires: "session" })
                 }
             }
 

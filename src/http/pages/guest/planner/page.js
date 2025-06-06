@@ -1,5 +1,8 @@
 import { fetcher } from '@/utils'
-import { Module, Category, Semester, StudyRoute } from '@/models'
+import { Module, Category, Semester, StudyRoute, CustomModule } from '@/models'
+import Modal from '@/components/modal'
+
+const modal = new Modal()
 
 let studyRouteId = null
 
@@ -21,6 +24,9 @@ function delegatedAccordionClickHandler(event) {
 function delegatedSemesterClickHandler(event) {
     const semester = event.target.closest('[data-card-module]')
     if (!semester) return
+
+    const drawer = document.querySelector('x-drawer')
+    if (!drawer.hasAttribute('open')) drawer.setAttribute('open', '')
 
     handleSemesterClick(semester)
 }
@@ -47,6 +53,9 @@ async function handleAccordionItemClick(moduleItem) {
     if (selectedSemester === undefined || selectedSemester === null) return
 
     const semesterIndex = selectedSemester.dataset.semesterindex
+    if (studyRoute.semesters[semesterIndex].module?.required === true) {
+        return
+    }
 
     studyRoute.semesters[semesterIndex].moduleId = moduleItem.dataset.guid
     studyRoute.semesters[semesterIndex].module = getModuleById(moduleItem.dataset.guid)
@@ -95,42 +104,42 @@ async function loadStudyRoute() {
         new Semester({
             id: "5B59BE13-0F24-4F3E-8C5A-C3A99D08E7F6",
             index: 0,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
         new Semester({
             id: "8F7FED8A-6A8A-454E-BE05-D6B1C66F9C3E",
             index: 1,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
         new Semester({
             id: "2CF53F55-7896-488D-9C3C-CCA726093379",
             index: 2,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
         new Semester({
             id: "3F1F4470-AF74-4092-9412-E2B264C7E763",
             index: 3,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
         new Semester({
             id: "40690D5D-33CE-4FA6-9FF1-AEE5193DB326",
             index: 4,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
         new Semester({
             id: "14906BED-FBE4-4CEF-86E3-37F664586FE7",
             index: 5,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
         new Semester({
             id: "4CB71888-38EB-4BAB-8B6A-9D248933B4DE",
             index: 6,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
         new Semester({
             id: "6A0865C5-69F7-4402-8C52-973F6997A79C",
             index: 7,
-            acquiredEcs: 0,
+            acquiredECs: 0,
         }),
     ]
 
@@ -172,45 +181,47 @@ function renderStudyCards() {
         let semesterTwoIndex = semesterModelIndex++
         let semesterOne = studyRouteSemesters[semesterOneIndex]
         let semesterTwo = studyRouteSemesters[semesterTwoIndex]
-        let semesterOneLockStatus = semesterOne.module?.required ?? false ? "locked" : "unlocked"
-        let semesterTwoLockStatus = semesterTwo.module?.required ?? false ? "locked" : "unlocked"
+
+        let moduleOne = semesterOne.module
+        let moduleTwo = semesterTwo.module
+
+        let semesterOneLockStatus = moduleOne?.required ? "locked" : "unlocked"
+        let semesterTwoLockStatus = moduleTwo?.required ? "locked" : "unlocked"
 
         container.innerHTML += /*html*/`
             <x-study-card data-year="${yearIndex}">
                 <span slot="header">Jaar ${yearIndex + 1}</span>
                 <div slot="content-1" data-card-module data-index="0" data-status="${semesterOneLockStatus}" data-semesterindex="${semesterOneIndex}" class="card-module-item"
-                    ${semesterOne.module ? `style="--primary-color: ${hexToRGB(semesterOne.module.category?.primaryColor)}; --accent-color: ${hexToRGB(semesterOne.module.category?.accentColor)};"` : 'type="empty"'}>
+                    ${moduleOne ? `style="--primary-color: ${hexToRGB(moduleOne.category?.primaryColor ?? '#cccccc')}; --accent-color: ${hexToRGB(moduleOne.category?.accentColor ?? '#999999')};"` : 'type="empty"'}>
                     <input name="choice[${yearIndex + 1}][1]" hidden/>
                     <div style="display: flex; justify-content: space-between;">
                         <i class="ph ${statusIconMap[semesterOneLockStatus]}"></i>
-                        ${semesterOne.module && semesterOne.module.description ? /*html*/`
-                        <x-tooltip>
-                            <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                            <p style="color: rgb(var(--color-black));">${semesterOne.module.description}</p>
-                        </x-tooltip>    
-                        ` : ''}
+                        ${moduleOne ? createTooltipContent(moduleOne) : ''}
                     </div>
-                    ${semesterOne.module ? semesterOne.module.name : `Optie 1`}
+                    ${moduleOne ? moduleOne.name : `Optie 1`}
                 </div>
 
                 
                 <div slot="content-2" data-card-module data-index="1" data-status="${semesterTwoLockStatus}" data-semesterindex="${semesterTwoIndex}" class="card-module-item"
-                    ${semesterTwo.module ? `style="--primary-color: ${hexToRGB(semesterTwo.module.category?.primaryColor)}; --accent-color: ${hexToRGB(semesterTwo.module.category?.accentColor)};"` : 'type="empty"'}>
+                    ${moduleTwo ? `style="--primary-color: ${hexToRGB(moduleTwo.category?.primaryColor ?? '#cccccc')}; --accent-color: ${hexToRGB(moduleTwo.category?.accentColor ?? '#999999')};"` : 'type="empty"'}>
                     <input name="choice[${yearIndex + 1}][2]" hidden/>
                     <div style="display: flex; justify-content: space-between;">
                         <i class="ph ${statusIconMap[semesterTwoLockStatus]}"></i>
-                        ${semesterTwo.module && semesterTwo.module.description ? /*html*/`
-                        <x-tooltip>
-                            <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                            <p style="color: rgb(var(--color-black));">${semesterTwo.module.description}</p>
-                        </x-tooltip>    
-                        ` : ''}
+                        ${moduleTwo ? createTooltipContent(moduleTwo) : ''}
                     </div>
-                    ${semesterTwo.module ? semesterTwo.module.name : `Optie 2`}
+                    ${moduleTwo ? moduleTwo.name : `Optie 2`}
                 </div>
             </x-study-card>
         `
     }
+}
+
+function createTooltipContent(module) {
+    return `
+      <div class="info-icon" style="cursor: pointer;" data-guid="${module.id}" data-type="standard">
+        <i class="ph ph-info"></i>
+      </div>
+    `
 }
 
 /**
@@ -232,7 +243,7 @@ async function loadModules() {
             (async () => {
                 const data = await fetcher('module', { method: 'GET' })
                 return data.map(element => new Module(element))
-            })()
+            })(),
         ])
 
         categories.forEach(category => {
@@ -281,13 +292,12 @@ function renderModuleAccordion() {
                 <span slot="title">${category.value}</span>
                 ${modules.map(
                 (module, index) => `
-                        <div class="module-item" data-index="${index}" data-guid="${module.id}">
+                        <div class="module-item" data-index="${index}" data-guid="${module.id}" data-type="standard">
                             <span>${module.name}</span>
                             ${module.description
-                        ? `<x-tooltip position="left" placement="middle">
-                                    <div slot="trigger" data-icon><i class="ph ph-info"></i></div>
-                                    <p class="color-black text-sm">${module.description}</p>
-                                   </x-tooltip>`
+                        ? `<div class="info-icon" style="cursor: pointer;" data-guid="${module.id}" data-type="${module instanceof CustomModule || module.isCustom ? 'custom' : 'standard'}">
+                                <i class="ph ph-info"></i>
+                            </div>`
                         : ''
                     }
                         </div>`
@@ -324,6 +334,8 @@ function drawConnections() {
     }
 
     svg.innerHTML = ''
+    svg.setAttribute('width', 0)
+    svg.setAttribute('height', 0)
     svg.setAttribute('width', container.scrollWidth)
     svg.setAttribute('height', container.scrollHeight)
 
@@ -336,11 +348,12 @@ function drawConnections() {
         const fromCard = cards[i].getBoundingClientRect()
         const toCard = cards[i + 1].getBoundingClientRect()
         const containerRect = container.getBoundingClientRect()
+        const scrollTop = container.scrollTop
 
         let startX = fromCard.right - containerRect.left
-        let startY = fromCard.top + fromCard.height / 2 - containerRect.top
+        let startY = ((fromCard.top + (fromCard.height / 2)) - containerRect.top) + scrollTop
         let endX = toCard.left - containerRect.left
-        let endY = toCard.top + toCard.height / 2 - containerRect.top
+        let endY = ((toCard.top + (toCard.height / 2)) - containerRect.top) + scrollTop
 
         let midX1 = startX + 40
         let midY = (startY + endY) / 2
@@ -348,9 +361,9 @@ function drawConnections() {
 
         if (isMobile) {
             startX = fromCard.left + fromCard.width / 2 - containerRect.left
-            startY = fromCard.bottom - containerRect.top
+            startY = (fromCard.bottom - containerRect.top) + scrollTop
             endX = toCard.left + toCard.width / 2 - containerRect.left
-            endY = toCard.top - containerRect.top
+            endY = (toCard.top - containerRect.top) + scrollTop
 
             midX1 = startX
             midX2 = endX
@@ -388,7 +401,7 @@ export default function PlannerPage({ params }) {
                 <div id="modules-list-desktop" style="display: flex; flex-direction: column; padding: 24px;"></div>
             </x-sheet>
 
-            <x-drawer class="xl:hidden" open>
+            <x-drawer class="xl:hidden">
                 <div id="modules-list-mobile" style="padding: 24px;"></div>
             </x-drawer>
 
@@ -416,6 +429,33 @@ export default function PlannerPage({ params }) {
 PlannerPage.onPageLoaded = async () => {
     document.addEventListener('click', delegatedAccordionClickHandler)
     document.addEventListener('click', delegatedSemesterClickHandler)
+
+    document.addEventListener('click', (e) => {
+        const infoIcon = e.target.closest('.info-icon')
+        if (!infoIcon) return
+
+        const guid = infoIcon.dataset.guid
+        const type = infoIcon.dataset.type
+
+        const module = getModuleById(guid)
+        if (!module) return
+
+        const isCustom = type === 'custom'
+
+        modal.setOnSaveCallback((updatedModule) => {
+            const semesterIndex = selectedSemester.dataset.semesterindex
+
+            const newModule = new CustomModule(updatedModule)
+            studyRoute.semesters[semesterIndex].moduleId = newModule.id
+            studyRoute.semesters[semesterIndex].module = newModule
+
+            renderStudyCards()
+            drawConnections()
+        })
+
+        modal.open(module, isCustom)
+    })
+
 
     window.addEventListener('resize', () => {
         requestAnimationFrame(drawConnections)

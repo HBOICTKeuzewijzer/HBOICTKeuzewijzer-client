@@ -75,7 +75,6 @@ export class Chat extends CustomElement {
             const selectedChat = allChats.items.find(chat => chat.id === chatId)
 
             if (!selectedChat) {
-                console.warn('Geen chat gevonden met dit ID:', chatId)
                 return
             }
 

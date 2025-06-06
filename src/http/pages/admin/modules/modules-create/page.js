@@ -33,6 +33,7 @@ export default function ModulesCreatePage() {
                     width: 80%;
                 }
             }
+
             label {
                 margin-top: 10px;
             }
@@ -83,6 +84,11 @@ export default function ModulesCreatePage() {
                         </select>
                     </div>
 
+                    <div>
+                        <label for="prerequisite" class="block text-sm font-medium text-gray-800 mb-1">Voorwaarden</label>
+                        <x-multiline-input id="prerequisite" placeholder="Voorwaarden van module"></x-multiline-input>
+                    </div>
+
                     <div class="flex justify-end">
                         <button type="submit" style="margin-top: 20px">
                             Opslaan
@@ -96,19 +102,26 @@ export default function ModulesCreatePage() {
 
 ModulesCreatePage.onPageLoaded = () => {
     const form = document.querySelector('#create-form')
+    const categorySelect = document.querySelector('#category')
+    const oerSelect = document.querySelector('#oer')
 
-    form?.addEventListener('submit', async (e) => {
+    if (!form || !categorySelect || !oerSelect) {
+        console.error('Form or dropdown elements not found in DOM.')
+        return
+    }
+
+    form.addEventListener('submit', async (e) => {
         e.preventDefault()
 
         const newModule = {
             name: form.querySelector('#name').value,
             code: form.querySelector('#code').value,
-            description: form.querySelector('#description')?.shadowRoot?.querySelector('textarea')?.value ?? '',
+            description: form.querySelector('#description')?.value ?? '',
             eCs: parseInt(form.querySelector('#ecs').value),
             level: parseInt(form.querySelector('#level').value),
-            prerequisiteJson: '[]',
-            categoryId: form.querySelector('#category').value || null,
-            oerId: form.querySelector('#oer').value || null,
+            prerequisiteJson: form.querySelector('#prerequisite').value,
+            categoryId: categorySelect.value || null,
+            oerId: oerSelect.value || null,
         }
 
         try {
@@ -124,24 +137,27 @@ ModulesCreatePage.onPageLoaded = () => {
     })
 
     // Populate category dropdown
-    fetcher('category').then(data => {
-        const select = document.querySelector('#category')
-        data?.forEach(cat => {
-            const opt = document.createElement('option')
-            opt.value = cat.id
-            opt.textContent = cat.value ?? 'Categorie'
-            select.appendChild(opt)
+    fetcher('category')
+        .then(data => {
+            (data ?? []).forEach(cat => {
+                const opt = document.createElement('option')
+                opt.value = cat.id
+                opt.textContent = cat.value ?? 'Categorie'
+                categorySelect.appendChild(opt)
+            })
         })
-    }).catch(console.error)
+        .catch(console.error)
 
     // Populate OER dropdown
-    fetcher('oer').then(data => {
-        const select = document.querySelector('#oer')
-        data?.forEach(oer => {
-            const opt = document.createElement('option')
-            opt.value = oer.id
-            opt.textContent = oer.academicYear ?? 'OER'
-            select.appendChild(opt)
+    fetcher('oer')
+        .then(data => {
+            const items = data?.items ?? []
+            items.forEach(oer => {
+                const opt = document.createElement('option')
+                opt.value = oer.id
+                opt.textContent = oer.academicYear ?? 'OER'
+                oerSelect.appendChild(opt)
+            })
         })
-    }).catch(console.error)
+        .catch(console.error)
 }

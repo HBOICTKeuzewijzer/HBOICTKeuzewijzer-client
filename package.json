@@ -1,43 +1,49 @@
 {
-    "name": "hboictkeuzewijzer-client",
-    "version": "1.0.0",
-    "description": "Studieroute keuzewijzer voor HBO ICT Deeltijd studenten",
-    "author": "",
-    "license": "ISC",
-    "homepage": "https://github.com/HBOICTKeuzewijzer/HBOICTKeuzewijzer-client#readme",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/HBOICTKeuzewijzer/HBOICTKeuzewijzer-client.git"
-    },
-    "bugs": {
-        "url": "https://github.com/HBOICTKeuzewijzer/HBOICTKeuzewijzer-client/issues"
-    },
-    "keywords": [
-        "Keuzewijzer",
-        "HBO-ICT",
-        "Windesheim",
-        "Deeltijd"
-    ],
-    "type": "module",
-    "main": "index.js",
-    "scripts": {
-        "clean": "rm -rf ./dist",
-        "dev": "vite",
-        "build": "npm run clean && vite build",
-        "preview": "npm run build && vite preview --port 8080",
-        "test": "vitest",
-        "lint": "eslint .",
-        "format": "prettier --write ."
-    },
-    "devDependencies": {
-        "@eslint/js": "^9.23.0",
-        "@vitejs/plugin-basic-ssl": "^2.0.0",
-        "eslint": "^9.23.0",
-        "eslint-import-resolver-alias": "^1.1.2",
-        "globals": "^16.0.0",
-        "jsdom": "^26.0.0",
-        "prettier": "3.5.3",
-        "vite": "^6.2.3",
-        "vitest": "^3.0.9"
-    }
+  "name": "hboictkeuzewijzer-client",
+  "version": "1.0.0",
+  "description": "Studieroute keuzewijzer voor HBO ICT Deeltijd studenten",
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://github.com/HBOICTKeuzewijzer/HBOICTKeuzewijzer-client#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HBOICTKeuzewijzer/HBOICTKeuzewijzer-client.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HBOICTKeuzewijzer/HBOICTKeuzewijzer-client/issues"
+  },
+  "keywords": [
+    "Keuzewijzer",
+    "HBO-ICT",
+    "Windesheim",
+    "Deeltijd"
+  ],
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "dev": "vite",
+    "build": "npm run clean && vite build",
+    "preview": "npm run build && vite preview --port 8080",
+    "test": "vitest run; npx playwright test",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "@playwright/test": "^1.52.0",
+    "@types/node": "^22.15.21",
+    "@vitejs/plugin-basic-ssl": "^2.0.0",
+    "eslint": "^9.23.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "globals": "^16.0.0",
+    "jsdom": "^26.0.0",
+    "playwright": "^1.52.0",
+    "prettier": "3.5.3",
+    "vite": "^6.2.3",
+    "vitest": "^3.1.4"
+  },
+  "dependencies": {
+    "html2pdf.js": "^0.10.3"
+  }
 }

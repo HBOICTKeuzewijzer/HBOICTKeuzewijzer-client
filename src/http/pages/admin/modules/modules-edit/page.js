@@ -83,6 +83,11 @@ export default function ModulesEditPage({ params }) {
                         </select>
                     </div>
 
+                    <div>
+                        <label for="prerequisite" class="block text-sm font-medium text-gray-800 mb-1">Voorwaarden</label>
+                        <x-multiline-input id="prerequisite" placeholder="Voorwaarden van module"></x-multiline-input>
+                    </div>
+
                     <div class="flex justify-end gap-3 pt-4" style="margin-top: 20px">
                         <button type="button" id="cancelBtn" class="px-5 py-2 rounded-lg bg-gray-100 hover:bg-gray-200">Annuleren</button>
                         <button type="submit" id="saveBtn" class="px-5 py-2 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-white">Opslaan</button>
@@ -107,15 +112,18 @@ ModulesEditPage.onPageLoaded = async () => {
     const ecs = form.querySelector('#ecs')
     const level = form.querySelector('#level')
     const description = form.querySelector('#description')
+    const prerequisite = form.querySelector('#prerequisite')
     const categorySelect = form.querySelector('#category')
     const oerSelect = form.querySelector('#oer')
     const cancelBtn = form.querySelector('#cancelBtn')
 
-    const [module, categories, oers] = await Promise.all([
+    const [module, categories, oerResult] = await Promise.all([
         fetcher(`module/${id}`),
         fetcher('category'),
         fetcher('oer'),
     ])
+
+    const oers = oerResult.items ?? []
 
     // Fill dropdowns
     categories?.forEach(cat => {
@@ -132,12 +140,15 @@ ModulesEditPage.onPageLoaded = async () => {
         oerSelect.appendChild(opt)
     })
 
+    console.log(module)
+
     // Fill form fields
     name.value = module.name
     code.value = module.code
     ecs.value = module.eCs
     level.value = module.level
-    description.shadowRoot.querySelector('textarea').value = module.description ?? ''
+    description.value = module.description ?? ''
+    prerequisite.value = module.prerequisiteJson
     categorySelect.value = module.categoryId ?? ''
     oerSelect.value = module.oerId ?? ''
 
