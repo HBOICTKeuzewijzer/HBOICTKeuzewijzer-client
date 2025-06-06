@@ -37,5 +37,5 @@ export const routes = [
         .add('/modules/edit/:uuid', () => import('@/http/pages/admin/modules/modules-edit/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
         .add('/oer', () => import('@pages/admin/oer/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
         .add('/categorien', () => import('@pages/admin/category/page.js'), [new RequireRole([Role.ModuleAdmin, Role.SystemAdmin])])
-        .add('/slb-relaties', () => import('@pages/admin/slb-relations/page.js'), [new RequireRole([Role.SystemAdmin])]).routes,
+    .routes,
 ]

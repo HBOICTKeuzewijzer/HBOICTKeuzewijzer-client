@@ -122,7 +122,6 @@ setTimeout(() => {
                     <x-header-link slot="dropdown" path="/admin/modules" authenticated='true' roles='${roleArray([Role.ModuleAdmin, Role.SystemAdmin])}'>Modules</x-header-link>
                     <x-header-link slot="dropdown" path="/admin/oer" authenticated='true' roles='${roleArray([Role.ModuleAdmin, Role.SystemAdmin])}'>OER</x-header-link>
                     <x-header-link slot="dropdown" path="/admin/categorien" authenticated='true' roles='${roleArray([Role.ModuleAdmin, Role.SystemAdmin])}'>Categorieën</x-header-link>
-                    <x-header-link slot="dropdown" path="/admin/slb-relaties" authenticated='true' roles='${roleArray([Role.SystemAdmin])}'>SLB relaties</x-header-link>
                 </x-header-link>
 
             ${Auth.isLoggedIn() ? /*html*/`
@@ -139,11 +138,6 @@ setTimeout(() => {
 
                 <x-popover position="bottom" slot="profile" placement="right">
                     <button slot="trigger" id="profile">${getInitials(Auth.getUser()?.displayName)}</button>
-                    
-                    <a href="/profile/settings" popover-action class="text-sm action-link header-a-tags">
-                        <i class="ph-duotone ph-gear"></i>
-                        Instellingen
-                    </a>
                     <a href="/logout" popover-action danger class="text-sm action-link header-a-tags">
                         <i class="ph-duotone ph-sign-out"></i>
                         Uitloggen
