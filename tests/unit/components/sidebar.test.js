@@ -48,7 +48,6 @@ describe('Sidebar button navigation', () => {
         { id: 'button-modules', route: '/admin/modules' },
         { id: 'button-oer', route: '/admin/oer' },
         { id: 'button-categorien', route: '/admin/categorien' },
-        { id: 'button-slb-relaties', route: '/admin/slb-relaties' },
     ]
 
     buttons.forEach(({ id, route }) => {

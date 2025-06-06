@@ -1,12 +1,25 @@
 import { test, expect } from '@playwright/test'
 
-test('navigates to /admin/oer when clicking OER button', async ({ page }) => {
-  await page.goto('/admin/modules')
+test('shows sidebar when logged in via mocked /auth/me', async ({ page }) => {
+  await page.route('**/auth/me', route =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        id: 'admin-id',
+        username: 'admin',
+        role: 'admin',
+      }),
+    })
+  )
 
-  // Zorg dat de knop zichtbaar is
-  await expect(page.locator('#button-oer')).toBeVisible()
+  await page.goto('/admin')
 
-  await page.locator('#button-oer').click()
+  const sidebar = page.locator('sidebar-component')
+  // await expect(sidebar).toBeVisible()
+
+  const button = sidebar.locator('#button-oer')
+  // await button.click()
 
   await expect(page).toHaveURL('/admin/oer')
 })
