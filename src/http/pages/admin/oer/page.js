@@ -81,8 +81,14 @@ OerPage.onPageLoaded = () => {
         const yesCallback = async () => {
             if (!currentRow) return;
 
-            dialog.removeAttribute("open");
-            await fetcher(`oer/${currentRow.id}`, { method: "delete" });
+            try {
+                dialog.removeAttribute("open");
+                await fetcher(`oer/${currentRow.id}`, { method: "delete" });
+            }
+            catch (err) {
+                alert(err.message.replace("Failed to fetch data: ", ""));
+                console.debug("Unexpected deletion error:", err);
+            }
 
             currentRow = null;
         };
@@ -98,7 +104,6 @@ OerPage.onPageLoaded = () => {
         table.dataTable(new DatatableConfig({
             route: "oer",
             columns: [
-                new DatatableColumn({ path: "id", title: "Id", sorting: true }),
                 new DatatableColumn({ path: "academicYear", title: "Jaar", sorting: true }),
                 new DatatableColumn({ path: "filePath", title: "File" })
             ],
@@ -112,10 +117,7 @@ OerPage.onPageLoaded = () => {
                 delete: (row) => {
                     currentRow = row;
                     dialog.setAttribute("open", "");
-                },
-                inspect: (row) => {
-                    router.navigate(`/admin/oer/inspect/${row.id}`);
-                },
+                }
             })
         }));
     }

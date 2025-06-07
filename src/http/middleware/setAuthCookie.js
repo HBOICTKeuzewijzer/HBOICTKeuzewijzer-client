@@ -14,8 +14,6 @@ export class SetAuthCookie extends Middleware {
     // eslint-disable-next-line no-unused-vars
     async handle(context) {
         try {
-            console.log(Cookie.get('x-session'))
-
             if (Cookie.get('x-session') === null) {
                 const me = await getCurrentUser();
 
