@@ -1,4 +1,4 @@
-import { fetcher } from '@/utils'
+import { Auth, fetcher } from '@/utils'
 import { Module } from '@/models'
 import styles from './style.css?inline'
 
@@ -94,6 +94,17 @@ ModulesPage.onPageLoaded = async () => {
     }, 100)
   }
 
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const year = date.getFullYear();
+    const hours = String(date.getHours() + 2).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${day}-${month}-${year} ${hours}:${minutes}`;
+  }
+
   // Event listeners for dialog
   cancelButton.addEventListener('click', closeDialog)
   
@@ -154,6 +165,8 @@ ModulesPage.onPageLoaded = async () => {
     }
   })
 
+  // const currentUser = await Auth.getUser()
+  const currentUserName = await Auth.getUser()?.displayName
   // Function to load reviews for a specific module
   async function loadReviewsForModule(moduleId) {
     const reviewContainer = document.getElementById(`reviews-${moduleId}`)
@@ -168,7 +181,15 @@ ModulesPage.onPageLoaded = async () => {
       `
 
       const reviews = await fetcher(`ModuleReview/${moduleId}`)
-      
+      const hasUserReview = reviews.some(r => r.studentName === currentUserName)
+
+      // Disable review button if user already reviewed
+      const reviewBtn = document.querySelector(`[data-module-id="${moduleId}"] .review-button`)
+      if (reviewBtn) {
+        reviewBtn.disabled = hasUserReview
+        reviewBtn.textContent = hasUserReview ? '✅ Review geplaatst' : '📝 Review schrijven'
+      }
+
       if (!reviews || reviews.length === 0) {
         reviewContainer.innerHTML = `
           <div class="empty-state">
@@ -181,6 +202,8 @@ ModulesPage.onPageLoaded = async () => {
           <div class="review-item">
             <div class="review-header">
               <span class="review-student">${review.studentName || 'Student'}</span>
+              <span class="review-student">${formatDate(review.createdAt)}</span>
+
             </div>
             <div class="review-text">${review.reviewText || 'Positieve ervaring met deze module.'}</div>
           </div>
