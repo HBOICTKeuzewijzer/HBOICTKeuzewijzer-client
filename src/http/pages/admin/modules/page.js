@@ -38,6 +38,10 @@ export default function ModulesPage() {
             label {
                 margin-top: 10px;
             }
+
+            #add-button {
+                cursor: pointer;
+            }
         </style>
 
         <x-page-header>
