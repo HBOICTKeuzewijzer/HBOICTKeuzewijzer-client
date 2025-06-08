@@ -139,14 +139,12 @@ export class Chat extends CustomElement {
                 const urlObj = new URL(href)
                 const shortText = '[Open link, studieroute]'
 
-
                 return `<a href="${href}" target="_blank" rel="noopener noreferrer">${shortText}</a>`
             } catch (e) {
-                return url 
+                return url
             }
         })
     }
-
 
     addMessage(sender, message, isFromMe = false, sentAt) {
         const container = this.shadowRoot.querySelector('.chat-messages')
