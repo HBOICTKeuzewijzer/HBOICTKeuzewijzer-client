@@ -30,7 +30,6 @@ describe('ModulesPage (Student View)', () => {
   })
 
   it('should render loading state initially', () => {
-    // Render again separately before calling onPageLoaded
     document.body.innerHTML = ModulesPage()
     const preLoadContainer = document.querySelector('#modules-container')
     expect(preLoadContainer.textContent).toContain('Modules worden geladen...')
