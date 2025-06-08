@@ -73,7 +73,7 @@ describe('Sidebar active button logic', () => {
     })
 
     it('should add "active" class to button that matches window.location.pathname', () => {
-        // 👇 Simuleer route
+        //  Simuleer route
         window.history.pushState({}, '', '/admin/oer')
 
         // Maak component aan
@@ -87,7 +87,7 @@ describe('Sidebar active button logic', () => {
         const modulesBtn = shadow.getElementById('button-modules')
         const catBtn = shadow.getElementById('button-categorien')
 
-        // ✅ Check
+        //  Check
         expect(oerBtn.classList.contains('active')).toBe(true)
         expect(modulesBtn.classList.contains('active')).toBe(false)
         expect(catBtn.classList.contains('active')).toBe(false)
