@@ -37,7 +37,7 @@ export class ChatSidebar extends HTMLElement {
             </div>
             <div id="chat-list" class="sidebar-content"></div>
            <x-dialog id="newChatDialog" closable>
-            <div>
+            <div id ="new-chat-options">
                 <h2>Voer het e-mailadres in om een chat te starten.</h2>
                 <br>
                 <x-input id="newChatEmail" placeholder="E-mailadres" submitenter></x-input>
@@ -51,109 +51,101 @@ export class ChatSidebar extends HTMLElement {
           </div>
         `
 
-        this.isMobile = window.matchMedia('(max-width: 768px)').matches;
+        this.isMobile = window.matchMedia('(max-width: 768px)').matches
     }
-
-
 
     markChatAsRead(chatId) {
         fetcher(`chat/mark-as-read/${chatId}`, { method: 'PUT' })
             .then(() => {
-                this.removeUnreadIndicator(chatId); 
+                this.removeUnreadIndicator(chatId)
             })
-            .catch((error) => {
-                console.error(`Fout bij het markeren van de chat als gelezen:`, error);
-            });
+            .catch(error => {
+                console.error(`Fout bij het markeren van de chat als gelezen:`, error)
+            })
     }
 
-
     createNewChat(newChatInput, newChatDialog) {
-        const email = newChatInput.value.trim();
+        const email = newChatInput.value.trim()
 
-        newChatInput.error = '';
+        newChatInput.error = ''
 
         if (!this.validateEmail(email)) {
-            newChatInput.error = 'Voer een geldig e-mailadres in.';
-            return;
+            newChatInput.error = 'Voer een geldig e-mailadres in.'
+            return
         }
 
-         fetcher('chat/create', {
-        method: 'POST',
-        body: { email }  // geef gewoon een object mee, fetcher stringify het automatisch
-    })
+        fetcher('chat/create', {
+            method: 'POST',
+            body: { email }, // geef gewoon een object mee, fetcher stringify het automatisch
+        })
             .then(() => {
                 this.getChatData().then(chatData => {
-                    this.renderChatSidebar(chatData.items, []);
-                });
-                newChatDialog.removeAttribute('open');
+                    this.renderChatSidebar(chatData.items, [])
+                })
+                newChatDialog.removeAttribute('open')
             })
             .catch(err => {
-                console.error('Fout bij het starten van de nieuwe chat:', err);
+                console.error('Fout bij het starten van de nieuwe chat:', err)
 
-                if (err.message && err.message.includes("User with email")) {
-                    newChatInput.error = 'E-mailadres bestaat niet binnen Windesheim. Controleer en probeer opnieuw.';
+                if (err.message && err.message.includes('User with email')) {
+                    newChatInput.error = 'E-mailadres bestaat niet binnen Windesheim. Controleer en probeer opnieuw.'
                 } else if (err.message === 'Network Error') {
-                    newChatInput.error = 'Netwerkfout, controleer uw verbinding.';
+                    newChatInput.error = 'Netwerkfout, controleer uw verbinding.'
                 } else {
-                    newChatInput.error = 'Er ging iets mis bij het starten van een nieuwe chat. Probeer het opnieuw.';
+                    newChatInput.error = 'Er ging iets mis bij het starten van een nieuwe chat. Probeer het opnieuw.'
                 }
-            });
+            })
     }
 
     validateEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        return emailRegex.test(email)
     }
 
     connectedCallback() {
-        Promise.all([
-            fetcher('auth/me', { method: 'GET' }),
-            this.getChatData(),
-            this.getHasUnreadMessages()
-        ])
+        Promise.all([fetcher('auth/me', { method: 'GET' }), this.getChatData(), this.getHasUnreadMessages()])
             .then(([currentUser, chatData, unreadStatuses]) => {
-                this.currentUser = currentUser;
+                this.currentUser = currentUser
 
-                this.renderChatSidebar(chatData.items, unreadStatuses);
+                this.renderChatSidebar(chatData.items, unreadStatuses)
 
-                const currentUrl = window.location.pathname;
-                const chatIdFromUrl = currentUrl.split('/').pop();
-                const matchingChat = chatData.items.find(chat => chat.id === chatIdFromUrl);
+                const currentUrl = window.location.pathname
+                const chatIdFromUrl = currentUrl.split('/').pop()
+                const matchingChat = chatData.items.find(chat => chat.id === chatIdFromUrl)
 
                 if (matchingChat) {
-                    this.markChatAsRead(matchingChat.id);
+                    this.markChatAsRead(matchingChat.id)
                 }
             })
             .catch(error => {
-                console.error("Fout bij ophalen van gegevens:", error);
-            });
+                console.error('Fout bij ophalen van gegevens:', error)
+            })
 
-        const newChatBtn = this.shadowRoot.getElementById('new-chat-btn');
-        const newChatDialog = this.shadowRoot.getElementById('newChatDialog');
-        const newChatConfirmYesBtn = this.shadowRoot.getElementById('newChatConfirmYes');
-        const newChatConfirmNoBtn = this.shadowRoot.getElementById('newChatConfirmNo');
-        const newChatInput = this.shadowRoot.getElementById('newChatEmail');
+        const newChatBtn = this.shadowRoot.getElementById('new-chat-btn')
+        const newChatDialog = this.shadowRoot.getElementById('newChatDialog')
+        const newChatConfirmYesBtn = this.shadowRoot.getElementById('newChatConfirmYes')
+        const newChatConfirmNoBtn = this.shadowRoot.getElementById('newChatConfirmNo')
+        const newChatInput = this.shadowRoot.getElementById('newChatEmail')
 
         newChatBtn.addEventListener('click', () => {
-            newChatDialog.setAttribute('open', '');
-            newChatInput.value = ''; 
-            newChatInput.error = ''; 
-        });
+            newChatDialog.setAttribute('open', '')
+            newChatInput.value = ''
+            newChatInput.error = ''
+        })
 
-        newChatConfirmYesBtn.addEventListener('click', () => this.createNewChat(newChatInput, newChatDialog));
+        newChatConfirmYesBtn.addEventListener('click', () => this.createNewChat(newChatInput, newChatDialog))
 
         newChatConfirmNoBtn.addEventListener('click', () => {
-            newChatDialog.removeAttribute('open');
-        });
+            newChatDialog.removeAttribute('open')
+        })
 
-        newChatInput.addEventListener('onSubmitEnter', () => this.createNewChat(newChatInput, newChatDialog));
+        newChatInput.addEventListener('onSubmitEnter', () => this.createNewChat(newChatInput, newChatDialog))
 
-        const searchBar = this.shadowRoot.getElementById('search-bar');
-        searchBar.addEventListener('input', (event) => {
-            const query = event.target.value.toLowerCase().trim();
-            this.filterChatList(query);
-        });
-
+        const searchBar = this.shadowRoot.getElementById('search-bar')
+        searchBar.addEventListener('input', event => {
+            const query = event.target.value.toLowerCase().trim()
+            this.filterChatList(query)
+        })
     }
     getChatData() {
         return fetcher('chat', { method: 'GET' })
@@ -181,63 +173,61 @@ export class ChatSidebar extends HTMLElement {
     }
     getHasUnreadMessages() {
         return fetcher('chat/has-unread', { method: 'GET' })
-            .then((response) => {
-                return response; 
+            .then(response => {
+                return response
             })
-            .catch((error) => {
-                console.error("Fout bij ophalen van ongelezen berichten:", error);
-                throw error;
-            });
+            .catch(error => {
+                console.error('Fout bij ophalen van ongelezen berichten:', error)
+                throw error
+            })
     }
     renderChatSidebar(chatData, unreadStatuses) {
-        const chatListElement = this.shadowRoot.getElementById('chat-list');
-        const selectedChatContainer = this.shadowRoot.getElementById('selected-chat');
+        const chatListElement = this.shadowRoot.getElementById('chat-list')
+        const selectedChatContainer = this.shadowRoot.getElementById('selected-chat')
 
-        
-        chatListElement.innerHTML = '';
+        chatListElement.innerHTML = ''
 
         if (!this.currentUser) {
             console.error('De huidige gebruiker is niet geladen.')
             return
         }
 
-
         function getInitials(name) {
-            if (!name) return '';
+            if (!name) return ''
 
-            const cleanedName = name.replace(/\([^)]*\)/g, '').trim();
+            const cleanedName = name.replace(/\([^)]*\)/g, '').trim()
 
-            const parts = cleanedName.split(/\s+/);
+            const parts = cleanedName.split(/\s+/)
 
             if (parts.length === 1) {
-                const first = parts[0][0].toUpperCase();
-                return first + first;
+                const first = parts[0][0].toUpperCase()
+                return first + first
             }
 
-            const first = parts[0][0].toUpperCase();
-            const last = parts[parts.length - 1][0].toUpperCase();
+            const first = parts[0][0].toUpperCase()
+            const last = parts[parts.length - 1][0].toUpperCase()
 
-            return first + last;
+            return first + last
         }
 
-        chatData.forEach((chat) => {
-            const isCurrentUserSLB = this.currentUser.id === chat.slbApplicationUserId;
-            const person = isCurrentUserSLB ? chat.student : chat.slb;
+        chatData.forEach(chat => {
+            const isCurrentUserSLB = this.currentUser.id === chat.slbApplicationUserId
+            const person = isCurrentUserSLB ? chat.student : chat.slb
             if (!person) {
                 console.warn('Geen andere partij gevonden voor deze chat:', chat)
                 return
             }
 
-            const displayName = person.displayName || 'Onbekende naam';
-            const displayId = person.email || 'Onbekende ID';
+            const displayName = person.displayName || 'Onbekende naam'
+            const displayId = person.email || 'Onbekende ID'
 
-            const unreadStatus = unreadStatuses.find((status) => status.chatId === chat.id);
-            const hasUnreadMessages = unreadStatus ? unreadStatus.hasUnread : false;
+            const unreadStatus = unreadStatuses.find(status => status.chatId === chat.id)
+            const hasUnreadMessages = unreadStatus ? unreadStatus.hasUnread : false
 
-            const chatItem = document.createElement('div');
-            chatItem.classList.add('chat-item');
+            const chatItem = document.createElement('div')
+            chatItem.classList.add('chat-item')
 
-            chatItem.dataset.chatId = chat.id;
+            chatItem.dataset.chatId = chat.id
 
             chatItem.innerHTML = `
             <div class="profile-picture" style="display: flex; justify-content: center; align-items: center; background-color: #f0f0f0; color: #555; font-weight: bold; font-size: 1rem; border-radius: 50%; width: 40px; height: 40px;">
@@ -248,7 +238,7 @@ export class ChatSidebar extends HTMLElement {
                 <span class="student-id">${displayId}</span>
             </div>
             ${hasUnreadMessages ? `<span class="unread-indicator"></span>` : ''}
-        `;
+        `
 
             chatItem.addEventListener('click', () => {
                 const allItems = this.shadowRoot.querySelectorAll('.chat-item')
@@ -267,35 +257,33 @@ export class ChatSidebar extends HTMLElement {
                     <span class="student-name">${displayName}</span>
                     <span class="student-id">${displayId}</span>
                 </div>
-            `;
+            `
 
-                selectedChatContainer.appendChild(selectedChat);
-                const chatId = chat.id;
+                selectedChatContainer.appendChild(selectedChat)
+                const chatId = chat.id
 
-                fetcher(`chat/mark-as-read/${chatId}`, { method: 'PUT' })
-                    .then(() => {
+                fetcher(`chat/mark-as-read/${chatId}`, { method: 'PUT' }).then(() => {
+                    this.removeUnreadIndicator(chatId)
+                })
 
-                        this.removeUnreadIndicator(chatId);
-                    });
+                router.navigate(`/messages/${chatId}`)
+            })
 
-                router.navigate(`/messages/${chatId}`);
-            });
-
-            chatListElement.appendChild(chatItem);
-        });
+            chatListElement.appendChild(chatItem)
+        })
     }
     removeUnreadIndicator(chatId) {
-        const chatItem = Array.from(this.shadowRoot.querySelectorAll('.chat-item'))
-            .find(item => item.dataset.chatId === chatId);
+        const chatItem = Array.from(this.shadowRoot.querySelectorAll('.chat-item')).find(
+            item => item.dataset.chatId === chatId,
+        )
 
         if (chatItem) {
-            const unreadIndicator = chatItem.querySelector('.unread-indicator');
+            const unreadIndicator = chatItem.querySelector('.unread-indicator')
             if (unreadIndicator) {
-                unreadIndicator.remove();
+                unreadIndicator.remove()
             } else {
             }
         } else {
         }
     }
 }
-
