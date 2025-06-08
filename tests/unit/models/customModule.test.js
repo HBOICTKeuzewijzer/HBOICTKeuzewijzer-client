@@ -4,18 +4,18 @@ import { CustomModule } from '@models'
 /**
  * CustomModule model tests
  * ------------------------------------
- * Deze suite valideert het gedrag van de CustomModule-klasse, inclusief:
- * - Initialisatie met volledige of gedeeltelijke parameters,
- * - Getter/setter gedrag,
- * - Fallback naar default waarden,
- * - Validatie van de JSON-export via toJson().
+ * This suite validates the functionality of the `CustomModule` model by testing:
+ * - Initialization with complete and partial input,
+ * - Getter/setter behavior,
+ * - Fallback to default values,
+ * - Validation of the JSON-export by toJson().
  *
- * Testscenario’s:
- * - [Should] Initialiseren met volledige eigenschappen,
- * - [Should] Correct omgaan met afwezige optionele velden,
- * - [Should] Standaard `isCustom` instellen op true als deze ontbreekt,
- * - [Should] Eigenschappen kunnen aanpassen via setters,
- * - [Should] toJson returnt correct object.
+ * Covered test scenario's:
+ * - [Should] Initialize a custom module with supported properties,
+ * - [Should] Handle optional parameters gracefully,
+ * - [Should] Set `isCustom` to true if this is unknown,
+ * - [Should] Allow property updates through setters,
+ * - [Should] Return correct object with toJson.
  */
 describe('[Models] CustomModule', () => {
   it('[Should] Initialize with full properties', () => {
