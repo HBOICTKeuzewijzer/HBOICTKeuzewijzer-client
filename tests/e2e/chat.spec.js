@@ -67,16 +67,12 @@
 test('chat page loads and shows messages', async ({ page }) => {
     await page.goto('/messages/12345678-1234-1234-1234-123456789abc');
 
-    // wacht tot chat-component zichtbaar is
-    const chatComponent = page.locator('chat-component');
-    await expect(chatComponent).toBeVisible();
-
     // wacht tot chat-messages zichtbaar is in shadow root
-    const shadowMessagesContainer = chatComponent.locator('>>> .chat-messages');
+    const shadowMessagesContainer = page.locator('x-chat >>> .chat-container');
     await expect(shadowMessagesContainer).toBeVisible();
 
     // wacht tot een bericht binnenkomt
-    const messages = chatComponent.locator('>>> .message5');
+    const messages = shadowMessagesContainer.locator('.chat-messages');
     await expect(messages.first()).toBeVisible();
 
     const count = await messages.count();
