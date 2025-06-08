@@ -34,6 +34,10 @@ export default function CategoryPage() {
                     display: unset;
                 }
             }
+
+            #add-button {
+                cursor: pointer;
+            }
         </style>
 
         <x-page-header>

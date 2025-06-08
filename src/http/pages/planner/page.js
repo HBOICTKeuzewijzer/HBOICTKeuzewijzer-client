@@ -470,10 +470,6 @@ export default function PlannerPage({ params }) {
                     <button popover-action type="button" class="text-sm" id="export-btn">
                         <i class="ph-duotone ph-download"></i>Save as PDF
                     </button>
-
-                    <button popover-action type="button" class="text-sm">
-                        <i class="ph-duotone ph-link"></i>Copy link
-                    </button>
                 </x-popover>
             </div>
         </div>
