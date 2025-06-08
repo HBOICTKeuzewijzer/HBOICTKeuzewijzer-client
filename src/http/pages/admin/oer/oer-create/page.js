@@ -70,8 +70,18 @@ OerCreatePage.onPageLoaded = () => {
     form?.addEventListener('submit', async (e) => {
         e.preventDefault()
 
+        let academicYear = form.querySelector('#year').value
+
+        // Regex to match exactly 2 digits / 2 digits
+        const yearRegex = /^\d{2}\/\d{2}$/
+
+        if (!yearRegex.test(academicYear)) {
+            console.error('Invalid academic year format. Expected format: "23/24"')
+            return
+        }
+
         const newOer = {
-            academicYear: form.querySelector('#year').value
+            academicYear: academicYear
         }
 
         try {

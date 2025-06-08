@@ -85,9 +85,19 @@ OerEditPage.onPageLoaded = async () => {
     form?.addEventListener('submit', async (e) => {
         e.preventDefault()
 
+        const academicYear = form.querySelector('#year').value
+
+        // Regex to validate academic year format
+        const yearRegex = /^\d{2}\/\d{2}$/
+
+        if (!yearRegex.test(academicYear)) {
+            console.error('Invalid academic year format. Expected format: "23/24"')
+            return
+        }
+
         const newOer = {
             id: id,
-            academicYear: form.querySelector('#year').value
+            academicYear: academicYear
         }
 
         try {

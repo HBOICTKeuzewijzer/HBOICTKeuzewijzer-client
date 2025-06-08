@@ -26,6 +26,7 @@
     "build": "npm run clean && vite build",
     "preview": "npm run build && vite preview --port 8080",
     "test": "vitest run; npx playwright test",
+    "e2e": "npx playwright test",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
