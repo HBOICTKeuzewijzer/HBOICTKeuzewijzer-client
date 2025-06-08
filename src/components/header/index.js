@@ -50,7 +50,10 @@ export class Header extends CustomElement {
 
         router.navigate('/')
 
-        this.#toggle()
+        const routes = this.root.querySelector('.header-routes');
+        if (routes.classList.contains('open')) {
+            this.#toggle()
+        }
     }
 
     #toggle() {
