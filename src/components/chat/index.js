@@ -32,7 +32,7 @@ export class Chat extends CustomElement {
                 input.value = ''
             }
         })
-
+        // Bericht versturen bij enter (zonder shift)
         input?.addEventListener('keydown', event => {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault()
@@ -64,7 +64,7 @@ export class Chat extends CustomElement {
         try {
             const container = this.shadowRoot.querySelector('.chat-messages')
             container.innerHTML = ''
-
+            // Haal chat-id uit URL (op basis van UUID-structuur)
             const urlParts = window.location.pathname.split('/')
             const chatId = urlParts.findLast(part => part.length === 36)
 
@@ -79,7 +79,7 @@ export class Chat extends CustomElement {
             }
 
             this.chat = selectedChat
-
+            // Sorteer berichten op verzendtijd en id
             const sortedMessages = [...this.chat.messages].sort((a, b) => {
                 const dateDiff = new Date(a.sentAt) - new Date(b.sentAt)
                 return dateDiff !== 0 ? dateDiff : a.id.localeCompare(b.id)
@@ -130,6 +130,7 @@ export class Chat extends CustomElement {
     }
 
     linkify(text) {
+        // Regex die (http(s):// of www.)-links in platte tekst herkent om ze klikbaar te maken
         const urlRegex = /((https?:\/\/|www\.)[^\s<]+)/g
 
         return text.replace(urlRegex, url => {
@@ -139,14 +140,12 @@ export class Chat extends CustomElement {
                 const urlObj = new URL(href)
                 const shortText = '[Open link, studieroute]'
 
-
                 return `<a href="${href}" target="_blank" rel="noopener noreferrer">${shortText}</a>`
             } catch (e) {
-                return url 
+                return url
             }
         })
     }
-
 
     addMessage(sender, message, isFromMe = false, sentAt) {
         const container = this.shadowRoot.querySelector('.chat-messages')

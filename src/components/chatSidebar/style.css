@@ -368,3 +368,12 @@ button {
         visibility: hidden;
     }
 }
+
+#new-chat-btn {
+    cursor: pointer;
+}
+
+#new-chat-options
+{
+    cursor: pointer;
+}
