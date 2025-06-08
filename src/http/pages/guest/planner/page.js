@@ -10,7 +10,7 @@ let studyRouteId = null
  * Handles click events on accordion module items using event delegation.
  * @param {MouseEvent} event
  */
-function delegatedAccordionClickHandler(event) {
+export function delegatedAccordionClickHandler(event) {
     const moduleItem = event.target.closest('.module-item')
     if (!moduleItem) return
 
@@ -21,7 +21,7 @@ function delegatedAccordionClickHandler(event) {
  * Handles click events on semester elements using event delegation.
  * @param {MouseEvent} event
  */
-function delegatedSemesterClickHandler(event) {
+export function delegatedSemesterClickHandler(event) {
     const semester = event.target.closest('[data-card-module]')
     if (!semester) return
 
@@ -36,7 +36,7 @@ function delegatedSemesterClickHandler(event) {
  * @param {string} id - The GUID of the module to find.
  * @returns {Module | undefined} The matched module, or undefined if not found.
  */
-function getModuleById(id) {
+export function getModuleById(id) {
     for (const [, modules] of moduleData.entries()) {
         const found = modules.find(module => module.id === id)
         if (found) return found
@@ -48,7 +48,7 @@ function getModuleById(id) {
  * Handles click events on semester elements using event delegation.
  * @param {MouseEvent} event
  */
-async function handleAccordionItemClick(moduleItem) {
+export async function handleAccordionItemClick(moduleItem) {
     if (studyRoute === null) return
     if (selectedSemester === undefined || selectedSemester === null) return
 
@@ -73,7 +73,7 @@ let selectedSemester
  * Handles selection highlighting for a semester card.
  * @param {HTMLElement} semester
  */
-function handleSemesterClick(semester) {
+export function handleSemesterClick(semester) {
     const studyCards = document.querySelectorAll('x-study-card')
 
     studyCards.forEach(card => {
@@ -92,7 +92,7 @@ function handleSemesterClick(semester) {
 
 let studyRoute
 
-async function loadStudyRoute() {
+export async function loadStudyRoute() {
     const requiredModules = []
 
     for (const [category, modules] of moduleData.entries()) {
@@ -268,7 +268,7 @@ async function loadModules() {
     }
 }
 
-function hexToRGB(hex, alpha) {
+export function hexToRGB(hex, alpha) {
     var r = parseInt(hex.slice(1, 3), 16),
         g = parseInt(hex.slice(3, 5), 16),
         b = parseInt(hex.slice(5, 7), 16);
@@ -283,7 +283,7 @@ function hexToRGB(hex, alpha) {
 /**
  * Renders the module accordion UI for both desktop and mobile containers.
  */
-function renderModuleAccordion() {
+export function renderModuleAccordion() {
     const containers = [document.querySelector('#modules-list-desktop'), document.querySelector('#modules-list-mobile')]
 
     const accordionHTML = Array.from(moduleData.entries())
