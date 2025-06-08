@@ -63,15 +63,17 @@ export default function CategoryPage() {
                 <button id="confirmNo">Cancel</button>
             </div>
         </x-dialog>
-    `
+    `;
 }
 
 CategoryPage.onPageLoaded = () => {
-    document.querySelector('#add-button').addEventListener('click', addOnClick);
+    document.querySelector('#add-button').addEventListener('click', () => {
+        router.navigate('/admin/categorien/create');
+    });
 
     try {
         /** @type {Datatable} */
-        const table = (document.querySelector("x-data-table"));
+        const table = document.querySelector("x-data-table");
         const dialog = document.querySelector("#confirmDeleteDialog");
         const yesBtn = dialog.shadowRoot?.host.querySelector("#confirmYes");
         const noBtn = dialog.shadowRoot?.host.querySelector("#confirmNo");
@@ -80,12 +82,20 @@ CategoryPage.onPageLoaded = () => {
 
         const yesCallback = async () => {
             if (!currentRow) return;
-
             dialog.removeAttribute("open");
-            await fetcher(`category/${currentRow.id}`, { method: "delete" });
+
+            try {
+                await fetcher(`category/${currentRow.id}`, { method: "delete" });
+                table.reload();
+            } catch (err) {
+                alert(err.message.replace("Failed to fetch data: ", ""));
+                console.debug("Unexpected deletion error:", err);
+            }
 
             currentRow = null;
         };
+
+
 
         const noCallback = () => {
             dialog.removeAttribute("open");
@@ -95,38 +105,36 @@ CategoryPage.onPageLoaded = () => {
         yesBtn?.addEventListener("click", yesCallback);
         noBtn?.addEventListener("click", noCallback);
 
-        table.dataTable(new DatatableConfig({
-            route: "category",
-            columns: [
-                new DatatableColumn({ path: "id", title: "Id", sorting: true }),
-                new DatatableColumn({ path: "value", title: "Waarde", sorting: true })
-            ],
-            searching: false,
-            paging: false,
-            pageSize: 10,
-            buttons: new DatatableButtons({
-                edit: (row) => {
-                    router.navigate(`/admin/categorien/edit/${row.id}`);
-                },
-                delete: (row) => {
-                    currentRow = row;
-                    dialog.setAttribute("open", "");
-                },
-                inspect: (row) => {
-                    router.navigate(`/admin/categorien/inspect/${row.id}`);
-                },
+        table.dataTable(
+            new DatatableConfig({
+                route: 'category/paginated',
+                columns: [
+                    new DatatableColumn({ path: 'value', title: 'Naam', sorting: true }),
+                    new DatatableColumn({ path: 'accentColor', title: 'Accentkleur', sorting: false }),
+                    new DatatableColumn({ path: 'primaryColor', title: 'Primaire kleur', sorting: false }),
+                    new DatatableColumn({ path: 'position', title: 'Positie', sorting: true }),
+                ],
+                searching: true,
+                paging: true,
+                pageSize: 10,
+                buttons: new DatatableButtons({
+                    edit: (row) => {
+                        router.navigate(`/admin/categorien/edit/${row.id}`);
+                    },
+                    delete: (row) => {
+                        currentRow = row;
+                        dialog.setAttribute("open", "");
+                    }
+                })
             })
-        }));
+        );
+    } catch (error) {
+        console.error("Failed to load categories:", error);
     }
-    catch (error) {
-        console.error(error);
-    }
-}
-
-function addOnClick() {
-    router.navigate('/admin/categorien/create');
-}
+};
 
 CategoryPage.onBeforePageUnloaded = () => {
-    document.querySelector('#add-button').removeEventListener('click', addOnClick);
+    document.querySelector('#add-button')?.removeEventListener('click', () => {
+        router.navigate('/admin/categorien/create');
+    });
 };

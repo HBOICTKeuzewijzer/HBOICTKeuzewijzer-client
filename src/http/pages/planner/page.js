@@ -342,16 +342,20 @@ function renderModuleAccordion() {
                 >
                 <span slot="title">${category.value}</span>
                 ${modules.map(
-                (module, index) => `
+                (module, index) => {
+                    if (!module.required) {
+                        return `
                         <div class="module-item" data-index="${index}" data-guid="${module.id}">
                             <span>${module.name}</span>
                             ${module.description
-                        ? `<div class="info-icon" style="cursor: pointer;" data-guid="${module.id}" data-type="${module instanceof CustomModule || module.isCustom ? 'custom' : 'standard'}">
+                                ? `<div class="info-icon" style="cursor: pointer;" data-guid="${module.id}" data-type="${module instanceof CustomModule || module.isCustom ? 'custom' : 'standard'}">
                                 <i class="ph ph-info"></i>
                             </div>`
-                        : ''
-                    }
+                                : ''
+                            }
                         </div>`
+                    }
+                }
             ).join('')}
                 </x-accordion>
             `

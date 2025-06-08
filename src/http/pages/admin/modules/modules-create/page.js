@@ -112,6 +112,7 @@ ModulesCreatePage.onPageLoaded = () => {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault()
+        alert(123)
 
         const newModule = {
             name: form.querySelector('#name').value,
