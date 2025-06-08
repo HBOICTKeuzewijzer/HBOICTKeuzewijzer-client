@@ -77,9 +77,10 @@ export class ChatSidebar extends HTMLElement {
             return;
         }
 
-        fetcher(`chat/create?email=${encodeURIComponent(email)}`, {
-            method: 'POST'
-        })
+         fetcher('chat/create', {
+        method: 'POST',
+        body: { email }  // geef gewoon een object mee, fetcher stringify het automatisch
+    })
             .then(() => {
                 this.getChatData().then(chatData => {
                     this.renderChatSidebar(chatData.items, []);
