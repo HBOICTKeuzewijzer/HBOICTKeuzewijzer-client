@@ -65,24 +65,24 @@ test.beforeEach(async ({ context, page }) => {
 })
 
 test('chat page loads and shows messages', async ({ page }) => {
-    await page.goto('/messages/12345678-1234-1234-1234-123456789abc')
+    await page.goto('/messages/12345678-1234-1234-1234-123456789abc');
 
     // wacht tot chat-component zichtbaar is
-    await page.waitForSelector('chat-component', { timeout: 5000 })
-
-    const chatComponent = page.locator('chat-component')
+    const chatComponent = page.locator('chat-component');
+    await expect(chatComponent).toBeVisible();
 
     // wacht tot chat-messages zichtbaar is in shadow root
-    const shadowMessagesContainer = chatComponent.locator('shadow=.chat-messages')
-    await expect(shadowMessagesContainer).toBeVisible()
+    const shadowMessagesContainer = chatComponent.locator('>>> .chat-messages');
+    await expect(shadowMessagesContainer).toBeVisible();
 
     // wacht tot een bericht binnenkomt
-    const messages = chatComponent.locator('shadow=.message5')
-    await expect(messages.first()).toBeVisible()
+    const messages = chatComponent.locator('>>> .message5');
+    await expect(messages.first()).toBeVisible();
 
-    const count = await messages.count()
-    expect(count).toBeGreaterThan(0)
-})
+    const count = await messages.count();
+    expect(count).toBeGreaterThan(0);
+});
+
 
 
 // test('user sends message via send button', async ({ page }) => {
