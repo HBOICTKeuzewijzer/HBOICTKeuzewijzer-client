@@ -64,24 +64,66 @@
 //     })
 // })
 
-// test('chat page loads and shows messages', async ({ page }) => {
-//     await page.goto('/messages/12345678-1234-1234-1234-123456789abc')
+test('chat page loads and shows messages', async ({ page }) => {
+    await page.goto('/messages/12345678-1234-1234-1234-123456789abc');
 
-//     // wacht tot chat-component zichtbaar is
-//     await page.waitForSelector('chat-component', { timeout: 5000 })
+    // wacht tot chat-component zichtbaar is
+    const chatComponent = page.locator('chat-component');
+    await expect(chatComponent).toBeVisible();
 
-//     const chatComponent = page.locator('chat-component')
+    // wacht tot chat-messages zichtbaar is in shadow root
+    const shadowMessagesContainer = chatComponent.locator('>>> .chat-messages');
+    await expect(shadowMessagesContainer).toBeVisible();
 
-//     // wacht tot chat-messages zichtbaar is in shadow root
-//     const shadowMessagesContainer = chatComponent.locator('shadow=.chat-messages')
-//     await expect(shadowMessagesContainer).toBeVisible()
+    // wacht tot een bericht binnenkomt
+    const messages = chatComponent.locator('>>> .message5');
+    await expect(messages.first()).toBeVisible();
 
-//     // wacht tot een bericht binnenkomt
-//     const messages = chatComponent.locator('shadow=.message5')
-//     await expect(messages.first()).toBeVisible()
+    const count = await messages.count();
+    expect(count).toBeGreaterThan(0);
+});
 
-//     const count = await messages.count()
-//     expect(count).toBeGreaterThan(0)
+
+
+// test('user sends message via send button', async ({ page }) => {
+//   await page.goto('/chat/12345678-1234-1234-1234-123456789abc')
+
+//   const chat = page.locator('chat-component')
+//   const input = chat.locator('.input-field')
+//   const sendButton = chat.locator('#sendbutton')
+
+//   await input.fill('Testbericht via knop')
+//   await sendButton.click()
+
+//   await expect(chat.locator('.message5').last()).toContainText('Testbericht via knop')
+// })
+
+// test('user sends message with Enter key', async ({ page }) => {
+//   await page.goto('/chat/12345678-1234-1234-1234-123456789abc')
+
+//   const chat = page.locator('chat-component')
+//   const input = chat.locator('.input-field')
+
+//   await input.fill('Test via Enter')
+//   await input.press('Enter')
+
+//   await expect(chat.locator('.message5').last()).toContainText('Test via Enter')
+// })
+
+// test('toggles sidebar and focuses input after closing', async ({ page }) => {
+//   await page.goto('/chat/12345678-1234-1234-1234-123456789abc')
+
+//   const chat = page.locator('chat-component')
+//   const container = chat.locator('.chat-container')
+//   const toggleBtn = chat.locator('.toggle-sidebar')
+//   const input = chat.locator('.input-field')
+
+//   await toggleBtn.click()
+//   await expect(container).toHaveClass(/sidebar-open/)
+
+//   await toggleBtn.click()
+//   await expect(container).not.toHaveClass(/sidebar-open/)
+//   await expect(input).toBeFocused()
 // })
 
 
