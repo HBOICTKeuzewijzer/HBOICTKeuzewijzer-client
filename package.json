@@ -34,7 +34,6 @@
     "@playwright/test": "^1.52.0",
     "@types/node": "^22.15.21",
     "@vitejs/plugin-basic-ssl": "^2.0.0",
-    "@vitest/ui": "^3.1.4",
     "eslint": "^9.23.0",
     "eslint-import-resolver-alias": "^1.1.2",
     "globals": "^16.0.0",
