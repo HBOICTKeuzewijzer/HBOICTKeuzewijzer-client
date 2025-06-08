@@ -1,71 +1,107 @@
-// import { test, expect } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 
-// const mockUser = {
-//   id: 'admin-id',
-//   username: 'admin',
-//   role: 'admin'
-// }
+const mockUser = {
+    id: 1,
+    email: 'admin@example.com',
+    roles: ['ModuleAdmin'],
+    firstName: 'Test',
+    lastName: 'Admin',
+}
 
-// test.beforeEach(async ({ page }) => {
-//   // Mock authenticatie via /auth/me
-//   await page.route('**/auth/me', route =>
-//     route.fulfill({
-//       status: 200,
-//       contentType: 'application/json',
-//       body: JSON.stringify(mockUser)
-//     })
-//   )
-// })
+test.beforeEach(async ({ context, page }) => {
+    // Zet sessiecookie voor authenticatie
+    await context.addCookies([
+        {
+            name: 'x-session',
+            value: JSON.stringify(mockUser),
+            domain: 'localhost',
+            path: '/',
+            httpOnly: false,
+            secure: false,
+            sameSite: 'Lax',
+        },
+    ])
+
+    // Mock API: /auth/me
+    await page.route('**/auth/me', route =>
+        route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(mockUser),
+        }),
+    )
+})
 
 // test('shows sidebar when logged in', async ({ page }) => {
-//   await page.goto('/admin')
+//     await page.goto('/admin')
 
-//   const sidebar = page.locator('sidebar-component')
-//   await expect(sidebar).toBeVisible()
+//     const sidebar = page.locator('x-sidebar')
+//     await expect(sidebar).toBeVisible()
 // })
 
 // test('navigates to /admin/oer when OER button is clicked', async ({ page }) => {
-//   await page.goto('/admin')
+//     await page.goto('/admin')
 
-//   const sidebar = page.locator('sidebar-component')
-//   const button = sidebar.locator('#button-oer')
+//     // Wacht tot de sidebar zichtbaar is
+//     await expect(page.locator('x-sidebar')).toBeVisible()
 
-//   await expect(button).toBeVisible()
-//   await button.click()
+//     // Gebruik de correcte shadow DOM syntax
+//     const button = page.locator('div.button#button-oer')
+//     await expect(button).toBeVisible()
+//     await button.click()
 
-//   await expect(page).toHaveURL('/admin/oer')
+//     // Controleer de URL
+//     const path = await page.evaluate(() => window.location.pathname)
+//     expect(path).toBe('/admin/oer')
 // })
 
 // test('sidebar contains expected navigation buttons', async ({ page }) => {
-//   await page.goto('/admin')
+//     await page.goto('/admin')
 
-//   const sidebar = page.locator('sidebar-component')
+//     const sidebar = page.locator('#sidebar')
 
-//   await expect(sidebar.locator('#button-oer')).toBeVisible()
-//   await expect(sidebar.locator('#button-dashboard')).toBeVisible()
-//   await expect(sidebar.locator('#button-settings')).toBeVisible()
+//     await expect(sidebar.locator('div.button#button-modules')).toBeVisible()
+//     await expect(sidebar.locator('div.button#button-oer')).toBeVisible()
+//     await expect(sidebar.locator('div.button#button-categorien')).toBeVisible()
 // })
 
-// test('sidebar renders correctly on mobile viewport', async ({ page }) => {
+// test('sidebar becomes visible after mobile toggle is clicked', async ({ page }) => {
 //   await page.setViewportSize({ width: 375, height: 667 }) // iPhone size
 //   await page.goto('/admin')
 
-//   const sidebar = page.locator('sidebar-component')
-//   await expect(sidebar).toBeVisible()
+//   const toggleButton = page.locator('#mob-toggle')
+//   await expect(toggleButton).toBeVisible()
+//   await toggleButton.click({ force: true })
+
+//   const headerRoutes = page.locator('.header-routes')
+//   await expect(headerRoutes).toHaveClass(/open/)
 // })
 
-// test('sidebar is hidden if not admin (optional)', async ({ page }) => {
-//   const nonAdminUser = { ...mockUser, role: 'student' }
+// test('active class is added to the correct button when navigating', async ({ page }) => {
+//   await page.goto('/admin/oer')
 
-//   await page.route('**/auth/me', route =>
-//     route.fulfill({
-//       status: 200,
-//       contentType: 'application/json',
-//       body: JSON.stringify(nonAdminUser)
-//     })
-//   )
+//   const sidebar = page.locator('x-sidebar')
+//   const oerButton = sidebar.locator('div.button#button-oer')
 
-//   await page.goto('/admin')
-//   const sidebar = page.locator('sidebar-component')
-//   await expect(sidebar).not.toBeVisible()
+//   await expect(oerButton).toHaveClass(/active/)
 // })
+
+test('sidebar toggles collapsed state on click', async ({ page }) => {
+  await page.goto('/admin')
+
+  // Zorg dat shadow component klaar is
+  await expect(page.locator('x-sidebar')).toBeVisible()
+
+  const wrapper = page.locator('x-sidebar >>> #sidebar-wrapper')
+  const sidebar = page.locator('x-sidebar >>> #sidebar')
+
+  await expect(wrapper).toBeVisible()
+
+  // Eerste klik → collapse
+  await wrapper.click()
+  await expect(sidebar).toHaveClass(/collapsed/)
+
+  // Tweede klik → expand
+  await wrapper.click()
+  await expect(sidebar).not.toHaveClass(/collapsed/)
+})
